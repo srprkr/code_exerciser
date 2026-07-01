@@ -2,3 +2,48 @@
 
 from: https://www.robinwieruch.de/javascript-map-array/
 
+## Simple map function
+
+```javascript
+  const originalArray = [1, 2, 3, 4, 5];
+
+  const newArray = originalArray.map(function addOne(number) {
+    return number + 1;
+  });
+
+  console.log(originalArray);
+  console.log(newArray);
+
+```
+
+## Anonymous map function
+
+`addOne` has been removed.
+
+```javascript
+  const originalArray = [1, 2, 3, 4, 5];
+
+  const newArray = originalArray.map(function (number) {
+    return number + 1;
+  });
+
+  console.log(originalArray);
+  console.log(newArray);
+
+```
+
+## Callback function as a variable
+
+```javascript
+  const originalArray[1, 2, 3, 4, 5];
+
+  function addOne(number) {
+    return number + 1;
+  }
+
+  const newArray = originalArray.map(addOne);
+
+  console.log(originalArray);
+  console.log(newArray);
+
+```
