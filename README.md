@@ -70,3 +70,14 @@ Because:
 1. It's *built* into the language.
 2. It's easier.
 3. Map is *immutable* and never changes the original array (this is pretty big).
+
+## Map with Arrow function as a callback
+
+```javascript
+  const originalArray = [1, 2, 3, 4, 5];
+
+  const newArray = originalArray.map(number => number + 1);
+
+  console.log(originalArray);
+  console.log(newArray);
+```
