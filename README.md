@@ -81,3 +81,51 @@ Because:
   console.log(originalArray);
   console.log(newArray);
 ```
+
+## Map method's callback function
+
+The built-in params are `value`, `index`, and `array` (not as needful).
+
+### Value
+
+```javascript
+  [1, 2, 3].map(value => value + 1)
+
+  >> 2, 3, 4
+```
+
+### Index
+
+```javascript
+  [1, 2, 3].map((value, index) => index);
+
+  >> [0, 1, 2]
+```
+
+### Array
+
+Odds are you won't need this param so much (because you'll normally have a reference to the original array map was called on).
+
+Here's what I mean:
+
+```javascript
+const myArray = [1, 2, 3];
+
+// using third argument to map (array)
+myArray.map((value, index, array) => {
+  return array[index] + 1;
+});
+
+// using the variable that holds the original array
+myArray.map((value, index) => {
+  return myArray[index] + 1;
+});
+
+// just using map without accessing the array manually
+myArray.map((value) => {
+  return value + 1;
+})
+
+// All of the above return...
+>> [2, 3, 4]
+```
