@@ -129,3 +129,37 @@ myArray.map((value) => {
 // All of the above return...
 >> [2, 3, 4]
 ```
+
+## Map vs ForEach
+
+If you want an array back from it, use `map`. If you're just logging results of each loop and discarding the resultant array, use `foreach`.
+
+```javascript
+const myArray = [1, 2, 3, 4];
+
+myArray.map(number => {
+  console.log(number);
+});
+
+// nothing changes except the method we used
+myArray.forEach(number => {
+  console.log(number);
+});
+
+```
+
+### When to use
+| Map | ForEach |
+------------
+| Rendering UI from data | Update the DOM |
+| Extract specific field from list of objects | Pushing into an external accumulator (reduce is better for this) |
+| Transforming data shape (API response -> app format) | API calls / side effects per item |
+| Chaining with other array methods | Mutate objects in place |
+| Applying a formula to every element | |
+
+In short: Do you need an array back?
+
+If No, use `forEach`.
+Yes, same length transformed values -> `map`.
+Yes, but filtered to fewer items -> `filter`.
+Yes, but collapsed into one value (sum, object, etc.) -> `reduce`.
