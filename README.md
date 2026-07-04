@@ -149,8 +149,9 @@ myArray.forEach(number => {
 ```
 
 ### When to use
+
 | Map | ForEach |
-------------
+|---|---|
 | Rendering UI from data | Update the DOM |
 | Extract specific field from list of objects | Pushing into an external accumulator (reduce is better for this) |
 | Transforming data shape (API response -> app format) | API calls / side effects per item |
@@ -159,7 +160,7 @@ myArray.forEach(number => {
 
 In short: Do you need an array back?
 
-If No, use `forEach`.
-Yes, same length transformed values -> `map`.
-Yes, but filtered to fewer items -> `filter`.
-Yes, but collapsed into one value (sum, object, etc.) -> `reduce`.
+- If No, use `forEach`.
+- Yes, same length transformed values -> `map`.
+- Yes, but filtered to fewer items -> can use `forEach`, but `filter` is better.
+- Yes, but collapsed into one value (sum, object, etc.) -> can use `forEach` but `reduce` is better.
