@@ -164,3 +164,21 @@ In short: Do you need an array back?
 - Yes, same length transformed values -> `map`.
 - Yes, but filtered to fewer items -> can use `forEach`, but `filter` is better.
 - Yes, but collapsed into one value (sum, object, etc.) -> can use `forEach` but `reduce` is better.
+
+## Using Map and Filter
+
+Both are immutable and create new arrays. `Filter` creates a shorter array that filters *out* undesired items.
+
+Any array removals or deletions makes `filter` the thing to use.
+
+```javascript
+const originalArray = [1, 2, undefined, 3];
+
+const newArray = originalArray.filter(value => {
+  return Number.isInteger(value);
+}).map(value => {
+  return value * 2;
+});
+```
+
+This filters out the `undefined` and the map chaining modifies the remaining numbers.
