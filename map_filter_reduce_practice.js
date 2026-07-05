@@ -89,10 +89,29 @@ let cleanAnimals = animals.filter(word => word.length > 0);
 console.log("12. ", cleanAnimals);
 
 // 13. Given an array of objects {name, inStock}, return only items where inStock is true
+let stock = [{name: "squegee", inStock: true}, {name: "rubber duck", inStock: true}, {name: "soap", inStock: false}, {name: "LCD Monitor", inStock: false}];
+let availableNames = stock
+  .filter(item => item.inStock)
+  .map(item => item.name);
+
+console.log("13. ", availableNames);
+
 // Reduce (combine into one value)
 // 14. Sum all numbers in an array
+let summedFive = oneToFive.reduce((acc, val) => acc + val, 0);
+console.log("14. ", summedFive);
+
 // 15. Find the maximum number in an array
+let maxOfFive = oneToFive.reduce((acc, val) => {
+  return acc < val ? val : acc;
+}, oneToFive[0]);
+console.log("15. ", maxOfFive);
+
 // 16. Count how many items in an array are even
+let evenOfFive = oneToFive.reduce((acc, val) => acc + (val % 2 === 0), 0);
+
+console.log("16. ", evenOfFive);
+
 // 17. Given an array of objects {price}, get the total price
 // 18. Concatenate an array of strings into one sentence, separated by spaces
 // 19. Given an array of words, build an object counting how many times each word appears (e.g. ["a","b","a"] → {a: 2, b: 1})

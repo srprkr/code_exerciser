@@ -182,3 +182,33 @@ const newArray = originalArray.filter(value => {
 ```
 
 This filters out the `undefined` and the map chaining modifies the remaining numbers.
+
+## Using Map and Reduce
+
+`Reduce` uses a callback function where the first param is an `accumulator` and the second is a `value` in the array (`index` is the third param but not needed as much).
+
+Reduce *could* do the same things `map` does...
+
+```javascript
+const originalArray = [1, 2, 3, 4, 5];
+const newArray = originalArray.reduce((accumulator, value, index) => {
+  accumulator[index] = value * 2;
+  return accumulator;
+}, []);
+
+console.log(newArray); // [2, 4, 6, 8, 10]
+
+```
+...but `map` is easier, so don't.
+
+`Reduce` is good for control of the shape of what it returns.
+
+```javascript
+  const myArray = ['a', 'b', 'c', 'd'];
+
+  const myObject = myArray.reduce((accumulator, value) => {
+    accumulator[value] = true;
+  }, {});
+
+  console.log(myObject); // { a: true, b: true, c: true, d: true }
+```
