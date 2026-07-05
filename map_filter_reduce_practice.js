@@ -113,8 +113,52 @@ let evenOfFive = oneToFive.reduce((acc, val) => acc + (val % 2 === 0), 0);
 console.log("16. ", evenOfFive);
 
 // 17. Given an array of objects {price}, get the total price
+const cart = [
+  { price: 12.99 },
+  { price: 5.50 },
+  { price: 20.00 },
+  { price: 3.25 }
+];
+
+let priceTotal = cart.reduce((acc, value) => acc + value.price, 0);
+
+console.log("17. ", priceTotal);
+
 // 18. Concatenate an array of strings into one sentence, separated by spaces
+let sentenceWords = ["The", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"];
+
+let sentence = sentenceWords.reduce((acc, word) => acc + " " + word) + '.';
+
+console.log("18. ", sentence);
+
 // 19. Given an array of words, build an object counting how many times each word appears (e.g. ["a","b","a"] → {a: 2, b: 1})
+let wordsToCount = ['dog', 'elephant', 'domino', 'octopus', 'sausage', 'dagger', 'dog', 'elephant', 'domino', 'dog', 'cat', 'domino', 'octopus', 'skit'];
+
+let wordKeyCount = wordsToCount.reduce((acc, word) => {
+  if (acc[word]) {
+    acc[word]++;
+  } else {
+    acc[word] = 1;
+  }
+  return acc;
+}, {});
+console.log("19. ", wordKeyCount);
+
 // Combining them
 // 20. Given an array of objects {name, price, inStock}, get the total price of only the items that are in stock (filter, then reduce)
+const bag = [
+  { name: "Keyboard", price: 45.00, inStock: true },
+  { name: "Monitor", price: 199.99, inStock: false },
+  { name: "Mouse", price: 25.50, inStock: true },
+  { name: "Webcam", price: 60.00, inStock: false },
+  { name: "Headset", price: 80.00, inStock: true }
+];
 
+let currentStockTotal = bag
+  .filter(item => item.inStock)
+  .reduce((acc, val) => {
+    return acc + val.price
+  }, 0);
+
+
+console.log("20. ", currentStockTotal);
