@@ -3,10 +3,10 @@ console.log("======");
 
 // Map
 // 1. Given an array of temperatures in Celsius, convert them all to Fahrenheit
-let temps = [0, 20, 37, 100, -10];
-const celsiusTemps = temps.map(num => Number((num - 32 / (9/5)).toFixed(2)));
+let celsiusTemps = [0, 20, 37, 100, -10];
+const fahrenheitTemps = celsiusTemps.map(temp => Number(((temp * 9) / 5 + 32).toFixed(2)));
 
-console.log("2.1: ", celsiusTemps);
+console.log("2.1: ", fahrenheitTemps);
 
 // 2. Given an array of objects {firstName, lastName}, return an array of full name strings
 let namesObj = [
@@ -214,6 +214,26 @@ let employees = [
   { name: "Jo", department: "Engineering", salary: 95000 }
 ];
 
+let salaryCountByDept = employees.reduce((acc, val) => {
+  if (!acc[val.department]) {
+    acc[val.department] = {total: val.salary, count: 1};
+  } else {
+    acc[val.department].total += val.salary;
+    acc[val.department].count += 1;
+  }
+
+  return acc;
+}, {});
+
+let avgSalaryByDept = Object.entries(salaryCountByDept).reduce((acc, [dept, stats]) => {
+  acc[dept] = Number((stats.total / stats.count).toFixed(2));
+  return acc;
+}, {});
+
+console.log(Object.entries(salaryCountByDept));
+
+console.log("2.16: ", avgSalaryByDept);
+
 // 17. Given an array of objects {title, genre, rating}, return an array of just the titles of movies in the "Comedy" genre with rating above 7 (filter, then map)
 let movies = [
   { title: "Laugh Riot", genre: "Comedy", rating: 8.2 },
@@ -222,8 +242,21 @@ let movies = [
   { title: "Funny Farm", genre: "Comedy", rating: 7.8 }
 ];
 
+let comediesAbove7 = movies
+  .filter(movie => movie.genre === "Comedy" && movie.rating > 7)
+  .map(movie => movie.title);
+
+console.log("2.17: ", comediesAbove7);
+
 // 18. Given an array of numbers, build an object { evens: [...], odds: [...] } splitting them into two arrays (reduce)
 let numbers18 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+let oddEvenSplit = numbers18.reduce((arr, val) => {
+  val % 2 === 0 ? arr.evens = [...arr.evens, val] : arr.odds = [...arr.odds, val];
+  return arr;
+}, {evens: [], odds: []});
+
+console.log("2.18: ", oddEvenSplit);
 
 // 19. Given an array of objects {name, inStock, price}, return an object { inStockCount, totalValue } summarizing the whole cart in one reduce pass
 let cart19 = [
