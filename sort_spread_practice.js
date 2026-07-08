@@ -27,6 +27,8 @@ let people5 = [
   { name: "Ana", age: 22 },
   { name: "Luis", age: 29 }
 ];
+let ascAge = people5.sort((a, b) => a.age - b.age);
+console.log("3.5 ", ascAge);
 
 // 6. Sort by price descending
 let products6 = [
@@ -35,11 +37,23 @@ let products6 = [
   { title: "Doohickey", price: 5.25 }
 ];
 
+let ascPrice = products6.sort((a, b) => a.price - b.price);
+console.log("3.6 ", ascPrice);
+
+
 // 7. Sort without mutating
 let nums7 = [7, 3, 9, 1, 5];
+let sortedNumbers = [...nums7].sort((a, b) => a - b);
+
+console.log("3.7 ", nums7);
+console.log("3.7 ", sortedNumbers);
 
 // 8. Case-insensitive sort
 let words8 = ["banana", "Apple", "cherry", "Date"];
+
+let noCaseSort = [...words8].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+
+console.log("3.8 ", noCaseSort);
 
 // 9. Sort by department, then by name
 let people9 = [
@@ -50,9 +64,24 @@ let people9 = [
   { name: "Jo", department: "Engineering" }
 ];
 
+let sortByDept = [...people9].sort((a, b) => {
+  if (a.department !== b.department) {
+    return a.department > b.department ? 1 : -1;
+  } else {
+    return a.name > b.name ? 1 : -1;
+  }
+});
+
+console.log("3.9 ", sortByDept)
+
 // 10. Numeric sort gotcha
 let nums10 = [10, 1, 21, 2];
 
+let nums10Sort = [...nums10].sort((a, b) => a - b);
+
+console.log("3.10 ", nums10Sort);
+
+// Spread
 // 11. Copy array
 let original11 = [1, 2, 3];
 
