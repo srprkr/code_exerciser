@@ -266,6 +266,16 @@ let cart19 = [
   { name: "Webcam", inStock: true, price: 60.00 }
 ];
 
+let stockSummary = cart19.reduce((acc, val) => {
+  if (val.inStock) {
+    acc['inStockCount'] += 1, 
+    acc['totalValue'] += val.price
+  };
+  return acc;
+}, {inStockCount: 0, totalValue: 0});
+
+console.log("2.19 ", stockSummary);
+
 // 20. Given an array of transactions {type: "credit"|"debit", amount}, compute a running balance and return an array showing the balance after each transaction (map, but each step depends on the "so far" total — hint: you'll need a variable outside the map, or think about whether reduce fits better here)
 let transactions = [
   { type: "credit", amount: 100 },
@@ -274,3 +284,17 @@ let transactions = [
   { type: "debit", amount: 20 }
 ];
 
+let tally = 0;
+let result = transactions.reduce((acc, charge) => {
+  if (charge.type == "credit") {
+    acc.tally += charge.amount;
+  }
+  if (charge.type == "debit") {
+    acc.tally -= charge.amount;
+  }
+  acc.history.push(acc.tally);
+  return acc;
+}, { tally: 0, history: [] });
+let charges = result.history;
+
+console.log("2.20 ", charges);
