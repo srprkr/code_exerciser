@@ -16,13 +16,15 @@ let adjustSecondHeight = arr => {
 
   // get second highest stack
   secondHighest = uniqueHeightsArr[1];
-  console.log(secondHighest);
 
   // get lowest stack (for stopping).
   lowestHeight = uniqueHeightsArr[uniqueHeightsArr.length - 1];
+
+  // expose how many distinct heights remain
+  return uniqueHeightsArr.length;
 }
 
-adjustSecondHeight(input);
+let uniqueCount = adjustSecondHeight(input);
 console.log("Lowest Ht: ", lowestHeight);
 
 let changeCount = 0;
@@ -39,9 +41,9 @@ let equalize_heights = (arr) => {
   });
 };
 
-while (Math.max(...input) > lowestHeight) {
+while (uniqueCount > 1) {
   equalize_heights(input);
-  adjustSecondHeight(input);
+  uniqueCount = adjustSecondHeight(input);
 }
 
 console.log("inpUT! ", input);
