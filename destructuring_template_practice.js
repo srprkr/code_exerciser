@@ -16,6 +16,10 @@ console.log("4.1 ", first, second);
 
 let arr2 = [1, 2, 3];
 
+let [one, , three] = arr2;
+
+console.log("4.2 ", one, three);
+
 
 // 3. Swap two variables
 // Given let a = 1, b = 2, swap their values using destructuring (no temp variable)
@@ -23,6 +27,9 @@ let arr2 = [1, 2, 3];
 let a3 = 1;
 let b3 = 2;
 
+[a3, b3] = [b3, a3];
+
+console.log("4.3 ", a3, b3);
 
 // 4. Rest in array destructuring
 // Given [1, 2, 3, 4, 5], pull the first value into head and the rest into an array tail
