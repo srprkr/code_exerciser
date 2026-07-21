@@ -36,6 +36,10 @@ console.log("4.3 ", a3, b3);
 
 let arr4 = [1, 2, 3, 4, 5];
 
+let [head, ...tail] = arr4; 
+
+console.log("4.4 ", head, tail);
+
 
 // 5. Basic object destructuring
 // Given { name: "Sam", age: 25 }, pull name and age into variables of the same name
