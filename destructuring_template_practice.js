@@ -46,6 +46,10 @@ console.log("4.4 ", head, tail);
 
 let person5 = { name: "Sam", age: 25 };
 
+let {name, age} = person5;
+
+console.log("4.5 ", name, age);
+
 
 // 6. Renaming while destructuring
 // Given { name: "Sam", age: 25 }, pull name into a variable called userName
