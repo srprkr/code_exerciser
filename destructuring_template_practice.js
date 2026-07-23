@@ -56,18 +56,32 @@ console.log("4.5 ", name, age);
 
 let person6 = { name: "Sam", age: 25 };
 
+let {name: userName} = person6;
+
+console.log("4.6 ", userName);
 
 // 7. Default values
 // Given { name: "Sam" } (no age), destructure age with a default value of 18
 
 let person7 = { name: "Sam" };
 
+let {name: userName7, age7 = 18} = person7;
+
+console.log("4.7 ", userName7, age7);
 
 // 8. Nested object destructuring
 // Given { name: "Sam", address: { city: "Austin", zip: "78701" } }, pull city directly into a variable
 
 let person8 = { name: "Sam", address: { city: "Austin", zip: "78701" } };
 
+
+let {
+  address: {
+    city
+  },
+} = person8;
+
+console.log("4.8 ", city);
 
 // 9. Destructuring in function parameters
 // Write a function greet({ name, age }) that returns a string like "Sam is 25 years old" using destructured parameters
