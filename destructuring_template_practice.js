@@ -86,6 +86,12 @@ console.log("4.8 ", city);
 // 9. Destructuring in function parameters
 // Write a function greet({ name, age }) that returns a string like "Sam is 25 years old" using destructured parameters
 
+let greet = ({name, age}) => {
+  return `${name} is ${age} years old`;
+};
+
+console.log("4.9 ", greet({ name: "Sam", age: 25 }));
+
 
 // 10. Destructuring an array of objects in a loop
 // Given [{ id: 1, name: "Sam" }, { id: 2, name: "Ana" }], use a for...of loop with destructuring to log "1: Sam" and "2: Ana"
@@ -95,6 +101,9 @@ let users10 = [
   { id: 2, name: "Ana" }
 ];
 
+for (let {id, name} of users10) {
+  console.log(`4.10 | ${id}: ${name}`);
+}
 
 // Template Literals (10)
 
@@ -103,6 +112,10 @@ let users10 = [
 
 let name11 = "Sam";
 
+let greet11 = `Hello, ${name11}!`;
+
+console.log("4.11 ", greet11);
+
 
 // 12. Expression inside a template literal
 // Given let a = 4, b = 5, build the string "4 + 5 = 9" using a template literal (no manual string concatenation)
@@ -110,6 +123,9 @@ let name11 = "Sam";
 let a12 = 4;
 let b12 = 5;
 
+let equation12 = `${a12} + ${b12} = ${a12 + b12}`
+
+console.log("4.12 ", equation12);
 
 // 13. Multi-line string
 // Build a multi-line address string ("123 Main St", "Austin, TX 78701") using a template literal instead of \n
