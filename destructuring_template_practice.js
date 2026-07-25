@@ -130,6 +130,13 @@ console.log("4.12 ", equation12);
 // 13. Multi-line string
 // Build a multi-line address string ("123 Main St", "Austin, TX 78701") using a template literal instead of \n
 
+let address13 = `
+  123 Main St, 
+  Austin, 
+  TX 78701
+`
+
+console.log("4.13 ", address13);
 
 // 14. Calling a function inside a template literal
 // Given a function shout(str) that uppercases a string, use it inside a template literal to build "SAM says HELLO"
@@ -139,11 +146,18 @@ function shout14(str) {
 }
 let name14 = "Sam";
 
+let msg14 = `${name14} says ${shout14('hello')}`;
+
+console.log("4.14 ", msg14);
 
 // 15. Ternary inside a template literal
 // Given let score = 85, build a string that says "Result: Pass" or "Result: Fail" depending on whether score >= 60
 
 let score15 = 85;
+
+let result15 = `Result: ${score15 >= 60 ? 'Pass' : 'Fail'}`;
+
+console.log("4.15 ", result15);
 
 
 // 16. Nested template literals
