@@ -165,18 +165,31 @@ console.log("4.15 ", result15);
 
 let names16 = ["Sam", "Ana", "Luis"];
 
+let guestlist16 = `Guests: ${names16.join(", ")}`
+
+console.log("4.16 ", guestlist16);
 
 // 17. Template literal with object property access
 // Given { title: "Dune", price: 12.99 }, build a string like "Dune costs $12.99" using a template literal
 
 let book17 = { title: "Dune", price: 12.99 };
 
+let {title17, price17} = book17;
+
+let bookPrice17 = `${title17} costs $${price17}`;
+
+console.log("4.17 ", bookPrice17);
 
 // 18. Building HTML-ish strings
 // Given { title: "Widget", price: 19.99 }, build a string like "<li>Widget - $19.99</li>" using a template literal
 
 let product18 = { title: "Widget", price: 19.99 };
 
+let {title, price} = product18;
+
+let productPrice18 = `<li>${title} - $${price}</li>`;
+
+console.log("4.18 ", productPrice18);
 
 // 19. Combining map with template literals
 // Given an array of objects [{ name, price }], use .map() with a template literal to produce an array of strings like "Widget: $19.99"
