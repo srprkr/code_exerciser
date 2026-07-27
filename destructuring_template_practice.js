@@ -199,9 +199,26 @@ let products19 = [
   { name: "Gadget", price: 42.50 }
 ];
 
+let prodDesc19 = products19.map(({name, price}) => {
+  return `${name}: $${price}`
+});
+
+console.log("4.19 ", prodDesc19);
+
 
 // 20. Tagged template basics
 // Write a tag function loud(strings, ...values) that rebuilds the template string but uppercases every interpolated value, then use it on `${name} is ${role}`
 
 let name20 = "Sam";
 let role20 = "admin";
+
+let loud20 = (strings, ...values) => {
+  return strings.reduce((result, str, i) => {
+    let value = values[i] !== undefined ? values[i].toUpperCase() : "";
+    return result + str + value;
+  }, "")
+};
+
+let tagged20 = loud20`${name20} is ${role20}`;
+
+console.log("3.20 ", tagged20);
