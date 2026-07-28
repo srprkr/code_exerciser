@@ -63,7 +63,7 @@ let products5 = [
 
 let {title: firstInStock} = products5.find(({inStock}) => inStock);
 
-console.log("5.4 ", firstInStock);
+console.log("5.5 ", firstInStock);
 
 // some / every / includes (5)
 
@@ -72,12 +72,18 @@ console.log("5.4 ", firstInStock);
 
 let nums6 = [1, 3, 5, 8, 9];
 
+let isOneEven = nums6.some(num => num % 2 === 0 )
+
+console.log("5.6 ", isOneEven);
 
 // 7. every basics
 // Given [2, 4, 6, 8], check whether every number in the array is even
 
 let numbers7 = [2, 4, 6, 8];
 
+let allEven = numbers7.every(num => num % 2 === 0 )
+
+console.log("5.7 ", allEven);
 
 // 8. some with objects
 // Given an array of objects {name, age}, check whether any user is under 18
@@ -88,6 +94,9 @@ let users8 = [
   { name: "Luis", age: 30 }
 ];
 
+let under18 = users8.some(({age}) => age < 18);
+
+console.log("5.8 ", under18);
 
 // 9. every with objects
 // Given an array of objects {name, passed}, check whether every student passed
@@ -98,6 +107,9 @@ let students9 = [
   { name: "Luis", passed: true }
 ];
 
+let allPassed = students9.every(({passed}) => passed);
+
+console.log("5.9 ", allPassed);
 
 // 10. includes basics
 // Given ["red", "green", "blue"], check whether "green" is in the array, and separately whether "purple" is
@@ -105,6 +117,12 @@ let students9 = [
 
 let colors10 = ["red", "green", "blue"];
 
+let colorChecker = (color) => {
+  return colors10.includes(color);
+}
+
+console.log("5.10a ", colorChecker("green"));
+console.log("5.10b ", colorChecker("purle"));
 
 // flat / flatMap (5)
 
