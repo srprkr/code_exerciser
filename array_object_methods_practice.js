@@ -117,12 +117,17 @@ console.log("5.9 ", allPassed);
 
 let colors10 = ["red", "green", "blue"];
 
+// let hasGreen = colors10.includes("green");
+// let hasPurple = colors10.includes("purple");
+
+// console.log("5.10 ", hasGreen, hasPurple);
+
 let colorChecker = (color) => {
   return colors10.includes(color);
 }
 
 console.log("5.10a ", colorChecker("green"));
-console.log("5.10b ", colorChecker("purle"));
+console.log("5.10b ", colorChecker("purple"));
 
 // flat / flatMap (5)
 
@@ -131,17 +136,28 @@ console.log("5.10b ", colorChecker("purle"));
 
 let nested11 = [[1, 2], [3, 4], [5, 6]];
 
+let flatArray11 = nested11.flat();
+
+console.log("5.11 ", flatArray11);
 
 // 12. Flatten deeply nested arrays
 // Given [1, [2, [3, [4, 5]]]], flatten it all the way down into [1, 2, 3, 4, 5] (hint: flat() takes a depth argument, or you can pass Infinity)
 
 let deepNested12 = [1, [2, [3, [4, 5]]]];
 
+let deepFlatArray12 = deepNested12.flat(3);
+
+console.log("5.12 ", deepFlatArray12);
+
 
 // 13. flatMap basics
 // Given [1, 2, 3], use flatMap to return each number and its double in a single flat array (e.g. 1 becomes [1, 2])
 
 let nums13 = [1, 2, 3];
+
+let flatMapDouble13 = nums13.flatMap(num => [num, num * 2]);
+
+console.log("5.13 ", flatMapDouble13);
 
 
 // 14. flatMap to split and flatten
