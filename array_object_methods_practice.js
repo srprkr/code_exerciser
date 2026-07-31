@@ -166,11 +166,18 @@ console.log("5.13 ", flatMapDouble13);
 let sentences14 = ["the sky is blue", "the grass is green"];
 
 
+let flatMapSentenceSplit14 = sentences14.flatMap(sentence => sentence.split(" "));
+
+console.log("5.14 ", flatMapSentenceSplit14);
+
 // 15. flatMap to filter and transform in one pass
 // Given an array of numbers, use flatMap to return only the even numbers, doubled (return [] for numbers you want to drop, since flatMap flattens empty arrays away)
 
 let nums15 = [1, 2, 3, 4, 5, 6];
 
+let flatMapDoubledEvens15 = nums15.flatMap(num => (num % 2 === 0) ? [num * 2] : [] );
+
+console.log("5.15 ", flatMapDoubledEvens15);
 
 // Object.keys / values / entries (5)
 
