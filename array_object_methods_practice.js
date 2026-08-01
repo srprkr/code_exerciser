@@ -187,17 +187,29 @@ console.log("5.15 ", flatMapDoubledEvens15);
 let person16 = { name: "Sam", age: 25, city: "Austin" };
 
 
+let person16Keys = Object.keys(person16);
+
+console.log("5.16 ", person16Keys);
+
 // 17. Object.values basics
 // Given { name: "Sam", age: 25, city: "Austin" }, get an array of just the values
 
 let person17 = { name: "Sam", age: 25, city: "Austin" };
 
+let person17Values = Object.values(person17);
+
+console.log("5.17 ", person17Values);
 
 // 18. Object.entries basics
 // Given { name: "Sam", age: 25, city: "Austin" }, get an array of [key, value] pairs, then log each pair on its own line using a for...of loop with destructuring
 
 let person18 = { name: "Sam", age: 25, city: "Austin" };
 
+let person18Entries = Object.entries(person18);
+
+for (let [key, value] of person18Entries) {
+  console.log("5.18 ", `${key}: ${value}`);
+}
 
 // 19. Object.entries + map to transform
 // Given { math: 90, science: 85, art: 70 }, use Object.entries and .map to build an array of strings like "math: 90"
