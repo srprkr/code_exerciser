@@ -216,8 +216,19 @@ for (let [key, value] of person18Entries) {
 
 let grades19 = { math: 90, science: 85, art: 70 };
 
+let grades19Entries = Object.entries(grades19).map(([subject, score]) => `${subject}: ${score}`);;
+
+console.log("5.19 ", grades19Entries);
 
 // 20. Object.fromEntries round trip
 // Given { a: 1, b: 2, c: 3 }, use Object.entries to get pairs, .filter to keep only pairs with a value greater than 1, then Object.fromEntries to turn it back into an object
 
 let nums20 = { a: 1, b: 2, c: 3 };
+
+let nums20Entries = Object.entries(nums20);
+
+let nums20GreaterThanOne = nums20Entries.filter(([key, value]) => value > 1);
+
+let nums20FromEntriesGreaterThanOne = Object.fromEntries(nums20GreaterThanOne);
+
+console.log("5.20 ", nums20FromEntriesGreaterThanOne);
