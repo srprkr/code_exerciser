@@ -233,6 +233,8 @@ let nums20FromEntriesGreaterThanOne = Object.fromEntries(nums20GreaterThanOne);
 
 console.log("5.20 ", nums20FromEntriesGreaterThanOne);
 
+console.log("MORE ENTRIES PRACTICE");
+console.log("------");
 
 // Object.entries / Object.fromEntries (10 more)
 
@@ -269,6 +271,14 @@ console.log("5.22 ", uppedPerson22ObjKeys);
 // Given { a: 1, b: 2, c: 3 }, use entries/map/fromEntries to build a new object with every value doubled
 
 let nums23 = { a: 1, b: 2, c: 3 };
+
+let nums23Entries = Object.entries(nums23);
+
+let doubledNums21 = nums23Entries.map(([name, value]) =>  [name, value * 2]);
+
+let doubledNums23Obj = Object.fromEntries(doubledNums21);
+
+console.log("5.23 ", doubledNums23Obj);
 
 
 // 24. Filter out falsy values
