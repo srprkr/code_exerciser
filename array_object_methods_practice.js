@@ -257,6 +257,13 @@ console.log("5.21 ", nums21InvertedKeyValues);
 
 let person22 = { name: "Sam", age: 25 };
 
+let person22Entries = Object.entries(person22);
+
+let uppedPerson22 = person22Entries.map(([key, value]) => [key.toUpperCase(), value]);
+
+let uppedPerson22ObjKeys = Object.fromEntries(uppedPerson22);
+
+console.log("5.22 ", uppedPerson22ObjKeys);
 
 // 23. Double all numeric values
 // Given { a: 1, b: 2, c: 3 }, use entries/map/fromEntries to build a new object with every value doubled
