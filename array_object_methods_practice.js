@@ -232,3 +232,77 @@ let nums20GreaterThanOne = nums20Entries.filter(([key, value]) => value > 1);
 let nums20FromEntriesGreaterThanOne = Object.fromEntries(nums20GreaterThanOne);
 
 console.log("5.20 ", nums20FromEntriesGreaterThanOne);
+
+
+// Object.entries / Object.fromEntries (10 more)
+
+// 21. Invert keys and values
+// Given { a: 1, b: 2, c: 3 }, build a new object where the values become the keys and the keys become the values (e.g. { 1: "a", 2: "b", 3: "c" })
+
+let nums21 = { a: 1, b: 2, c: 3 };
+
+let nums21Entries = Object.entries(nums21);
+
+// reverse arrays
+let nums21InvertedPairs = nums21Entries.map(([key, value]) => [value, key]);
+
+// put it back into a new obj
+let nums21InvertedKeyValues = Object.fromEntries(nums21InvertedPairs);
+
+console.log("5.21 ", nums21InvertedKeyValues);
+
+
+// 22. Uppercase all keys
+// Given { name: "Sam", age: 25 }, use entries/map/fromEntries to build a new object with the same values but all keys uppercased
+
+let person22 = { name: "Sam", age: 25 };
+
+
+// 23. Double all numeric values
+// Given { a: 1, b: 2, c: 3 }, use entries/map/fromEntries to build a new object with every value doubled
+
+let nums23 = { a: 1, b: 2, c: 3 };
+
+
+// 24. Filter out falsy values
+// Given { a: 1, b: 0, c: 3, d: null, e: 5 }, use entries/filter/fromEntries to build a new object with only the truthy values kept
+
+let mixed24 = { a: 1, b: 0, c: 3, d: null, e: 5 };
+
+
+// 25. Rename a specific key
+// Given { name: "Sam", age: 25, city: "Austin" }, use entries/map/fromEntries to rename the "name" key to "fullName" while leaving the other keys untouched
+
+let person25 = { name: "Sam", age: 25, city: "Austin" };
+
+
+// 26. Sum all values with entries
+// Given { rent: 800, groceries: 200, fun: 50 }, use Object.values (or entries) with reduce to total up all the values
+
+let expenses26 = { rent: 800, groceries: 200, fun: 50 };
+
+
+// 27. Build an object from two parallel arrays
+// Given let keys = ["name", "age", "city"] and let values = ["Sam", 25, "Austin"], zip them together into pairs and use Object.fromEntries to build a single object
+
+let keys27 = ["name", "age", "city"];
+let values27 = ["Sam", 25, "Austin"];
+
+
+// 28. Count truthy boolean flags
+// Given { isAdmin: true, isActive: false, isVerified: true, isBanned: false }, use Object.entries with filter (or reduce) to count how many flags are true
+
+let flags28 = { isAdmin: true, isActive: false, isVerified: true, isBanned: false };
+
+
+// 29. Sort an object's entries by value
+// Given { math: 70, science: 95, art: 60, gym: 85 }, use Object.entries, sort the pairs by score descending, then log the sorted [subject, score] pairs
+
+let grades29 = { math: 70, science: 95, art: 60, gym: 85 };
+
+
+// 30. Merge two objects, summing shared keys
+// Given { a: 1, b: 2 } and { b: 3, c: 4 }, use entries/reduce to merge them into one object where shared keys ("b") have their values added together (result should be { a: 1, b: 5, c: 4 })
+
+let objA30 = { a: 1, b: 2 };
+let objB30 = { b: 3, c: 4 };
