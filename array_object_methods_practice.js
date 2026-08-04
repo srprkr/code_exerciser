@@ -286,12 +286,26 @@ console.log("5.23 ", doubledNums23Obj);
 
 let mixed24 = { a: 1, b: 0, c: 3, d: null, e: 5 };
 
+let mixed24Entries = Object.entries(mixed24);
+
+let mixed24Trues = mixed24Entries.filter(([key, value]) => value);
+
+let mixed24TruesObj = Object.fromEntries(mixed24Trues);
+
+console.log("5.24 ", mixed24TruesObj);
+
 
 // 25. Rename a specific key
 // Given { name: "Sam", age: 25, city: "Austin" }, use entries/map/fromEntries to rename the "name" key to "fullName" while leaving the other keys untouched
 
 let person25 = { name: "Sam", age: 25, city: "Austin" };
 
+let fullNamePerson25Entries = Object.entries(person25).map(([key, value]) => key === 'name' ? ["fullName", value] : [key, value]
+);
+
+let person25FullNameObj = Object.fromEntries(fullNamePerson25Entries);
+
+console.log("5.25 ", person25FullNameObj);
 
 // 26. Sum all values with entries
 // Given { rent: 800, groceries: 200, fun: 50 }, use Object.values (or entries) with reduce to total up all the values
