@@ -312,6 +312,10 @@ console.log("5.25 ", person25FullNameObj);
 
 let expenses26 = { rent: 800, groceries: 200, fun: 50 };
 
+let expenses26Entries = Object.entries(expenses26);
+let expenses26Sum = expenses26Entries.reduce((total, [key, value]) => total + value, 0)
+
+console.log("5.26 ", expenses26Sum);
 
 // 27. Build an object from two parallel arrays
 // Given let keys = ["name", "age", "city"] and let values = ["Sam", 25, "Austin"], zip them together into pairs and use Object.fromEntries to build a single object
