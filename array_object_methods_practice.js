@@ -323,6 +323,11 @@ console.log("5.26 ", expenses26Sum);
 let keys27 = ["name", "age", "city"];
 let values27 = ["Sam", 25, "Austin"];
 
+let kvEntriePairs27 = keys27.map((key, i) => [key, values27[i]]);
+
+let keysVals27Obj = Object.fromEntries(kvEntriePairs27);
+
+console.log("5.27 ", keysVals27Obj);
 
 // 28. Count truthy boolean flags
 // Given { isAdmin: true, isActive: false, isVerified: true, isBanned: false }, use Object.entries with filter (or reduce) to count how many flags are true
