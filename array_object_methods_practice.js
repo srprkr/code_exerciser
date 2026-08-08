@@ -334,11 +334,28 @@ console.log("5.27 ", keysVals27Obj);
 
 let flags28 = { isAdmin: true, isActive: false, isVerified: true, isBanned: false };
 
+let flags28Entries = Object.entries(flags28);
+
+let flags28Trues = flags28Entries.filter(pair => (pair[1]));
+let flags28TruesObj = Object.fromEntries(flags28Trues);
+
+console.log("5.28 ", Object.fromEntries(flags28Trues));
 
 // 29. Sort an object's entries by value
 // Given { math: 70, science: 95, art: 60, gym: 85 }, use Object.entries, sort the pairs by score descending, then log the sorted [subject, score] pairs
 
 let grades29 = { math: 70, science: 95, art: 60, gym: 85 };
+
+let grades29Entries = Object.entries(grades29);
+
+// let grades29Sort = grades29Entries.sort(([keyA, scoreA], [keyB, scoreB]) => scoreB - scoreA);
+
+// more conventional way
+let grades29Sort = grades29Entries.sort((a, b) => b[1] - a[1]);
+
+let grades29SortObj = Object.fromEntries(grades29Sort);
+
+console.log("5.29 ", grades29SortObj);
 
 
 // 30. Merge two objects, summing shared keys
@@ -346,3 +363,15 @@ let grades29 = { math: 70, science: 95, art: 60, gym: 85 };
 
 let objA30 = { a: 1, b: 2 };
 let objB30 = { b: 3, c: 4 };
+
+let mergedEntries30 = [];
+mergedEntries30 = [...Object.entries(objA30), ...Object.entries(objB30)];
+
+let reduceEntries30 = mergedEntries30.reduce(( acc, [key, value] ) => {
+  acc[key] = (acc[key] || 0) + value;
+  return acc;
+}, {});
+
+// let reduceObj30 = Object.fromEntries(reduceEntries30);
+
+console.log("5.30 ", mergedEntries30);
