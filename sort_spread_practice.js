@@ -10,8 +10,8 @@ console.log("3.1 ", ascNums);
 // 2. Descending
 // Sort that same array in descending order
 
-let nums2 = [5, 2, 8, 1, 9];
-let descNums = nums1.sort((a, b) => b - a);
+let descNums2 = [5, 2, 8, 1, 9];
+let descNums = descNums2.sort((a, b) => b - a);
 console.log("3.2 ", descNums);
 
 // 3. Alphabetical
