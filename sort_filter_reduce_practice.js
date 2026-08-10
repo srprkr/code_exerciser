@@ -12,7 +12,11 @@ console.log("6.1 ", wordLenSort);
 // Given an array of numbers (some negative), sort by how close they are to 0
 let nums2 = [-8, 3, 1, -2, 6, -1, 9];
 
+let distanceToZeroSort = [...nums2].sort((a, b) => {
+  return Math.abs(a) - Math.abs(b)
+})
 
+console.log("6.2 ", distanceToZeroSort);
 
 // 3. Sort dates ascending
 // Given an array of objects {event, date} where date is a string like "2024-03-15", sort chronologically
@@ -22,7 +26,9 @@ let events3 = [
   { event: "Review", date: "2024-03-20" }
 ];
 
+let dateSort = [...events3].sort((a, b) => new Date(a.date) - new Date(b.date));
 
+console.log("6.3 ", dateSort);
 
 // 4. Sort by boolean flag first
 // Given an array of objects {name, isAdmin}, sort so admins come first, then everyone else (order within each group doesn't matter)
@@ -33,7 +39,9 @@ let users4 = [
   { name: "Mei", isAdmin: true }
 ];
 
+let adminUsers = [...users4].sort((a, b) => Number(b.isAdmin) - Number(a.isAdmin));
 
+console.log("6.4 ", adminUsers);
 
 // 5. Sort by multiple numeric fields
 // Given an array of objects {name, score, timeSeconds}, sort by score descending, and break ties by the fastest time (ascending)
@@ -44,7 +52,14 @@ let racers5 = [
   { name: "Mei", score: 90, timeSeconds: 52 }
 ];
 
+let scoreSort = [...racers5].sort((a, b) => {
+  if (a.score !== b.score) {
+    return b.score - a.score
+  }
+  return a.timeSeconds - b.timeSeconds
+});
 
+console.log("6.5 ", scoreSort);
 
 // 6. Sort using a lookup/priority object
 // Given an array of objects {name, priority} where priority is "low" | "medium" | "high", sort so "high" comes first, then "medium", then "low"
@@ -56,6 +71,7 @@ let tasks6 = [
 ];
 
 
+console.log("6.6 ", scoreSort);
 
 // 7. Sort a copy, keep top N
 // Given an array of objects {name, score}, return just the top 3 scorers, highest first, without mutating the original array
