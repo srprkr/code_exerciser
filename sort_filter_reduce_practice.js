@@ -70,8 +70,11 @@ let tasks6 = [
   { name: "Patch security hole", priority: "high" }
 ];
 
+let priorityRank = {high: 2, medium: 1, low: 0};
 
-console.log("6.6 ", scoreSort);
+let rankSort = [...tasks6].sort((a, b) => priorityRank[b.priority] - priorityRank[a.priority]);
+
+console.log("6.6 ", rankSort);
 
 // 7. Sort a copy, keep top N
 // Given an array of objects {name, score}, return just the top 3 scorers, highest first, without mutating the original array
@@ -83,18 +86,30 @@ let players7 = [
   { name: "Jo", score: 60 }
 ];
 
+let top3Scores = [...players7].sort((a, b) => {
+  return b.score - a.score
+}).slice(0, 3);
+
+console.log("6.7 ", top3Scores)
+
 
 
 // 8. Sort strings that contain numbers, "naturally"
 // Given an array like ["item2", "item10", "item1"], sort so item1, item2, item10 come out in that human-expected order (hint: localeCompare has a numeric option)
 let items8 = ["item2", "item10", "item1", "item20", "item3"];
 
+let itemSort = items8.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+console.log("6.8 ", itemSort);
 
 
 // 9. Sort nested arrays by their own length
 // Given an array of arrays, sort them by how many elements each inner array has, fewest to most
 let groups9 = [[1, 2, 3], [1], [4, 5], [1, 2, 3, 4, 5], []];
 
+let ascGroupLengths = [...groups9].sort((a, b) => a.length - b.length);
+
+console.log("6.9 ", ascGroupLengths);
 
 
 // 10. Stable sort check
