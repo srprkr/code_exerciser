@@ -121,7 +121,9 @@ let people10 = [
   { name: "Drew", group: "A" }
 ];
 
+let stableSortByGroup = [...people10].sort((a, b) => a.group.localeCompare(b.group));
 
+console.log("6.10 ", stableSortByGroup);
 
 // Filter (10 more)
 

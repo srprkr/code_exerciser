@@ -87,7 +87,7 @@ let sPeople10 = [
   { name: "Cara", group: "B" },
   { name: "Drew", group: "A" }
 ];
-let sStableSortByGroup = [...sPeople10].sort((a, b) => (a.group > b.group ? 1 : a.group < b.group ? -1 : 0));
+let sStableSortByGroup = [...sPeople10].sort((a, b) => a.group.localeCompare(b.group));
 console.log("6.10 ", sStableSortByGroup);
 
 
