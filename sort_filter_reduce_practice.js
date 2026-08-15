@@ -144,13 +144,16 @@ console.log("6.11 ", stockBelow50);
 // Given an array of numbers with repeats, use filter (with the index/array args) to return only the unique values, preserving first-seen order
 let nums12 = [1, 2, 2, 3, 4, 4, 4, 5, 1];
 
-
+let uniqNumsFilter = nums12.filter((val, ind, arr) => arr.indexOf(val) === ind);
+console.log("6.12 ", uniqNumsFilter);
 
 // 13. Filter by substring, case-insensitive
 // Given an array of strings, return only the ones that contain "the" anywhere, ignoring case
 let phrases13 = ["The cat sat", "A dog barked", "THEatre trip", "no match here", "gather round"];
 
+let phrasesWithThe = phrases13.filter(phrase => phrase.toLowerCase().includes("the"));
 
+console.log("6.13 ", phrasesWithThe);
 
 // 14. Filter objects by a nested property
 // Given an array of objects {name, address: {city}}, return only the people who live in "Austin"
@@ -160,19 +163,29 @@ let people14 = [
   { name: "Luis", address: { city: "Austin" } }
 ];
 
+let austinites = people14.filter(({address}) => address.city === "Austin");
+
+console.log("6.14 ", austinites);
 
 
 // 15. Filter with a dynamic threshold
 // Write a function that takes an array of numbers and a minimum value, and returns only the numbers greater than or equal to that minimum
 let numsAboveThreshold15 = [3, 12, 7, 20, 5, 18];
 
+let atLeast = (arr, min) => {
+  return arr.filter(num => num >= min);
+} 
+
+console.log("6.15 ", atLeast(numsAboveThreshold15, 15));
 
 
 // 16. Filter out falsy values
 // Given a messy array like [0, "hello", "", null, 42, undefined, false, "world", NaN], remove every falsy value
 let messy16 = [0, "hello", "", null, 42, undefined, false, "world", NaN];
 
+let clean16 = messy16.filter(Boolean);
 
+console.log(clean16);
 
 // 17. Filter dates in a range
 // Given an array of objects {event, date} (as "YYYY-MM-DD" strings), return only the events that fall in 2024
