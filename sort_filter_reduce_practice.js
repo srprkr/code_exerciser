@@ -136,7 +136,9 @@ let products11 = [
   { name: "Webcam", price: 40.00, inStock: true }
 ];
 
+let stockBelow50 = products11.filter(({price, inStock}) => inStock && price < 50 );
 
+console.log("6.11 ", stockBelow50);
 
 // 12. Filter out duplicates
 // Given an array of numbers with repeats, use filter (with the index/array args) to return only the unique values, preserving first-seen order

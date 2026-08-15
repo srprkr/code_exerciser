@@ -100,7 +100,7 @@ let sProducts11 = [
   { name: "Mouse", price: 25.50, inStock: false },
   { name: "Webcam", price: 40.00, inStock: true }
 ];
-let sCheapInStock = sProducts11.filter(p => p.inStock && p.price < 50);
+let sCheapInStock = sProducts11.filter(({ inStock, price }) => inStock && price < 50);
 console.log("6.11 ", sCheapInStock);
 
 // 12.
