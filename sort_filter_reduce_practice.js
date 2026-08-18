@@ -233,6 +233,9 @@ let onePersonBelow21 = people20.filter(({name, age}) => {
   }
 }).length > 0;
 
+// the right way
+// let onePersonBelow21 = people20.some(({name, age}) => age > 21);
+
 console.log("5.20 ", onePersonBelow21);
 
 // Reduce (10 more)
