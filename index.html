@@ -10,14 +10,30 @@
   <h1>Map/Filter/Reduce practice</h1>
 
   <section class="carousel" aria-label="Exercise carousel">
+    <div class="filters" aria-label="Filter exercises">
+      <div class="filter-group" id="function-filters">
+        <span class="filter-label">Functions</span>
+      </div>
+
+      <div class="filter-group" id="difficulty-filters">
+        <span class="filter-label">Difficulty</span>
+      </div>
+
+      <button type="button" id="clear-filters">Clear filters</button>
+    </div>
+
     <div class="carousel-controls">
       <button type="button" class="carousel-button" data-action="prev">Previous</button>
       <span class="carousel-counter"></span>
       <button type="button" class="carousel-button" data-action="next">Next</button>
     </div>
 
+    <p id="no-results" class="no-results" hidden>No exercises match the selected filters.</p>
+
     <section id="exercise-1" class="exercise">
       <h2 class="exercise-title"></h2>
+
+      <div class="block tags"></div>
 
       <div class="block">
         <h3>Question</h3>

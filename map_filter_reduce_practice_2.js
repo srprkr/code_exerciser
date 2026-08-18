@@ -25,7 +25,7 @@ let evenTally = numbers3.map(num => ({value: num, isEven: num % 2 === 0}));
 
 console.log("2.3: ", evenTally);
 
-// 4. Given an array of objects {name, price}, return a new array of objects with price rounded to the nearest dollar (don't mutate the originals)
+// 4. Given an array of objects {name, price}, return a new array of objects with price (don't mutate the originals)
 let products4 = [
   { name: "Widget", price: 19.49 },
   { name: "Gadget", price: 42.75 },

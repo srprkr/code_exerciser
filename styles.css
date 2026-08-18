@@ -9,6 +9,111 @@ body {
   max-width: 760px;
 }
 
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filter-label {
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #666;
+  margin-right: 0.15rem;
+}
+
+.pill {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid #bbb;
+  border-radius: 999px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
+.pill:hover {
+  border-color: #888;
+}
+
+.pill.active {
+  background: #222;
+  border-color: #222;
+  color: #fff;
+}
+
+#clear-filters {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #666;
+  text-decoration: underline;
+}
+
+#clear-filters:hover {
+  color: #222;
+}
+
+.no-results {
+  padding: 1rem;
+  border: 1px dashed #bbb;
+  border-radius: 8px;
+  color: #666;
+  text-align: center;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.tag {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.tag-fn {
+  background: #e7f0ff;
+  color: #1a4fa0;
+}
+
+.tag-difficulty-easy {
+  background: #e6f6e9;
+  color: #1e7a34;
+}
+
+.tag-difficulty-medium {
+  background: #fff4e0;
+  color: #9a6400;
+}
+
+.tag-difficulty-hard {
+  background: #fde8e8;
+  color: #b3261e;
+}
+
 .carousel-controls {
   display: flex;
   justify-content: space-between;

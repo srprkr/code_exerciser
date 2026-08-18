@@ -244,19 +244,31 @@ console.log("5.20 ", onePersonBelow21);
 // Given an array of arrays like [[1, 2], [3, 4], [5]], flatten it into a single array [1, 2, 3, 4, 5] using reduce
 let nested21 = [[1, 2], [3, 4], [5]];
 
+let flattenNested = nested21.reduce((acc, arr) => {
+  return acc.concat(arr)
+}, [])
 
+console.log("5.21 ", flattenNested);
 
 // 22. Find the longest string
 // Given an array of strings, use reduce to find the longest one
 let words22 = ["fig", "watermelon", "kiwi", "pomegranate", "date"];
 
+let longestWord = words22.reduce((prev, next) => next.length > prev.length ? next : prev, "")
+
+console.log("5.22 ", longestWord);
 
 
 // 23. Build a frequency map from an array of numbers
 // Given an array of numbers, use reduce to build an object counting how many times each number appears
 let freqNums23 = [1, 2, 2, 3, 1, 4, 2, 3, 3, 3];
 
+let freqCount = freqNums23.reduce((prev, next) => {
+  prev[next] = (prev[next] || 0) + 1;
+  return prev;
+}, {})
 
+console.log("5.23 ", freqCount);
 
 // 24. Chain reduce results into a readable summary string
 // Given an array of objects {name, amount} representing donations, use reduce to build a single string like "Sam: $10, Ana: $25, Luis: $5"
@@ -266,7 +278,11 @@ let donations24 = [
   { name: "Luis", amount: 5 }
 ];
 
+let donationSummary = donations24.reduce((acc, val, index) => {
+  return index === 0 ? `${val.name}: ${val.amount}` : `${acc}, ${val.name}: $${val.amount}`;
+}, [])
 
+console.log("5.24 ", donationSummary);
 
 // 25. Group an array of objects by a key (general-purpose groupBy)
 // Given an array of objects {name, department}, use reduce to build an object where each key is a department and the value is an array of names in that department
