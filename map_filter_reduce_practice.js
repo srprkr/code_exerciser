@@ -15,7 +15,7 @@ console.log("2: ", upper);
 // 3. Given an array of names, return an array of greeting strings like "Hello, Sam!"
 let names = ['Sean', 'Ralph', 'Bill', 'Tom', 'Hank'];
 
-let greetings = names.forEach(name => console.log(`Hello ${name}!`));
+let greetings = names.map(name => `Hello, ${name}!`);
 // var not used because we didn't need the array
 // console.log("3: ", greetings);
 
