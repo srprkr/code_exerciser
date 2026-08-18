@@ -862,12 +862,247 @@ const exercises = [
     ],
     functions: ['map', 'spread'],
     difficulty: 'hard'
+  },
+  {
+    id: 61,
+    title: 'Problem 61',
+    question: 'Given [10, 20, 30], pull the first and second values into variables first and second',
+    sampleData: 'let arr1 = [10, 20, 30];',
+    solution: `let [first, second] = arr1;`,
+    output: [10, 20],
+    functions: ['destructure'],
+    difficulty: 'easy'
+  },
+  {
+    id: 62,
+    title: 'Problem 62',
+    question: 'Given [1, 2, 3], destructure to grab the first and third values, skipping the second',
+    sampleData: 'let arr2 = [1, 2, 3];',
+    solution: `let [one, , three] = arr2;`,
+    output: [1, 3],
+    functions: ['destructure'],
+    difficulty: 'medium'
+  },
+  {
+    id: 63,
+    title: 'Problem 63',
+    question: 'Given let a = 1, b = 2, swap their values using destructuring (no temp variable)',
+    sampleData: `let a3 = 1;
+    let b3 = 2;`,
+    solution: `[a3, b3] = [b3, a3];`,
+    output: [2, 1],
+    functions: ['destructure'],
+    difficulty: 'medium'
+  },
+  {
+    id: 64,
+    title: 'Problem 64',
+    question: 'Given [1, 2, 3, 4, 5], pull the first value into head and the rest into an array tail',
+    sampleData: 'let arr4 = [1, 2, 3, 4, 5];',
+    solution: `let [head, ...tail] = arr4;`,
+    output: [1, [2, 3, 4, 5]],
+    functions: ['destructure', 'spread'],
+    difficulty: 'medium'
+  },
+  {
+    id: 65,
+    title: 'Problem 65',
+    question: 'Given { name: "Sam", age: 25 }, pull name and age into variables of the same name',
+    sampleData: `let person5 = { name: "Sam", age: 25 };`,
+    solution: `let {name, age} = person5;`,
+    output: ['Sam', 25],
+    functions: ['destructure'],
+    difficulty: 'easy'
+  },
+  {
+    id: 66,
+    title: 'Problem 66',
+    question: 'Given { name: "Sam", age: 25 }, pull name into a variable called userName',
+    sampleData: `let person6 = { name: "Sam", age: 25 };`,
+    solution: `let {name: userName} = person6;`,
+    output: 'Sam',
+    functions: ['destructure'],
+    difficulty: 'easy'
+  },
+  {
+    id: 67,
+    title: 'Problem 67',
+    question: 'Given { name: "Sam" } (no age), destructure age with a default value of 18',
+    sampleData: `let person7 = { name: "Sam" };`,
+    solution: `let {name: userName7, age: age7 = 18} = person7;`,
+    output: ['Sam', 18],
+    functions: ['destructure'],
+    difficulty: 'medium'
+  },
+  {
+    id: 68,
+    title: 'Problem 68',
+    question: 'Given { name: "Sam", address: { city: "Austin", zip: "78701" } }, pull city directly into a variable',
+    sampleData: `let person8 = { name: "Sam", address: { city: "Austin", zip: "78701" } };`,
+    solution: `let {
+      address: {
+        city
+      },
+    } = person8;`,
+    output: 'Austin',
+    functions: ['destructure'],
+    difficulty: 'medium'
+  },
+  {
+    id: 69,
+    title: 'Problem 69',
+    question: 'Write a function greet({ name, age }) that returns a string like "Sam is 25 years old" using destructured parameters',
+    sampleData: `let greet = ({name, age}) => {
+      return \`\${name} is \${age} years old\`;
+    };`,
+    solution: `greet({ name: "Sam", age: 25 });`,
+    output: 'Sam is 25 years old',
+    functions: ['destructure', 'template-literal'],
+    difficulty: 'medium'
+  },
+  {
+    id: 70,
+    title: 'Problem 70',
+    question: 'Given [{ id: 1, name: "Sam" }, { id: 2, name: "Ana" }], use a for...of loop with destructuring to log "1: Sam" and "2: Ana"',
+    sampleData: `let users10 = [
+      { id: 1, name: "Sam" },
+      { id: 2, name: "Ana" }
+    ];`,
+    solution: `for (let {id, name} of users10) {
+      console.log(\`\${id}: \${name}\`);
+    }`,
+    output: ['1: Sam', '2: Ana'],
+    functions: ['destructure', 'template-literal'],
+    difficulty: 'medium'
+  },
+  {
+    id: 71,
+    title: 'Problem 71',
+    question: 'Given let name = "Sam", build the string "Hello, Sam!" using a template literal',
+    sampleData: 'let name11 = "Sam";',
+    solution: `let greet11 = \`Hello, \${name11}!\`;`,
+    output: 'Hello, Sam!',
+    functions: ['template-literal'],
+    difficulty: 'easy'
+  },
+  {
+    id: 72,
+    title: 'Problem 72',
+    question: 'Given let a = 4, b = 5, build the string "4 + 5 = 9" using a template literal (no manual string concatenation)',
+    sampleData: `let a12 = 4;
+    let b12 = 5;`,
+    solution: `let equation12 = \`\${a12} + \${b12} = \${a12 + b12}\`;`,
+    output: '4 + 5 = 9',
+    functions: ['template-literal'],
+    difficulty: 'easy'
+  },
+  {
+    id: 73,
+    title: 'Problem 73',
+    question: 'Build a multi-line address string ("123 Main St", "Austin, TX 78701") using a template literal instead of \\n',
+    sampleData: '(no sample data)',
+    solution: `let address13 = \`
+    123 Main St,
+    Austin,
+    TX 78701
+\`;`,
+    output: '\n  123 Main St,\n  Austin,\n  TX 78701\n',
+    functions: ['template-literal'],
+    difficulty: 'easy'
+  },
+  {
+    id: 74,
+    title: 'Problem 74',
+    question: 'Given a function shout(str) that uppercases a string, use it inside a template literal to build "SAM says HELLO"',
+    sampleData: `function shout14(str) {
+      return str.toUpperCase();
+    }
+    let name14 = "Sam";`,
+    solution: `let msg14 = \`\${name14} says \${shout14('hello')}\`;`,
+    output: 'Sam says HELLO',
+    functions: ['template-literal'],
+    difficulty: 'medium'
+  },
+  {
+    id: 75,
+    title: 'Problem 75',
+    question: 'Given let score = 85, build a string that says "Result: Pass" or "Result: Fail" depending on whether score >= 60',
+    sampleData: 'let score15 = 85;',
+    solution: `let result15 = \`Result: \${score15 >= 60 ? 'Pass' : 'Fail'}\`;`,
+    output: 'Result: Pass',
+    functions: ['template-literal'],
+    difficulty: 'medium'
+  },
+  {
+    id: 76,
+    title: 'Problem 76',
+    question: 'Given an array of names ["Sam", "Ana", "Luis"], build a single string like "Guests: Sam, Ana, Luis" by nesting a .join() call inside a template literal',
+    sampleData: `let names16 = ["Sam", "Ana", "Luis"];`,
+    solution: `let guestlist16 = \`Guests: \${names16.join(", ")}\`;`,
+    output: 'Guests: Sam, Ana, Luis',
+    functions: ['template-literal'],
+    difficulty: 'medium'
+  },
+  {
+    id: 77,
+    title: 'Problem 77',
+    question: 'Given { title: "Dune", price: 12.99 }, build a string like "Dune costs $12.99" using a template literal',
+    sampleData: `let book17 = { title: "Dune", price: 12.99 };`,
+    solution: `let {title, price} = book17;
+    let bookPrice17 = \`\${title} costs $\${price}\`;`,
+    output: 'Dune costs $12.99',
+    functions: ['destructure', 'template-literal'],
+    difficulty: 'medium'
+  },
+  {
+    id: 78,
+    title: 'Problem 78',
+    question: 'Given { title: "Widget", price: 19.99 }, build a string like "<li>Widget - $19.99</li>" using a template literal',
+    sampleData: `let product18 = { title: "Widget", price: 19.99 };`,
+    solution: `let {title, price} = product18;
+    let productPrice18 = \`<li>\${title} - $\${price}</li>\`;`,
+    output: '<li>Widget - $19.99</li>',
+    functions: ['destructure', 'template-literal'],
+    difficulty: 'medium'
+  },
+  {
+    id: 79,
+    title: 'Problem 79',
+    question: 'Given an array of objects [{ name, price }], use .map() with a template literal to produce an array of strings like "Widget: $19.99"',
+    sampleData: `let products19 = [
+      { name: "Widget", price: 19.99 },
+      { name: "Gadget", price: 42.50 }
+    ];`,
+    solution: `let prodDesc19 = products19.map(({name, price}) => {
+      return \`\${name}: $\${price}\`;
+    });`,
+    output: ['Widget: $19.99', 'Gadget: $42.5'],
+    functions: ['map', 'destructure', 'template-literal'],
+    difficulty: 'medium'
+  },
+  {
+    id: 80,
+    title: 'Problem 80',
+    question: 'Write a tag function loud(strings, ...values) that rebuilds the template string but uppercases every interpolated value, then use it on `${name} is ${role}`',
+    sampleData: `let name20 = "Sam";
+    let role20 = "admin";`,
+    solution: `let loud20 = (strings, ...values) => {
+      return strings.reduce((result, str, i) => {
+        let value = values[i] !== undefined ? values[i].toUpperCase() : "";
+        return result + str + value;
+      }, "");
+    };
+
+    let tagged20 = loud20\`\${name20} is \${role20}\`;`,
+    output: 'SAM is ADMIN',
+    functions: ['reduce', 'spread', 'template-literal'],
+    difficulty: 'hard'
   }
 ];
 
 // Master list of function tags. Includes tags not yet used by any exercise
 // (some, every) so their filter pills are ready for future problems.
-const KNOWN_FUNCTIONS = ['map', 'filter', 'reduce', 'sort', 'spread', 'destructure', 'some', 'every'];
+const KNOWN_FUNCTIONS = ['map', 'filter', 'reduce', 'sort', 'spread', 'destructure', 'template-literal', 'some', 'every'];
 const DIFFICULTIES = ['easy', 'medium', 'hard'];
 
 const activeFunctionFilters = new Set();
