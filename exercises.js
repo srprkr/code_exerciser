@@ -1212,7 +1212,7 @@ function renderFilterPills() {
           activeFunctionFilters.delete(fn);
           button.classList.remove('active');
         } else {
-          if (activeFunctionFilters.size >= 2) return;
+          if (activeFunctionFilters.size >= 3) return;
           activeFunctionFilters.add(fn);
           button.classList.add('active');
         }
