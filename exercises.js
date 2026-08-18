@@ -180,11 +180,11 @@ const exercises = [
     title: 'Problem 17',
     question: 'Given an array of objects {price}, get the total price',
     sampleData: `const cart = [
-  { price: 12.99 },
-  { price: 5.50 },
-  { price: 20.00 },
-  { price: 3.25 }
-];`,
+      { price: 12.99 },
+      { price: 5.50 },
+      { price: 20.00 },
+      { price: 3.25 }
+    ];`,
     solution: `let priceTotal = cart.reduce((acc, value) => acc + value.price, 0);`,
     output: 41.74,
     functions: ['reduce'],
@@ -252,10 +252,10 @@ const exercises = [
     title: 'Problem 22',
     question: 'Given an array of objects {firstName, lastName}, return an array of full name strings',
     sampleData: `let namesObj = [
-  { firstName: "Sam", lastName: "Ortiz" },
-  { firstName: "Ana", lastName: "Kim" },
-  { firstName: "Luis", lastName: "Fernandez" }
-];`,
+      { firstName: "Sam", lastName: "Ortiz" },
+      { firstName: "Ana", lastName: "Kim" },
+      { firstName: "Luis", lastName: "Fernandez" }
+    ];`,
     solution: `let fullNames = namesObj.map(person => \`\${person.firstName} \${person.lastName}\`);`,
     output: ['Sam Ortiz', 'Ana Kim', 'Luis Fernandez'],
     functions: ['map'],
@@ -282,10 +282,10 @@ const exercises = [
     title: 'Problem 24',
     question: "Given an array of objects {name, price}, return a new array of objects with price rounded to 2 decimal places (don't mutate the originals)",
     sampleData: `let products4 = [
-  { name: "Widget", price: 19.49 },
-  { name: "Gadget", price: 42.75 },
-  { name: "Doohickey", price: 5.20 }
-];`,
+      { name: "Widget", price: 19.49 },
+      { name: "Gadget", price: 42.75 },
+      { name: "Doohickey", price: 5.20 }
+    ];`,
     solution: `let roundedPrices = products4.map(product => ({name: product.name, price: Number(product.price.toFixed(2))}))`,
     output: [
       { name: 'Widget', price: 19.49 },
@@ -300,13 +300,13 @@ const exercises = [
     title: 'Problem 25',
     question: 'Given an array of URLs (strings), return an array of objects { url, domain } where domain is extracted from the string',
     sampleData: `let urls = [
-  "https://www.amazon.com/product/123",
-  "https://openai.com/blog",
-  "https://sub.example.co.uk/page"
-];`,
+      "https://www.amazon.com/product/123",
+      "https://openai.com/blog",
+      "https://sub.example.co.uk/page"
+    ];`,
     solution: `let domains = urls.map(url => {
-  return {url: url, domain: new URL(url).hostname}
-});`,
+      return {url: url, domain: new URL(url).hostname}
+    });`,
     output: [
       { url: 'https://www.amazon.com/product/123', domain: 'www.amazon.com' },
       { url: 'https://openai.com/blog', domain: 'openai.com' },
@@ -609,17 +609,295 @@ const exercises = [
     output: [100, 70, 120, 100],
     functions: ['reduce'],
     difficulty: 'hard'
+  },
+  {
+    id: 41,
+    title: 'Problem 41',
+    question: 'Sort an array of numbers in ascending order',
+    sampleData: 'let nums1 = [5, 2, 8, 1, 9];',
+    solution: `let ascNums = nums1.sort((a, b) => a - b);`,
+    output: [1, 2, 5, 8, 9],
+    functions: ['sort'],
+    difficulty: 'easy'
+  },
+  {
+    id: 42,
+    title: 'Problem 42',
+    question: 'Sort that same array in descending order',
+    sampleData: 'let descNums2 = [5, 2, 8, 1, 9];',
+    solution: `let descNums = descNums2.sort((a, b) => b - a);`,
+    output: [9, 8, 5, 2, 1],
+    functions: ['sort'],
+    difficulty: 'easy'
+  },
+  {
+    id: 43,
+    title: 'Problem 43',
+    question: 'Sort an array of strings alphabetically',
+    sampleData: `let fruits3 = ["banana", "apple", "cherry"];`,
+    solution: `let descLetters = fruits3.sort();`,
+    output: ['apple', 'banana', 'cherry'],
+    functions: ['sort'],
+    difficulty: 'easy'
+  },
+  {
+    id: 44,
+    title: 'Problem 44',
+    question: 'Sort an array of strings in reverse alphabetical order',
+    sampleData: `let fruits4 = ["banana", "apple", "cherry"];`,
+    solution: `let ascLetters = fruits4.sort((a, b) => (a < b ? 1 : -1));`,
+    output: ['cherry', 'banana', 'apple'],
+    functions: ['sort'],
+    difficulty: 'easy'
+  },
+  {
+    id: 45,
+    title: 'Problem 45',
+    question: 'Given an array of objects {name, age}, sort by age ascending',
+    sampleData: `let people5 = [
+      { name: "Sam", age: 34 },
+      { name: "Ana", age: 22 },
+      { name: "Luis", age: 29 }
+    ];`,
+    solution: `let ascAge = people5.sort((a, b) => a.age - b.age);`,
+    output: [
+      { name: 'Ana', age: 22 },
+      { name: 'Luis', age: 29 },
+      { name: 'Sam', age: 34 }
+    ],
+    functions: ['sort'],
+    difficulty: 'easy'
+  },
+  {
+    id: 46,
+    title: 'Problem 46',
+    question: 'Given an array of objects {title, price}, sort by price descending',
+    sampleData: `let products6 = [
+      { title: "Widget", price: 19.99 },
+      { title: "Gadget", price: 42.50 },
+      { title: "Doohickey", price: 5.25 }
+    ];`,
+    solution: `let ascPrice = products6.sort((a, b) => a.price - b.price);`,
+    output: [
+      { title: 'Doohickey', price: 5.25 },
+      { title: 'Widget', price: 19.99 },
+      { title: 'Gadget', price: 42.5 }
+    ],
+    functions: ['sort'],
+    difficulty: 'medium'
+  },
+  {
+    id: 47,
+    title: 'Problem 47',
+    question: 'Sort an array of numbers without mutating the original array',
+    sampleData: 'let nums7 = [7, 3, 9, 1, 5];',
+    solution: `let sortedNumbers = [...nums7].sort((a, b) => a - b);`,
+    output: [1, 3, 5, 7, 9],
+    functions: ['sort', 'spread'],
+    difficulty: 'medium'
+  },
+  {
+    id: 48,
+    title: 'Problem 48',
+    question: 'Given an array of strings with mixed casing, sort them alphabetically in a case-insensitive way',
+    sampleData: `let words8 = ["banana", "Apple", "cherry", "Date"];`,
+    solution: `let noCaseSort = [...words8].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))`,
+    output: ['Apple', 'banana', 'cherry', 'Date'],
+    functions: ['sort', 'spread'],
+    difficulty: 'medium'
+  },
+  {
+    id: 49,
+    title: 'Problem 49',
+    question: 'Given an array of objects {name, department}, sort first by department alphabetically, and for people in the same department, sort by name alphabetically (a tie-breaker sort)',
+    sampleData: `let people9 = [
+      { name: "Luis", department: "Sales" },
+      { name: "Ana", department: "Engineering" },
+      { name: "Sam", department: "Engineering" },
+      { name: "Mei", department: "Sales" },
+      { name: "Jo", department: "Engineering" }
+    ];`,
+    solution: `let sortByDept = [...people9].sort((a, b) => {
+      if (a.department !== b.department) {
+        return a.department > b.department ? 1 : -1;
+      } else {
+        return a.name > b.name ? 1 : -1;
+      }
+    });`,
+    output: [
+      { name: 'Ana', department: 'Engineering' },
+      { name: 'Jo', department: 'Engineering' },
+      { name: 'Sam', department: 'Engineering' },
+      { name: 'Luis', department: 'Sales' },
+      { name: 'Mei', department: 'Sales' }
+    ],
+    functions: ['sort', 'spread'],
+    difficulty: 'hard'
+  },
+  {
+    id: 50,
+    title: 'Problem 50',
+    question: 'Given an array of numbers like [10, 1, 21, 2], sort them numerically ascending, and consider why calling plain .sort() with no comparator gives a wrong-looking result here',
+    sampleData: 'let nums10 = [10, 1, 21, 2];',
+    solution: `let nums10Sort = [...nums10].sort((a, b) => a - b);`,
+    output: [1, 2, 10, 21],
+    functions: ['sort', 'spread'],
+    difficulty: 'medium'
+  },
+  {
+    id: 51,
+    title: 'Problem 51',
+    question: 'Copy an array into a new array without mutating the original',
+    sampleData: 'let original11 = [1, 2, 3];',
+    solution: `let copy11 = [...original11];`,
+    output: [1, 2, 3],
+    functions: ['spread'],
+    difficulty: 'easy'
+  },
+  {
+    id: 52,
+    title: 'Problem 52',
+    question: 'Combine two arrays into one',
+    sampleData: `let arrA12 = [1, 2, 3];
+    let arrB12 = [4, 5, 6];`,
+    solution: `let combinedArrs = [...arrA12, ...arrB12];`,
+    output: [1, 2, 3, 4, 5, 6],
+    functions: ['spread'],
+    difficulty: 'easy'
+  },
+  {
+    id: 53,
+    title: 'Problem 53',
+    question: 'Copy an object into a new object without mutating the original',
+    sampleData: `let original13 = { name: "Sam", age: 25 };`,
+    solution: `let copy13 = {...original13};`,
+    output: { name: 'Sam', age: 25 },
+    functions: ['spread'],
+    difficulty: 'easy'
+  },
+  {
+    id: 54,
+    title: 'Problem 54',
+    question: "Given an object {name, age}, create a new object that's the same but with age updated to 26, without touching the original",
+    sampleData: `let original14 = { name: "Sam", age: 25 };`,
+    solution: `let copy14 = {...original14, age: 26};`,
+    output: { name: 'Sam', age: 26 },
+    functions: ['spread'],
+    difficulty: 'easy'
+  },
+  {
+    id: 55,
+    title: 'Problem 55',
+    question: 'Add a new item to the front of an array without using .unshift() (i.e., without mutating)',
+    sampleData: `let original15 = [2, 3, 4];
+    let newItem15 = 1;`,
+    solution: `let addToFront = [newItem15, ...original15];`,
+    output: [1, 2, 3, 4],
+    functions: ['spread'],
+    difficulty: 'easy'
+  },
+  {
+    id: 56,
+    title: 'Problem 56',
+    question: 'Add a new item to the end of an array without using .push()',
+    sampleData: `let original16 = [1, 2, 3];
+    let newItem16 = 4;`,
+    solution: `let addToEnd = [...original16, newItem16];`,
+    output: [1, 2, 3, 4],
+    functions: ['spread'],
+    difficulty: 'easy'
+  },
+  {
+    id: 57,
+    title: 'Problem 57',
+    question: 'Given two objects, merge them into a single object',
+    sampleData: `let personInfo17 = { name: "Sam", age: 25 };
+    let contactInfo17 = { email: "sam@email.com" };`,
+    solution: `let objMerge = {...personInfo17, ...contactInfo17};`,
+    output: { name: 'Sam', age: 25, email: 'sam@email.com' },
+    functions: ['spread'],
+    difficulty: 'easy'
+  },
+  {
+    id: 58,
+    title: 'Problem 58',
+    question: 'Given an array of numbers, create a copy with one extra number inserted, then pass that copy into Math.max() to find the new maximum (spread works on function arguments too)',
+    sampleData: `let nums18 = [4, 9, 2, 15];
+    let extraNum18 = 30;`,
+    solution: `let maxArray = [...nums18, extraNum18];
+    let maxNumber = Math.max(...maxArray);`,
+    output: 30,
+    functions: ['spread'],
+    difficulty: 'medium'
+  },
+  {
+    id: 59,
+    title: 'Problem 59',
+    question: 'Given a function sum(a, b, c), call it by spreading an array [1, 2, 3] into its three arguments',
+    sampleData: `function sum19(a, b, c) {
+      return a + b + c;
+    }
+    let inputs19 = [1, 2, 3];`,
+    solution: `let spreadFunc = sum19(...inputs19);`,
+    output: 6,
+    functions: ['spread'],
+    difficulty: 'easy'
+  },
+  {
+    id: 60,
+    title: 'Problem 60',
+    question: 'Given an array of objects, create a new array where one specific object (id: 2) has an updated property, everything else stays the same, and nothing is mutated (combine spread on the array with spread on the object)',
+    sampleData: `let items20 = [
+      { id: 1, name: "Keyboard", price: 45.00 },
+      { id: 2, name: "Monitor", price: 199.99 },
+      { id: 3, name: "Mouse", price: 25.50 }
+    ];`,
+    solution: `let updated20 = items20.map(item => {
+      return item.id === 2 ? {...item, price: 179.99 } : item;
+    });`,
+    output: [
+      { id: 1, name: 'Keyboard', price: 45 },
+      { id: 2, name: 'Monitor', price: 179.99 },
+      { id: 3, name: 'Mouse', price: 25.5 }
+    ],
+    functions: ['map', 'spread'],
+    difficulty: 'hard'
   }
 ];
 
 // Master list of function tags. Includes tags not yet used by any exercise
-// (sort, some, every) so their filter pills are ready for future problems.
-const KNOWN_FUNCTIONS = ['map', 'filter', 'reduce', 'sort', 'some', 'every'];
+// (some, every) so their filter pills are ready for future problems.
+const KNOWN_FUNCTIONS = ['map', 'filter', 'reduce', 'sort', 'spread', 'destructure', 'some', 'every'];
 const DIFFICULTIES = ['easy', 'medium', 'hard'];
 
 const activeFunctionFilters = new Set();
 let activeDifficultyFilter = null;
 let currentExerciseIndex = 0;
+
+// Re-indents a code snippet to 2 spaces per nesting level, based on brace/
+// bracket/paren depth, so inconsistent source indentation in the template
+// literals doesn't leak into the rendered sample-data/solution boxes.
+function dedent(text) {
+  const lines = text.split('\n');
+  let depth = 0;
+
+  return lines
+    .map((rawLine) => {
+      const line = rawLine.trim();
+      if (line.length === 0) return '';
+
+      const closesFirst = /^[)\]}]/.test(line);
+      const lineDepth = closesFirst ? Math.max(depth - 1, 0) : depth;
+
+      for (const char of line) {
+        if (char === '(' || char === '[' || char === '{') depth++;
+        else if (char === ')' || char === ']' || char === '}') depth = Math.max(depth - 1, 0);
+      }
+
+      return '  '.repeat(lineDepth) + line;
+    })
+    .join('\n');
+}
 
 const exerciseEl = document.querySelector('#exercise-1');
 const titleEl = document.querySelector('#exercise-1 .exercise-title');
@@ -675,8 +953,8 @@ function renderExercise(index) {
     tagsEl.appendChild(difficultySpan);
   }
   if (questionEl) questionEl.textContent = exercise.question;
-  if (sampleDataEl) sampleDataEl.textContent = exercise.sampleData;
-  if (solutionEl) solutionEl.textContent = exercise.solution;
+  if (sampleDataEl) sampleDataEl.textContent = dedent(exercise.sampleData);
+  if (solutionEl) solutionEl.textContent = dedent(exercise.solution);
   if (outputEl) outputEl.textContent = JSON.stringify(exercise.output, null, 2);
   if (counterEl) counterEl.textContent = `${index + 1} / ${filtered.length}`;
 }
