@@ -196,6 +196,10 @@ let events17 = [
   { event: "Wrap-up", date: "2025-01-05" }
 ];
 
+let events2024 = events17.filter(({event, date}) => new Date(date).getFullYear() === 2024);
+
+console.log(events2024);
+
 
 
 // 18. Filter using another array as a blocklist
@@ -203,13 +207,17 @@ let events17 = [
 let usernames18 = ["sam99", "trollking", "ana_dev", "spammer42", "luisc"];
 let banned18 = ["trollking", "spammer42"];
 
+let allowedUsernames = usernames18.filter(name => !banned18.includes(name));
 
+console.log("5.18 ", allowedUsernames);
 
 // 19. Filter to find "gaps" in a sequence
 // Given a sorted array of numbers that should count up by 1 each time, return the numbers that come right before a gap (e.g. [1,2,4,5,7] -> [2, 5], since 3 and 6 are missing after them)
 let sequence19 = [1, 2, 4, 5, 7, 8, 9, 12];
 
+let gapStarts = sequence19.filter((num, ind, arr) => ind < arr.length - 1 && num + 1 !== arr[ind + 1])
 
+console.log("5.19 ", gapStarts);
 
 // 20. Filter then check emptiness
 // Given an array of objects {name, age}, write a function that returns true if there is at least one person under 21 (use filter, even though .some() would also work — this is about noticing when filter is the wrong tool)
@@ -219,7 +227,13 @@ let people20 = [
   { name: "Luis", age: 29 }
 ];
 
+let onePersonBelow21 = people20.filter(({name, age}) => {
+  if(age < 21) {
+    return true;
+  }
+}).length > 0;
 
+console.log("5.20 ", onePersonBelow21);
 
 // Reduce (10 more)
 
