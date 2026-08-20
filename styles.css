@@ -1,12 +1,56 @@
+:root,
+[data-theme='light'] {
+  --color-bg: #ffffff;
+  --color-text: #222222;
+  --color-text-muted: #666666;
+  --color-border: #dddddd;
+  --color-border-strong: #bbbbbb;
+  --color-surface: #fafafa;
+  --color-surface-alt: #f6f8fa;
+  --color-pill-active-bg: #222222;
+  --color-pill-active-text: #ffffff;
+}
+
+[data-theme='dark'] {
+  --color-bg: #1d232a;
+  --color-text: #e5e7eb;
+  --color-text-muted: #9ca3af;
+  --color-border: #374151;
+  --color-border-strong: #4b5563;
+  --color-surface: #252b33;
+  --color-surface-alt: #2a313a;
+  --color-pill-active-bg: #e5e7eb;
+  --color-pill-active-text: #1d232a;
+}
+
 body {
   font-family: Arial, sans-serif;
   line-height: 1.5;
-  margin: 2rem;
-  color: #222;
+  margin: 0;
+  color: var(--color-text);
+  background: var(--color-bg);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.page-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
 }
 
 .exercise-carousel {
-  max-width: 760px;
+  width: 100%;
+}
+
+.theme-toggle {
+  cursor: pointer;
 }
 
 .filters {
@@ -16,7 +60,7 @@ body {
   gap: 0.75rem 1.25rem;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .filter-group {
@@ -31,28 +75,29 @@ body {
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  color: #666;
+  color: var(--color-text-muted);
   margin-right: 0.15rem;
 }
 
 .pill {
   padding: 0.3rem 0.7rem;
-  border: 1px solid #bbb;
+  border: 1px solid var(--color-border-strong);
   border-radius: 999px;
-  background: #fff;
+  background: var(--color-bg);
+  color: var(--color-text);
   cursor: pointer;
   font-size: 0.85rem;
   line-height: 1.2;
 }
 
 .pill:hover {
-  border-color: #888;
+  border-color: var(--color-text-muted);
 }
 
 .pill.active {
-  background: #222;
-  border-color: #222;
-  color: #fff;
+  background: var(--color-pill-active-bg);
+  border-color: var(--color-pill-active-bg);
+  color: var(--color-pill-active-text);
 }
 
 #clear-filters {
@@ -62,19 +107,19 @@ body {
   background: none;
   cursor: pointer;
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-text-muted);
   text-decoration: underline;
 }
 
 #clear-filters:hover {
-  color: #222;
+  color: var(--color-text);
 }
 
 .no-results {
   padding: 1rem;
-  border: 1px dashed #bbb;
+  border: 1px dashed var(--color-border-strong);
   border-radius: 8px;
-  color: #666;
+  color: var(--color-text-muted);
   text-align: center;
 }
 
@@ -123,18 +168,19 @@ body {
 
 .carousel-button {
   padding: 0.45rem 0.8rem;
-  border: 1px solid #bbb;
+  border: 1px solid var(--color-border-strong);
   border-radius: 6px;
-  background: #fff;
+  background: var(--color-bg);
+  color: var(--color-text);
   cursor: pointer;
 }
 
 .exercise {
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 1rem 1.25rem;
   margin-bottom: 1.5rem;
-  background: #fafafa;
+  background: var(--color-surface);
 }
 
 .block {
@@ -146,8 +192,9 @@ h3 {
 }
 
 pre {
-  background: #fff;
-  border: 1px solid #eee;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
   padding: 0.75rem;
   border-radius: 6px;
   overflow-x: auto;
@@ -165,13 +212,13 @@ summary {
 
 .output-window {
   margin-top: 0.75rem;
-  border: 1px solid #d0d7de;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 0.75rem;
-  background: #f6f8fa;
+  background: var(--color-surface-alt);
 }
 
 .output-window pre {
   margin: 0.4rem 0 0;
-  background: #fff;
+  background: var(--color-bg);
 }
