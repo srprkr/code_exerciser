@@ -44,16 +44,40 @@
           <span class="filter-label">Difficulty</span>
         </div>
 
-        <button type="button" id="clear-filters">Clear filters</button>
+        <button type="button" id="clear-filters">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18"/>
+            <path d="M6 6l12 12"/>
+          </svg>
+          Clear filters
+        </button>
       </div>
 
       <div class="carousel-controls">
-        <button type="button" class="carousel-button" data-action="prev">Previous</button>
+        <button type="button" class="carousel-button" data-action="prev">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+          Previous
+        </button>
         <span class="carousel-counter"></span>
-        <button type="button" class="carousel-button" data-action="next">Next</button>
+        <button type="button" class="carousel-button" data-action="next">
+          Next
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
       </div>
 
-      <p id="no-results" class="no-results" hidden>No exercises match the selected filters.</p>
+      <p id="no-results" class="no-results" hidden>
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <path d="M21 21l-4.3-4.3"/>
+          <path d="M8 8l6 6"/>
+          <path d="M14 8l-6 6"/>
+        </svg>
+        No exercises match the selected filters.
+      </p>
 
       <section id="exercise-1" class="exercise">
         <h2 class="exercise-title"></h2>
@@ -72,7 +96,12 @@
 
         <div class="block">
           <details>
-            <summary>Solution</summary>
+            <summary>
+              <svg class="icon summary-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+              Solution
+            </summary>
             <div class="solution-panel">
               <pre class="solution"></pre>
               <div class="output-window">
