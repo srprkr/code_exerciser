@@ -7,8 +7,6 @@
   --color-border-strong: #bbbbbb;
   --color-surface: #fafafa;
   --color-surface-alt: #f6f8fa;
-  --color-pill-active-bg: #222222;
-  --color-pill-active-text: #ffffff;
 }
 
 [data-theme='dark'] {
@@ -19,8 +17,6 @@
   --color-border-strong: #4b5563;
   --color-surface: #252b33;
   --color-surface-alt: #2a313a;
-  --color-pill-active-bg: #e5e7eb;
-  --color-pill-active-text: #1d232a;
 }
 
 body {
@@ -30,6 +26,13 @@ body {
   color: var(--color-text);
   background: var(--color-bg);
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* daisyUI classes like .btn/.alert set their own `display`, which has equal
+   specificity to the [hidden] attribute selector and can win the cascade
+   depending on stylesheet load order. This forces [hidden] to always win. */
+[hidden] {
+  display: none !important;
 }
 
 .page-wrap {
@@ -105,44 +108,13 @@ body {
   margin-right: 0.15rem;
 }
 
-.pill {
-  padding: 0.3rem 0.7rem;
-  border: 1px solid var(--color-border-strong);
+.pill,
+.pill-toggle {
   border-radius: 999px;
-  background: var(--color-bg);
-  color: var(--color-text);
-  cursor: pointer;
-  font-size: 0.85rem;
-  line-height: 1.2;
-}
-
-.pill:hover {
-  border-color: var(--color-text-muted);
-}
-
-.pill.active {
-  background: var(--color-pill-active-bg);
-  border-color: var(--color-pill-active-bg);
-  color: var(--color-pill-active-text);
 }
 
 .pill.collapsed {
   display: none;
-}
-
-.pill-toggle {
-  padding: 0.3rem 0.7rem;
-  border: 1px dashed var(--color-border-strong);
-  border-radius: 999px;
-  background: none;
-  cursor: pointer;
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-}
-
-.pill-toggle:hover {
-  border-color: var(--color-text-muted);
-  color: var(--color-text);
 }
 
 
@@ -337,4 +309,24 @@ details[open] > summary .summary-chevron {
    own layout rule since daisyUI doesn't style that. */
 .modal-dismiss {
   color: var(--color-text);
+}
+
+/* Light-mode-only color overrides for specific elements, bypassing
+   daisyUI's shared --su/--p theme tokens so other success/primary-colored
+   elements are unaffected. Dark mode keeps daisyUI's defaults. */
+[data-theme='light'] .badge-success {
+  background: #10b981;
+  border-color: #10b981;
+  color: #ffffff;
+}
+
+[data-theme='light'] .run-code-button.btn-primary {
+  background: #7c3aed;
+  border-color: #7c3aed;
+  color: #ffffff;
+}
+
+[data-theme='light'] .run-code-button.btn-primary:hover {
+  background: #6d28d9;
+  border-color: #6d28d9;
 }

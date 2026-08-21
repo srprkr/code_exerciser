@@ -33,6 +33,28 @@ function buildCursorTheme() {
   });
 }
 
+const DARK_EDITOR_BG = '#282c34';
+
+const gutterPaddingTheme = EditorView.theme({
+  '.cm-gutters': {
+    paddingRight: '0.4rem',
+    paddingLeft: '0rem'
+  }
+});
+
+function buildGutterTheme() {
+  return EditorView.theme({
+    '.cm-gutters': {
+      backgroundColor: DARK_EDITOR_BG,
+      color: '#bfbfbf',
+      borderRight: '1px solid #bfbfbf'
+    },
+    '.cm-activeLineGutter': {
+      backgroundColor: DARK_EDITOR_BG
+    }
+  });
+}
+
 function buildExtensions() {
   const base = [
     lineNumbers(),
@@ -48,10 +70,15 @@ function buildExtensions() {
       if (update.docChanged && currentExerciseId !== null) {
         attempts.set(currentExerciseId, update.state.doc.toString());
       }
-    })
+    }),
+    gutterPaddingTheme
   ];
 
-  if (isDarkTheme()) base.push(oneDark);
+  if (isDarkTheme()) {
+    base.push(oneDark);
+    // Added after oneDark so it wins over its default gutter styling.
+    base.push(buildGutterTheme());
+  }
 
   // Added last so it wins over oneDark's own cursor color.
   base.push(buildCursorTheme());

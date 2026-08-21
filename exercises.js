@@ -2060,17 +2060,17 @@ function renderFilterPills() {
     KNOWN_FUNCTIONS.forEach((fn) => {
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'pill';
+      button.className = 'pill btn btn-outline btn-xs sm:btn-sm';
       button.textContent = fn;
       button.dataset.value = fn;
       button.addEventListener('click', () => {
         if (activeFunctionFilters.has(fn)) {
           activeFunctionFilters.delete(fn);
-          button.classList.remove('active');
+          button.classList.remove('btn-active');
         } else {
           if (activeFunctionFilters.size >= 3) return;
           activeFunctionFilters.add(fn);
-          button.classList.add('active');
+          button.classList.add('btn-active');
         }
         resetIndexAndRender();
       });
@@ -2091,17 +2091,17 @@ function renderFilterPills() {
     DIFFICULTIES.forEach((level) => {
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'pill';
+      button.className = 'pill btn btn-outline btn-xs sm:btn-sm';
       button.textContent = level;
       button.dataset.value = level;
       button.addEventListener('click', () => {
         const alreadyActive = activeDifficultyFilter === level;
         difficultyFiltersEl
           .querySelectorAll('.pill')
-          .forEach((pill) => pill.classList.remove('active'));
+          .forEach((pill) => pill.classList.remove('btn-active'));
 
         activeDifficultyFilter = alreadyActive ? null : level;
-        if (!alreadyActive) button.classList.add('active');
+        if (!alreadyActive) button.classList.add('btn-active');
 
         resetIndexAndRender();
       });
@@ -2114,7 +2114,7 @@ if (clearFiltersButton) {
   clearFiltersButton.addEventListener('click', () => {
     activeFunctionFilters.clear();
     activeDifficultyFilter = null;
-    document.querySelectorAll('.filters .pill').forEach((pill) => pill.classList.remove('active'));
+    document.querySelectorAll('.filters .pill').forEach((pill) => pill.classList.remove('btn-active'));
     resetIndexAndRender();
   });
 }
