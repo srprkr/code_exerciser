@@ -264,7 +264,7 @@ function showCheckResult(passed) {
   checkResultEl.textContent = passed
     ? 'Correct! That matches the expected output.'
     : "Not quite — that doesn't match the expected output yet.";
-  checkResultEl.className = passed ? 'check-result check-pass' : 'check-result check-fail';
+  checkResultEl.className = passed ? 'check-result check-pass my-2' : 'check-result check-fail my-2';
 
   if (passed && window.revealSolutionOnCorrectAnswer) {
     window.revealSolutionOnCorrectAnswer();
