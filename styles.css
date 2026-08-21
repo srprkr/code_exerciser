@@ -145,35 +145,6 @@ body {
   color: var(--color-text);
 }
 
-#clear-filters {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.3rem 0.7rem;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  background: none;
-  cursor: pointer;
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  text-decoration: underline;
-}
-
-#clear-filters:hover {
-  color: var(--color-text);
-}
-
-.no-results {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  border: 1px dashed var(--color-border-strong);
-  border-radius: 8px;
-  color: var(--color-text-muted);
-  text-align: center;
-}
 
 .no-results .icon {
   width: 1.2em;
@@ -187,61 +158,12 @@ body {
   margin: .8rem 0;
 }
 
-.tag {
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
-
-.tag-fn {
-  background: #e7f0ff;
-  color: #1a4fa0;
-}
-
-.tag-difficulty-easy {
-  background: #e6f6e9;
-  color: #1e7a34;
-}
-
-.tag-difficulty-medium {
-  background: #fff4e0;
-  color: #9a6400;
-}
-
-.tag-difficulty-hard {
-  background: #fde8e8;
-  color: #b3261e;
-}
-
 .carousel-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 1rem;
-}
-
-.carousel-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 6px;
-  background: var(--color-bg);
-  color: var(--color-text);
-  cursor: pointer;
-  font-size: 0.85rem;
-}
-
-@media (min-width: 640px) {
-  .carousel-button {
-    padding: 0.45rem 0.8rem;
-    font-size: 1rem;
-  }
 }
 
 .exercise {
@@ -357,25 +279,6 @@ details[open] > summary .summary-chevron {
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.5rem;
-}
-
-.run-code-button,
-.check-answer-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.45rem 0.9rem;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 6px;
-  background: var(--color-bg);
-  color: var(--color-text);
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.run-code-button:hover,
-.check-answer-button:hover {
-  border-color: var(--color-text-muted);
 }
 
 .check-result {

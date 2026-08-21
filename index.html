@@ -45,7 +45,7 @@
           <span class="filter-label">Difficulty</span>
         </div>
 
-        <button type="button" id="clear-filters">
+        <button type="button" id="clear-filters" class="btn btn-ghost btn-xs sm:btn-sm">
           <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 6 6 18"/>
             <path d="M6 6l12 12"/>
@@ -55,14 +55,14 @@
       </div>
 
       <div class="carousel-controls">
-        <button type="button" class="carousel-button" data-action="prev">
+        <button type="button" class="carousel-button btn btn-outline btn-sm sm:btn-md" data-action="prev">
           <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M15 18l-6-6 6-6"/>
           </svg>
           Previous
         </button>
         <span class="carousel-counter"></span>
-        <button type="button" class="carousel-button" data-action="next">
+        <button type="button" class="carousel-button btn btn-outline btn-sm sm:btn-md" data-action="next">
           Next
           <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 18l6-6-6-6"/>
@@ -70,7 +70,7 @@
         </button>
       </div>
 
-      <p id="no-results" class="no-results" hidden>
+      <p id="no-results" class="no-results alert alert-info justify-center" hidden>
         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="7"/>
           <path d="M21 21l-4.3-4.3"/>
@@ -134,13 +134,13 @@
           </div>
 
           <div class="editor-actions">
-            <button type="button" class="run-code-button">
+            <button type="button" class="run-code-button btn btn-primary btn-sm sm:btn-md">
               <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M6 4l14 8-14 8V4z"/>
               </svg>
               Run
             </button>
-            <button type="button" class="check-answer-button">
+            <button type="button" class="check-answer-button btn btn-outline btn-sm sm:btn-md">
               <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 6 9 17l-5-5"/>
               </svg>

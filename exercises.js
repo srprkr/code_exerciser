@@ -1915,6 +1915,11 @@ const CORE_FUNCTIONS = [
 const SECONDARY_FUNCTIONS = ['find', 'findIndex', 'includes', 'flat', 'flatMap', 'Object'];
 const KNOWN_FUNCTIONS = [...CORE_FUNCTIONS, ...SECONDARY_FUNCTIONS];
 const DIFFICULTIES = ['easy', 'medium', 'hard'];
+const DIFFICULTY_BADGE_CLASS = {
+  easy: 'badge-success',
+  medium: 'badge-warning',
+  hard: 'badge-error'
+};
 
 const activeFunctionFilters = new Set();
 let activeDifficultyFilter = null;
@@ -1998,12 +2003,12 @@ function renderExercise(index) {
     tagsEl.innerHTML = '';
     exercise.functions.forEach((fn) => {
       const span = document.createElement('span');
-      span.className = 'tag tag-fn';
+      span.className = 'badge badge-info badge-outline';
       span.textContent = fn;
       tagsEl.appendChild(span);
     });
     const difficultySpan = document.createElement('span');
-    difficultySpan.className = `tag tag-difficulty-${exercise.difficulty}`;
+    difficultySpan.className = `badge ${DIFFICULTY_BADGE_CLASS[exercise.difficulty]}`;
     difficultySpan.textContent = exercise.difficulty;
     tagsEl.appendChild(difficultySpan);
   }
