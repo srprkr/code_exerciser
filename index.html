@@ -85,7 +85,7 @@
           <h2 class="exercise-title text-xl sm:text-2xl font-bold"></h2>
 
           <div class="tough-it-out-toggle">
-            <label class="swap swap-rotate" aria-label="Toggle tough it out or see solution mode">
+            <label class="swap" aria-label="Toggle tough it out or see solution mode">
               <input type="checkbox" id="solution-mode-input">
 
               <!-- swap-on shows when checked (solution visible): clicking hides it again -->
@@ -188,7 +188,7 @@
           <input type="checkbox" id="dont-ask-again-input" class="checkbox checkbox-sm">
           Don't ask me again
         </label>
-        <div class="modal-action flex-col sm:flex-row">
+        <div class="modal-action flex-col sm:flex-row gap-4 !space-x-0">
           <button type="button" id="modal-confirm-button" class="btn w-full sm:w-auto">Show me the solution</button>
           <button type="button" id="modal-cancel-button" class="btn btn-primary w-full sm:w-auto">Keep toughing it out</button>
         </div>
