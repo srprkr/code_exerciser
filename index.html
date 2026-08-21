@@ -81,7 +81,29 @@
       </p>
 
       <section id="exercise-1" class="exercise">
-        <h2 class="exercise-title"></h2>
+        <div class="exercise-title-row">
+          <h2 class="exercise-title"></h2>
+
+          <div class="tough-it-out-toggle">
+            <span class="toggle-label" id="solution-mode-label">See solution</span>
+            <label class="swap swap-rotate" aria-label="Toggle tough it out or see solution mode">
+              <input type="checkbox" id="solution-mode-input">
+
+              <!-- swap-on shows when checked (solution visible): clicking hides it again -->
+              <svg class="icon swap-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M4 4l16 16"/>
+              </svg>
+
+              <!-- swap-off shows when unchecked (solution hidden): clicking reveals it -->
+              <svg class="icon swap-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </label>
+          </div>
+        </div>
 
         <div class="block tags"></div>
 
@@ -113,11 +135,19 @@
               </svg>
               Run
             </button>
+            <button type="button" class="check-answer-button">
+              <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5"/>
+              </svg>
+              Check answer
+            </button>
           </div>
+
+          <p class="check-result" hidden></p>
         </div>
 
-        <div class="block">
-          <details>
+        <div class="block solution-block">
+          <details id="solution-details">
             <summary>
               <svg class="icon summary-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 18l6-6-6-6"/>
@@ -135,6 +165,33 @@
         </div>
       </section>
     </section>
+
+    <dialog id="look-it-up-modal" class="modal">
+      <div class="modal-box relative">
+        <form method="dialog">
+          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"/>
+              <path d="M6 6l12 12"/>
+            </svg>
+          </button>
+        </form>
+
+        <h3 class="text-lg font-bold" id="look-it-up-title">Are you sure?</h3>
+        <p class="py-4">Practicing without the answers improves muscle memory. Try working through it a bit longer before peeking.</p>
+        <label class="modal-dismiss flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" id="dont-ask-again-input" class="checkbox checkbox-sm">
+          Don't ask me again
+        </label>
+        <div class="modal-action">
+          <button type="button" id="modal-confirm-button" class="btn">Show me the solution</button>
+          <button type="button" id="modal-cancel-button" class="btn btn-primary">Keep toughing it out</button>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button id="modal-backdrop-button">close</button>
+      </form>
+    </dialog>
   </div>
 
   <script src="map_filter_reduce_practice.js" type="text/javascript"></script>

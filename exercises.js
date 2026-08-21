@@ -2015,6 +2015,7 @@ function renderExercise(index) {
 
   window.currentExercise = exercise;
   if (window.loadExerciseIntoEditor) window.loadExerciseIntoEditor(exercise);
+  resetSolutionMode();
 }
 
 function resetIndexAndRender() {
@@ -2129,6 +2130,78 @@ buttons.forEach((button) => {
     renderExercise(currentExerciseIndex);
   });
 });
+
+// Tough it out / Look it up toggle
+const DONT_ASK_AGAIN_KEY = 'lookItUpDismissed';
+
+const solutionModeInput = document.querySelector('#solution-mode-input');
+const solutionModeLabel = document.querySelector('#solution-mode-label');
+const solutionDetails = document.querySelector('#solution-details');
+const lookItUpModal = document.querySelector('#look-it-up-modal');
+const dontAskAgainInput = document.querySelector('#dont-ask-again-input');
+const modalCancelButton = document.querySelector('#modal-cancel-button');
+const modalConfirmButton = document.querySelector('#modal-confirm-button');
+
+function applySolutionMode(isLookItUp) {
+  if (solutionModeLabel) solutionModeLabel.textContent = isLookItUp ? 'Tough it out' : 'See solution';
+  if (solutionDetails) solutionDetails.hidden = !isLookItUp;
+  if (solutionDetails) solutionDetails.open = isLookItUp;
+}
+
+function resetSolutionMode() {
+  if (solutionModeInput) solutionModeInput.checked = false;
+  applySolutionMode(false);
+}
+
+// Called by code-editor.js when Check answer passes, so a correct answer
+// earns the reveal regardless of the current tough-it-out/look-it-up state.
+function revealSolutionOnCorrectAnswer() {
+  if (solutionModeInput) solutionModeInput.checked = true;
+  applySolutionMode(true);
+}
+window.revealSolutionOnCorrectAnswer = revealSolutionOnCorrectAnswer;
+
+function openLookItUpModal() {
+  if (lookItUpModal && lookItUpModal.showModal) lookItUpModal.showModal();
+}
+
+function closeLookItUpModal() {
+  if (lookItUpModal && lookItUpModal.close) lookItUpModal.close();
+}
+
+if (solutionModeInput) {
+  solutionModeInput.addEventListener('change', () => {
+    if (solutionModeInput.checked) {
+      const dismissed = localStorage.getItem(DONT_ASK_AGAIN_KEY) === 'true';
+      if (dismissed) {
+        applySolutionMode(true);
+      } else {
+        // Revert the visual toggle until the user confirms via the modal.
+        solutionModeInput.checked = false;
+        openLookItUpModal();
+      }
+    } else {
+      applySolutionMode(false);
+    }
+  });
+}
+
+if (modalCancelButton) {
+  modalCancelButton.addEventListener('click', () => {
+    closeLookItUpModal();
+  });
+}
+
+if (modalConfirmButton) {
+  modalConfirmButton.addEventListener('click', () => {
+    if (dontAskAgainInput && dontAskAgainInput.checked) {
+      localStorage.setItem(DONT_ASK_AGAIN_KEY, 'true');
+    }
+    if (solutionModeInput) solutionModeInput.checked = true;
+    applySolutionMode(true);
+    closeLookItUpModal();
+  });
+}
 
 renderFilterPills();
 renderExercise(currentExerciseIndex);

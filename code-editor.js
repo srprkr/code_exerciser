@@ -11,9 +11,12 @@ const attempts = new Map();
 
 let view = null;
 let currentExerciseId = null;
+let currentExercise = null;
 
 const editorParent = document.querySelector('.code-editor');
 const runButton = document.querySelector('.run-code-button');
+const checkButton = document.querySelector('.check-answer-button');
+const checkResultEl = document.querySelector('.check-result');
 const consoleWrapEl = document.querySelector('.console-output');
 const consoleOutputEl = document.querySelector('.console-log');
 
@@ -62,6 +65,7 @@ function createEditor(doc, cursorPos) {
 // scope with classic <script> tags.
 function loadExerciseIntoEditor(exercise) {
   currentExerciseId = exercise.id;
+  currentExercise = exercise;
   const existing = attempts.get(exercise.id);
 
   let doc = existing;
@@ -78,6 +82,7 @@ function loadExerciseIntoEditor(exercise) {
   createEditor(doc, cursorPos);
   consoleOutputEl.textContent = '';
   if (consoleWrapEl) consoleWrapEl.hidden = true;
+  if (checkResultEl) checkResultEl.hidden = true;
 }
 
 // Re-theme the editor when the user flips light/dark without losing content.
@@ -120,8 +125,11 @@ const SANDBOX_HTML = `<!DOCTYPE html>
 <html><body><script>
   const send = (type, payload) => parent.postMessage({ source: 'code-editor-sandbox', type, payload }, '*');
 
+  let lastLogArgs = null;
+
   ['log', 'warn', 'error', 'info'].forEach((level) => {
     console[level] = (...args) => {
+      if (level === 'log') lastLogArgs = args;
       send('console', { level, args: args.map((a) => {
         try { return typeof a === 'string' ? a : JSON.stringify(a, null, 2); }
         catch { return String(a); }
@@ -135,19 +143,38 @@ const SANDBOX_HTML = `<!DOCTYPE html>
 
   window.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'run') {
+      let threw = false;
       try {
         new Function(event.data.code)();
       } catch (err) {
+        threw = true;
         send('console', { level: 'error', args: [err.message] });
       }
-      send('done', null);
+
+      let lastLogValue;
+      let hasLastLogValue = false;
+      if (!threw && lastLogArgs !== null) {
+        hasLastLogValue = true;
+        lastLogValue = lastLogArgs.length === 1 ? lastLogArgs[0] : lastLogArgs;
+      }
+
+      let serialized = null;
+      if (hasLastLogValue) {
+        try {
+          serialized = JSON.parse(JSON.stringify(lastLogValue));
+        } catch {
+          hasLastLogValue = false;
+        }
+      }
+
+      send('done', { hasLastLogValue, lastLogValue: serialized });
     }
   });
 
   send('ready', null);
 <\/script></body></html>`;
 
-function runCode(code) {
+function runCode(code, onDone) {
   consoleOutputEl.textContent = '';
   if (consoleWrapEl) consoleWrapEl.hidden = false;
 
@@ -168,6 +195,7 @@ function runCode(code) {
     } else if (event.data.type === 'done') {
       window.removeEventListener('message', messageHandler);
       messageHandler = null;
+      if (onDone) onDone(event.data.payload);
     }
   };
 
@@ -177,9 +205,48 @@ function runCode(code) {
   frame.srcdoc = SANDBOX_HTML;
 }
 
+function deepEqual(a, b) {
+  if (a === b) return true;
+  if (typeof a !== typeof b) return false;
+  if (a === null || b === null) return false;
+  if (typeof a !== 'object') return false;
+
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) return false;
+
+  return aKeys.every((key) => deepEqual(a[key], b[key]));
+}
+
+function showCheckResult(passed) {
+  if (!checkResultEl) return;
+  checkResultEl.hidden = false;
+  checkResultEl.textContent = passed
+    ? 'Correct! That matches the expected output.'
+    : "Not quite — that doesn't match the expected output yet.";
+  checkResultEl.className = passed ? 'check-result check-pass' : 'check-result check-fail';
+
+  if (passed && window.revealSolutionOnCorrectAnswer) {
+    window.revealSolutionOnCorrectAnswer();
+  }
+}
+
 if (runButton) {
   runButton.addEventListener('click', () => {
     if (!view) return;
+    if (checkResultEl) checkResultEl.hidden = true;
     runCode(view.state.doc.toString());
+  });
+}
+
+if (checkButton) {
+  checkButton.addEventListener('click', () => {
+    if (!view || !currentExercise) return;
+    if (checkResultEl) checkResultEl.hidden = true;
+
+    runCode(view.state.doc.toString(), (payload) => {
+      const passed = payload.hasLastLogValue && deepEqual(payload.lastLogValue, currentExercise.output);
+      showCheckResult(passed);
+    });
   });
 }

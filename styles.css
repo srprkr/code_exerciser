@@ -223,6 +223,28 @@ body {
   background: var(--color-surface);
 }
 
+.exercise-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tough-it-out-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.toggle-label {
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+
 .block {
   margin-bottom: 1rem;
 }
@@ -294,10 +316,13 @@ details[open] > summary .summary-chevron {
 }
 
 .editor-actions {
+  display: flex;
+  gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
-.run-code-button {
+.run-code-button,
+.check-answer-button {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -310,8 +335,30 @@ details[open] > summary .summary-chevron {
   font-weight: bold;
 }
 
-.run-code-button:hover {
+.run-code-button:hover,
+.check-answer-button:hover {
   border-color: var(--color-text-muted);
+}
+
+.check-result {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.check-pass {
+  background: #e6f6e9;
+  color: #1e7a34;
+}
+
+.check-fail {
+  background: #fde8e8;
+  color: #b3261e;
+}
+
+.solution-block {
+  min-height: 1.5rem;
 }
 
 .console-output {
@@ -346,4 +393,11 @@ details[open] > summary .summary-chevron {
 
 .console-error {
   color: #b3261e;
+}
+
+/* #look-it-up-modal uses daisyUI's .modal/.modal-box/.modal-action classes
+   for structure and theming; only the "don't ask again" label needs its
+   own layout rule since daisyUI doesn't style that. */
+.modal-dismiss {
+  color: var(--color-text);
 }
