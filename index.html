@@ -85,22 +85,27 @@
           <h2 class="exercise-title"></h2>
 
           <div class="tough-it-out-toggle">
-            <span class="toggle-label" id="solution-mode-label">See solution</span>
             <label class="swap swap-rotate" aria-label="Toggle tough it out or see solution mode">
               <input type="checkbox" id="solution-mode-input">
 
               <!-- swap-on shows when checked (solution visible): clicking hides it again -->
-              <svg class="icon swap-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
-                <circle cx="12" cy="12" r="3"/>
-                <path d="M4 4l16 16"/>
-              </svg>
+              <span class="swap-on toggle-content">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M4 4l16 16"/>
+                </svg>
+                <span class="toggle-label" id="solution-mode-label-on">Tough it out</span>
+              </span>
 
               <!-- swap-off shows when unchecked (solution hidden): clicking reveals it -->
-              <svg class="icon swap-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
+              <span class="swap-off toggle-content">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <span class="toggle-label" id="solution-mode-label-off">See solution</span>
+              </span>
             </label>
           </div>
         </div>

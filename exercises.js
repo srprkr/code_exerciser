@@ -2135,7 +2135,6 @@ buttons.forEach((button) => {
 const DONT_ASK_AGAIN_KEY = 'lookItUpDismissed';
 
 const solutionModeInput = document.querySelector('#solution-mode-input');
-const solutionModeLabel = document.querySelector('#solution-mode-label');
 const solutionDetails = document.querySelector('#solution-details');
 const lookItUpModal = document.querySelector('#look-it-up-modal');
 const dontAskAgainInput = document.querySelector('#dont-ask-again-input');
@@ -2143,7 +2142,6 @@ const modalCancelButton = document.querySelector('#modal-cancel-button');
 const modalConfirmButton = document.querySelector('#modal-confirm-button');
 
 function applySolutionMode(isLookItUp) {
-  if (solutionModeLabel) solutionModeLabel.textContent = isLookItUp ? 'Tough it out' : 'See solution';
   if (solutionDetails) solutionDetails.hidden = !isLookItUp;
   if (solutionDetails) solutionDetails.open = isLookItUp;
 }
