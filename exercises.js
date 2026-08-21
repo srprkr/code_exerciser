@@ -2012,6 +2012,9 @@ function renderExercise(index) {
   if (solutionEl) solutionEl.textContent = dedent(exercise.solution);
   if (outputEl) outputEl.textContent = JSON.stringify(exercise.output, null, 2);
   if (counterEl) counterEl.textContent = `${index + 1} / ${filtered.length}`;
+
+  window.currentExercise = exercise;
+  if (window.loadExerciseIntoEditor) window.loadExerciseIntoEditor(exercise);
 }
 
 function resetIndexAndRender() {
