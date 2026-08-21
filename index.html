@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Map/Filter/Reduce practice</title>
+  <title>JavaScript function practice</title>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <script src="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.css" rel="stylesheet" type="text/css" />
@@ -19,7 +19,7 @@
 <body>
   <div class="page-wrap">
     <div class="page-header">
-      <h1>Map/Filter/Reduce practice</h1>
+      <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">JavaScript function practice</h1>
 
       <label class="swap swap-rotate theme-toggle" aria-label="Toggle day/night theme">
         <input type="checkbox" id="theme-toggle-input">
@@ -82,7 +82,7 @@
 
       <section id="exercise-1" class="exercise">
         <div class="exercise-title-row">
-          <h2 class="exercise-title"></h2>
+          <h2 class="exercise-title text-xl sm:text-2xl font-bold"></h2>
 
           <div class="tough-it-out-toggle">
             <label class="swap swap-rotate" aria-label="Toggle tough it out or see solution mode">
@@ -113,17 +113,17 @@
         <div class="block tags"></div>
 
         <div class="block">
-          <h3>Question</h3>
+          <h3 class="font-bold mt-4 mb-1">Question:</h3>
           <p class="question"></p>
         </div>
 
         <div class="block">
-          <h3>Sample data</h3>
+          <h3 class="font-bold mt-4 mb-1">Sample data:</h3>
           <pre class="sample-data"></pre>
         </div>
 
-        <div class="block">
-          <h3>Your turn</h3>
+        <div class="block mb-0">
+          <h3 class="font-bold mt-4 mb-1">Your turn:</h3>
           <div class="your-turn-box">
             <div class="code-editor"></div>
 
@@ -151,7 +151,7 @@
           <p class="check-result" hidden></p>
         </div>
 
-        <div class="block solution-block">
+        <div class="block solution-block mb-0">
           <details id="solution-details">
             <summary>
               <svg class="icon summary-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -188,9 +188,9 @@
           <input type="checkbox" id="dont-ask-again-input" class="checkbox checkbox-sm">
           Don't ask me again
         </label>
-        <div class="modal-action">
-          <button type="button" id="modal-confirm-button" class="btn">Show me the solution</button>
-          <button type="button" id="modal-cancel-button" class="btn btn-primary">Keep toughing it out</button>
+        <div class="modal-action flex-col sm:flex-row">
+          <button type="button" id="modal-confirm-button" class="btn w-full sm:w-auto">Show me the solution</button>
+          <button type="button" id="modal-cancel-button" class="btn btn-primary w-full sm:w-auto">Keep toughing it out</button>
         </div>
       </div>
       <form method="dialog" class="modal-backdrop">

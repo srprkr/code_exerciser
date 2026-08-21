@@ -1,4 +1,4 @@
-import { EditorView, keymap, lineNumbers, highlightActiveLine } from 'https://esm.sh/@codemirror/view@6.43.9';
+import { EditorView, keymap, lineNumbers, highlightActiveLine, drawSelection } from 'https://esm.sh/@codemirror/view@6.43.9';
 import { EditorState } from 'https://esm.sh/@codemirror/state@6.7.1';
 import { defaultKeymap, indentWithTab, history, historyKeymap } from 'https://esm.sh/@codemirror/commands@6.11.0?deps=@codemirror/state@6.7.1,@codemirror/view@6.43.9';
 import { javascript } from 'https://esm.sh/@codemirror/lang-javascript@6.2.5?deps=@codemirror/state@6.7.1,@codemirror/view@6.43.9';
@@ -24,11 +24,21 @@ function isDarkTheme() {
   return document.documentElement.getAttribute('data-theme') === 'dark';
 }
 
+function buildCursorTheme() {
+  return EditorView.theme({
+    '.cm-cursor, .cm-dropCursor': {
+      borderLeftColor: isDarkTheme() ? '#ffffff' : '#111111',
+      borderLeftWidth: '2px'
+    }
+  });
+}
+
 function buildExtensions() {
   const base = [
     lineNumbers(),
     history(),
     highlightActiveLine(),
+    drawSelection(),
     bracketMatching(),
     indentOnInput(),
     javascript(),
@@ -42,6 +52,9 @@ function buildExtensions() {
   ];
 
   if (isDarkTheme()) base.push(oneDark);
+
+  // Added last so it wins over oneDark's own cursor color.
+  base.push(buildCursorTheme());
 
   return base;
 }
