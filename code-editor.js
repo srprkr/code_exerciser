@@ -179,9 +179,20 @@ function loadExerciseIntoEditor(exercise) {
   let cursorPos;
 
   if (doc === undefined) {
-    // Fresh visit: leave a blank line below the sample data and place the
-    // cursor two lines down so it's obvious where typing should begin.
-    doc = `${exercise.sampleData}\n\n`;
+    const progress = window.Progress && window.Progress.getExercise(exercise.id);
+
+    if (progress && progress.completed) {
+      // Already completed and no attempt typed yet this session (e.g. a
+      // fresh page load) — pre-fill with the real solution so the editor
+      // shows working code instead of a blank slate.
+      const solution = window.dedent ? window.dedent(exercise.solution) : exercise.solution;
+      doc = `${exercise.sampleData}\n\n${solution}\n`;
+    } else {
+      // Fresh visit: leave a blank line below the sample data and place the
+      // cursor two lines down so it's obvious where typing should begin.
+      doc = `${exercise.sampleData}\n\n`;
+    }
+
     cursorPos = doc.length;
     attempts.set(exercise.id, doc);
   }
@@ -325,12 +336,17 @@ function deepEqual(a, b) {
   return aKeys.every((key) => deepEqual(a[key], b[key]));
 }
 
-function showCheckResult(passed) {
+function showCheckResult(passed, countsTowardCompletion) {
   if (!checkResultEl) return;
   checkResultEl.hidden = false;
-  checkResultEl.textContent = passed
-    ? 'Correct! That matches the expected output.'
-    : "Not quite — that doesn't match the expected output yet.";
+
+  if (passed && !countsTowardCompletion) {
+    checkResultEl.textContent = "Correct! Since you looked at the solution, this won't count toward your badge — come back later and solve it without peeking.";
+  } else if (passed) {
+    checkResultEl.textContent = 'Correct! That matches the expected output.';
+  } else {
+    checkResultEl.textContent = "Not quite — that doesn't match the expected output yet.";
+  }
   checkResultEl.className = passed ? 'check-result check-pass my-2' : 'check-result check-fail my-2';
 
   if (passed && window.revealSolutionOnCorrectAnswer) {
@@ -338,11 +354,22 @@ function showCheckResult(passed) {
   }
 }
 
+function markAttemptedIfOutput(payload) {
+  if (!currentExercise || !window.Progress) return;
+  if (payload.hasLastLogValue) {
+    window.Progress.markAttempted(currentExercise.id);
+  } else {
+    appendConsoleLine('No output detected — use console.log(...) to print your result.', true);
+  }
+}
+
 if (runButton) {
   runButton.addEventListener('click', () => {
     if (!view) return;
     if (checkResultEl) checkResultEl.hidden = true;
-    runCode(view.state.doc.toString());
+    runCode(view.state.doc.toString(), (payload) => {
+      markAttemptedIfOutput(payload);
+    });
   });
 }
 
@@ -352,8 +379,18 @@ if (checkButton) {
     if (checkResultEl) checkResultEl.hidden = true;
 
     runCode(view.state.doc.toString(), (payload) => {
+      markAttemptedIfOutput(payload);
+
       const passed = payload.hasLastLogValue && deepEqual(payload.lastLogValue, currentExercise.output);
-      showCheckResult(passed);
+      const peeked = window.hasPeekedThisSession && window.hasPeekedThisSession(currentExercise.id);
+      const countsTowardCompletion = !peeked;
+
+      if (passed && countsTowardCompletion && window.Progress) {
+        window.Progress.markCompleted(currentExercise.id);
+        if (window.updateDoneCheckbox) window.updateDoneCheckbox();
+      }
+
+      showCheckResult(passed, countsTowardCompletion);
     });
   });
 }
