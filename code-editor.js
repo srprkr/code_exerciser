@@ -1,4 +1,4 @@
-import { EditorView, keymap, lineNumbers, highlightActiveLine, drawSelection } from 'https://esm.sh/@codemirror/view@6.43.9';
+import { EditorView, keymap, lineNumbers, highlightActiveLine, drawSelection, Decoration, ViewPlugin } from 'https://esm.sh/@codemirror/view@6.43.9';
 import { EditorState } from 'https://esm.sh/@codemirror/state@6.7.1';
 import { defaultKeymap, indentWithTab, history, historyKeymap } from 'https://esm.sh/@codemirror/commands@6.11.0?deps=@codemirror/state@6.7.1,@codemirror/view@6.43.9';
 import { javascript } from 'https://esm.sh/@codemirror/lang-javascript@6.2.5?deps=@codemirror/state@6.7.1,@codemirror/view@6.43.9';
@@ -12,6 +12,9 @@ const attempts = new Map();
 let view = null;
 let currentExerciseId = null;
 let currentExercise = null;
+// End position (in the current doc) of the locked sample-data region.
+// Recomputed per exercise since sampleData length varies.
+let lockedRegionEnd = 0;
 
 const editorParent = document.querySelector('.code-editor');
 const runButton = document.querySelector('.run-code-button');
@@ -55,6 +58,61 @@ function buildGutterTheme() {
   });
 }
 
+// drawSelection() renders the selection as a background-color layer drawn
+// behind the text, so the text keeps its normal (light, in dark mode)
+// token color on top — CSS ::selection doesn't apply to this rendering
+// path. Use a mid-tone selection background that keeps dark mode's light
+// text readable, rather than trying to flip the text color.
+const darkSelectionTheme = EditorView.theme({
+  '.cm-selectionBackground': {
+    backgroundColor: '#4b5568 !important'
+  }
+});
+
+// Rejects any edit that touches the locked sample-data region at the top
+// of the doc. Reads lockedRegionEnd fresh on every transaction since it's
+// recomputed per exercise.
+const readOnlyRegionFilter = EditorState.changeFilter.of((tr) => {
+  let allowed = true;
+  tr.changes.iterChangedRanges((fromA) => {
+    if (fromA < lockedRegionEnd) allowed = false;
+  });
+  return allowed;
+});
+
+const lockedLineDecoration = Decoration.line({ class: 'cm-locked-line' });
+
+const lockedLineHighlighter = ViewPlugin.fromClass(
+  class {
+    constructor(view) {
+      this.decorations = this.buildDecorations(view);
+    }
+    update(update) {
+      if (update.docChanged || update.viewportChanged) {
+        this.decorations = this.buildDecorations(update.view);
+      }
+    }
+    buildDecorations(view) {
+      const marks = [];
+      const lockedEndLine = view.state.doc.lineAt(Math.max(lockedRegionEnd - 1, 0)).number;
+      for (let lineNum = 1; lineNum <= lockedEndLine; lineNum++) {
+        const line = view.state.doc.line(lineNum);
+        marks.push(lockedLineDecoration.range(line.from));
+      }
+      return Decoration.set(marks);
+    }
+  },
+  { decorations: (instance) => instance.decorations }
+);
+
+function buildLockedLineTheme() {
+  return EditorView.theme({
+    '.cm-locked-line': {
+      backgroundColor: isDarkTheme() ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.035)'
+    }
+  });
+}
+
 function buildExtensions() {
   const base = [
     lineNumbers(),
@@ -71,13 +129,17 @@ function buildExtensions() {
         attempts.set(currentExerciseId, update.state.doc.toString());
       }
     }),
-    gutterPaddingTheme
+    gutterPaddingTheme,
+    readOnlyRegionFilter,
+    lockedLineHighlighter,
+    buildLockedLineTheme()
   ];
 
   if (isDarkTheme()) {
     base.push(oneDark);
-    // Added after oneDark so it wins over its default gutter styling.
+    // Added after oneDark so it wins over its default gutter/selection styling.
     base.push(buildGutterTheme());
+    base.push(darkSelectionTheme);
   }
 
   // Added last so it wins over oneDark's own cursor color.
@@ -107,6 +169,11 @@ function loadExerciseIntoEditor(exercise) {
   currentExerciseId = exercise.id;
   currentExercise = exercise;
   const existing = attempts.get(exercise.id);
+
+  // The sample data plus its trailing newline is the locked region, so an
+  // insertion right at the end of the last sample-data line can't sneak
+  // onto that line — it's pushed past the newline into the editable zone.
+  lockedRegionEnd = exercise.sampleData.length + 1;
 
   let doc = existing;
   let cursorPos;

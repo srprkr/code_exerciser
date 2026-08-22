@@ -1954,7 +1954,6 @@ const exerciseEl = document.querySelector('#exercise-1');
 const titleEl = document.querySelector('#exercise-1 .exercise-title');
 const tagsEl = document.querySelector('#exercise-1 .tags');
 const questionEl = document.querySelector('#exercise-1 .question');
-const sampleDataEl = document.querySelector('#exercise-1 .sample-data');
 const solutionEl = document.querySelector('#exercise-1 .solution');
 const outputEl = document.querySelector('#exercise-1 .output');
 const counterEl = document.querySelector('.carousel-counter');
@@ -2013,7 +2012,6 @@ function renderExercise(index) {
     tagsEl.appendChild(difficultySpan);
   }
   if (questionEl) questionEl.textContent = exercise.question;
-  if (sampleDataEl) sampleDataEl.textContent = dedent(exercise.sampleData);
   if (solutionEl) solutionEl.textContent = dedent(exercise.solution);
   if (outputEl) outputEl.textContent = JSON.stringify(exercise.output, null, 2);
   if (counterEl) counterEl.textContent = `${index + 1} / ${filtered.length}`;
