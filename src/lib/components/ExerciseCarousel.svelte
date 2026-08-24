@@ -5,11 +5,12 @@
     currentExerciseIndex,
     applyDeepLinkFromUrl
   } from '../stores/ui.js';
-  import { progress as progressStore, Progress } from '../stores/progress.js';
+  import { progress as progressStore } from '../stores/progress.js';
   import ExerciseFilters from './ExerciseFilters.svelte';
   import DoneCheckmark from './DoneCheckmark.svelte';
   import SolutionToggle from './SolutionToggle.svelte';
   import SolutionDetails from './SolutionDetails.svelte';
+  import CodeEditor from './CodeEditor.svelte';
 
   const DIFFICULTY_BADGE_CLASS = {
     easy: 'badge-success',
@@ -32,8 +33,9 @@
 
   const completed = $derived.by(() => {
     if (!exercise) return false;
-    progressStore; // subscribe so this re-derives on any progress change
-    return Progress.getExercise(exercise.id).completed;
+    const allProgress = $progressStore; // actually read the store's value so this re-derives on any progress change
+    const entry = allProgress[exercise.id];
+    return !!(entry && entry.completed);
   });
 
   function goNext() {
@@ -109,7 +111,7 @@
 
       <div class="block mb-0">
         <h3 class="font-bold mt-4 mb-1">Your turn:</h3>
-        <!-- CodeEditor mounts here in Phase 3 -->
+        <CodeEditor {exercise} onCheckPassed={() => (solutionVisible = true)} />
       </div>
 
       <SolutionDetails {exercise} {solutionVisible} />
