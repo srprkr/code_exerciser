@@ -103,6 +103,34 @@ body {
   flex-shrink: 0;
 }
 
+/* daisyUI's .btn sets a fixed height/min-height per size (3rem for plain
+   .btn/.btn-md, 2rem for .btn-sm, 1.5rem for .btn-xs, plus .btn-circle at
+   3rem x 3rem) that reads as too tall here. Drop every size a notch. */
+.btn {
+  height: 2.25rem;
+  min-height: 2.25rem;
+}
+
+.btn-circle {
+  height: 2.25rem;
+  width: 2.25rem;
+}
+
+.btn-md {
+  height: 2.25rem;
+  min-height: 2.25rem;
+}
+
+.btn-sm {
+  height: 1.75rem;
+  min-height: 1.75rem;
+}
+
+.btn-xs {
+  height: 1.25rem;
+  min-height: 1.25rem;
+}
+
 .filters {
   display: flex;
   flex-wrap: wrap;
