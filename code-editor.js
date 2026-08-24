@@ -278,10 +278,18 @@ const SANDBOX_HTML = `<!DOCTYPE html>
 
       let serialized = null;
       if (hasLastLogValue) {
-        try {
-          serialized = JSON.parse(JSON.stringify(lastLogValue));
-        } catch {
-          hasLastLogValue = false;
+        if (lastLogValue === undefined) {
+          // JSON.stringify(undefined) returns the value undefined (not a
+          // string), so JSON.parse would throw — handle this case directly
+          // so exercises like "what does .find() return when nothing
+          // matches?" can still grade a console.log(undefined) as real output.
+          serialized = undefined;
+        } else {
+          try {
+            serialized = JSON.parse(JSON.stringify(lastLogValue));
+          } catch {
+            hasLastLogValue = false;
+          }
         }
       }
 
