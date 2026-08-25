@@ -1,5 +1,5 @@
 <script>
-  import { onMount, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { EditorView, keymap, lineNumbers, highlightActiveLine, drawSelection, Decoration, ViewPlugin } from '@codemirror/view';
   import { EditorState } from '@codemirror/state';
   import { defaultKeymap, indentWithTab, history, historyKeymap } from '@codemirror/commands';
@@ -177,7 +177,9 @@
     });
   }
 
-  export function loadExercise(nextExercise) {
+  // Builds/rebuilds the editor content for `nextExercise` (fresh doc or a
+  // restored in-session attempt), without touching the theme.
+  function docForExercise(nextExercise) {
     currentExerciseId = nextExercise.id;
     const existing = attempts.get(nextExercise.id);
 
@@ -209,27 +211,40 @@
       attempts.set(nextExercise.id, doc);
     }
 
+    return { doc, cursorPos };
+  }
+
+  // Single entry point for (re)building the CodeMirror view — called
+  // whenever the exercise OR the theme changes. Deliberately one effect
+  // driving one createEditor() call per reactive flush: previously this
+  // was split into two separate effects (one for exercise, one for
+  // theme), each independently calling createEditor(). When both an
+  // exercise switch and a theme toggle happened close together (e.g.
+  // clicking Next right after toggling dark/light), Svelte could run
+  // both effects in the same flush, producing two competing
+  // createEditor() calls — the loser's isDarkTheme() read could end up
+  // baked into the editor's extensions even after the DOM's data-theme
+  // attribute had already moved on, leaving stale dark-theme colors
+  // (like the CodeMirror background) rendered under the light theme.
+  $effect(() => {
+    $theme; // actually read the store's value so this reruns on toggle
+    if (!exercise) return;
+
+    const { doc, cursorPos } = docForExercise(exercise);
     createEditor(doc, cursorPos);
     if (consoleOutputEl) consoleOutputEl.textContent = '';
     consoleVisible = false;
     checkResultVisible = false;
-  }
+  });
 
-  // Re-theme the editor when the user flips light/dark without losing content.
+  // Re-theme the editor without losing content or resetting the
+  // console/check-result panels — used when something other than the
+  // reactive exercise/theme effect above needs a manual re-theme.
   export function refreshTheme() {
     if (!view) return;
     const doc = view.state.doc.toString();
     createEditor(doc);
   }
-
-  $effect(() => {
-    theme; // dependency — re-theme on toggle
-    refreshTheme();
-  });
-
-  $effect(() => {
-    if (exercise) loadExercise(exercise);
-  });
 
   function appendConsoleLine(text, isError) {
     if (!consoleOutputEl) return;
@@ -298,10 +313,6 @@
       }
     });
   }
-
-  onMount(() => {
-    if (exercise) loadExercise(exercise);
-  });
 
   onDestroy(() => {
     if (view) view.destroy();
