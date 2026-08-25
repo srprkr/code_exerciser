@@ -8,6 +8,8 @@
   });
 </script>
 
+<p class="text-sm mb-2" style="color: var(--color-text-muted);">Click any badge to view its MDN documentation.</p>
+
 <div class="achievements-grid">
   {#each badges as achievement (achievement.tag)}
     {@const mdnUrl = KNOWN_FUNCTION_MDN_LINKS[achievement.tag]}

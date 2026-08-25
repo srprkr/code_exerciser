@@ -17,12 +17,19 @@ function toughItOutCheckbox(page) {
   return page.locator('.tough-it-out-toggle input[type="checkbox"]');
 }
 
+// The page can have more than one <dialog class="modal"> at once (e.g. the
+// README reference modal is always in the DOM, just closed), so scope to
+// the one containing this modal's own title text.
+function lookItUpModal(page) {
+  return page.locator('dialog.modal').filter({ hasText: 'Are you sure?' });
+}
+
 // daisyUI's .modal hides itself via opacity/pointer-events (not `display`),
 // so Playwright's toBeHidden() heuristic doesn't reliably catch the closed
 // state — the actual source of truth for a native <dialog> is its `open`
 // attribute, which HTMLDialogElement.close() removes.
 async function expectModalClosed(page) {
-  await expect(page.locator('dialog.modal')).toHaveJSProperty('open', false);
+  await expect(lookItUpModal(page)).toHaveJSProperty('open', false);
 }
 
 test('solution block is hidden by default', async ({ page }) => {
@@ -32,7 +39,7 @@ test('solution block is hidden by default', async ({ page }) => {
 test('toggling "see solution" for the first time opens the look-it-up confirmation modal instead of revealing immediately', async ({ page }) => {
   await toughItOutLabel(page).click();
 
-  const modal = page.locator('dialog.modal');
+  const modal = lookItUpModal(page);
   await expect(modal).toBeVisible();
   await expect(page.locator('.solution-block')).toBeHidden();
 
