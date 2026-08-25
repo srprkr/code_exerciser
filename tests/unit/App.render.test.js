@@ -36,13 +36,14 @@ describe('App', () => {
     expect(getByText(/Problem 2$/)).toBeInTheDocument();
   });
 
-  it('switches to the profile stub view and back', async () => {
+  it('switches to the profile view and back', async () => {
     const { getByLabelText, getByText } = render(App);
     getByLabelText('View profile').click();
     await new Promise((r) => setTimeout(r, 0));
-    expect(getByText('Profile panel coming in Phase 4.')).toBeInTheDocument();
+    expect(getByText('Achievements')).toBeInTheDocument();
+    expect(getByText(/'s Profile$/)).toBeInTheDocument();
 
-    getByText('Back to exercises').click();
+    getByLabelText('Back to exercises').click();
     await new Promise((r) => setTimeout(r, 0));
     expect(getByText(/Problem 1$/)).toBeInTheDocument();
   });
