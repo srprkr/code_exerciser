@@ -1,4 +1,5 @@
 <script>
+  import { fly } from 'svelte/transition';
   import ThemeToggle from './lib/components/ThemeToggle.svelte';
   import ExerciseCarousel from './lib/components/ExerciseCarousel.svelte';
   import ProfilePanel from './lib/components/ProfilePanel.svelte';
@@ -29,6 +30,8 @@
 
     <ExerciseCarousel />
   {:else}
-    <ProfilePanel />
+    <div in:fly={{ x: 40, duration: 200 }} out:fly={{ x: -40, duration: 150 }}>
+      <ProfilePanel />
+    </div>
   {/if}
 </div>
