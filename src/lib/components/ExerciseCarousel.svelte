@@ -94,7 +94,9 @@
           <h2 class="exercise-title text-xl sm:text-2xl font-bold">Problem {exercise.id}</h2>
         </div>
 
-        <SolutionToggle {exercise} bind:solutionVisible />
+        {#if !completed}
+          <SolutionToggle {exercise} bind:solutionVisible />
+        {/if}
       </div>
 
       <div class="block tags">
