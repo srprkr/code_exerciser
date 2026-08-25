@@ -31,3 +31,31 @@ export function bindArrowKeyNav({ onStep, skipAmount = 10 }) {
   document.addEventListener('keydown', handleKeydown);
   return () => document.removeEventListener('keydown', handleKeydown);
 }
+
+// Wires document-level Mod-Enter (Run) / Mod-Shift-Enter (Check answer)
+// shortcuts for whenever focus is OUTSIDE the CodeMirror editor — e.g. on
+// a button, or nowhere in particular. When the editor itself has focus,
+// CodeMirror's own keymap (registered directly on the EditorView in
+// CodeEditor.svelte) handles the same combo instead, since a document
+// listener can't intercept before CodeMirror's internal key handling.
+// "Mod" is Ctrl on Windows/Linux, Cmd on Mac, matching CodeMirror's own
+// platform-aware convention. Returns a cleanup function.
+export function bindRunCheckShortcuts({ onRun, onCheck }) {
+  function handleKeydown(event) {
+    if (event.key !== 'Enter') return;
+    if (event.target?.closest?.('.cm-editor')) return; // handled by CodeMirror's own keymap instead
+
+    const modPressed = navigator.platform.includes('Mac') ? event.metaKey : event.ctrlKey;
+    if (!modPressed) return;
+
+    event.preventDefault();
+    if (event.shiftKey) {
+      onCheck();
+    } else {
+      onRun();
+    }
+  }
+
+  document.addEventListener('keydown', handleKeydown);
+  return () => document.removeEventListener('keydown', handleKeydown);
+}

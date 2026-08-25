@@ -1,5 +1,5 @@
 <script>
-  import { onDestroy } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { EditorView, keymap, lineNumbers, highlightActiveLine, drawSelection, Decoration, ViewPlugin } from '@codemirror/view';
   import { EditorState } from '@codemirror/state';
   import { defaultKeymap, indentWithTab, history, historyKeymap } from '@codemirror/commands';
@@ -12,6 +12,7 @@
   import { runCode as sandboxRunCode, teardownSandbox } from '../grading/sandbox.js';
   import { decideCheckResult } from '../grading/grade.js';
   import { hasPeekedThisSession } from '../stores/ui.js';
+  import { bindRunCheckShortcuts } from '../utils/keyboardNav.js';
 
   // Called by the parent when a Check-answer pass succeeds and it should
   // reveal the solution (even in tough-it-out mode) — mirrors the old
@@ -138,7 +139,18 @@
       indentOnInput(),
       javascript(),
       syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
-      keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
+      // Mod-Enter/Mod-Shift-Enter run/check the code while the editor has
+      // focus (Ctrl on Windows/Linux, Cmd on Mac, via CodeMirror's
+      // platform-aware "Mod-" prefix). Placed before defaultKeymap so it
+      // wins over any conflicting default binding; returning true marks
+      // the key as handled so it doesn't also insert a newline.
+      keymap.of([
+        { key: 'Mod-Enter', run: () => { handleRun(); return true; } },
+        { key: 'Mod-Shift-Enter', run: () => { handleCheck(); return true; } },
+        ...defaultKeymap,
+        ...historyKeymap,
+        indentWithTab
+      ]),
       EditorView.updateListener.of((update) => {
         if (update.docChanged && currentExerciseId !== null) {
           attempts.set(currentExerciseId, update.state.doc.toString());
@@ -313,6 +325,8 @@
       }
     });
   }
+
+  onMount(() => bindRunCheckShortcuts({ onRun: handleRun, onCheck: handleCheck }));
 
   onDestroy(() => {
     if (view) view.destroy();
