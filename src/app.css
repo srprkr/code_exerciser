@@ -101,10 +101,17 @@ body {
   cursor: pointer;
 }
 
-.icon {
-  width: 1em;
-  height: 1em;
-  flex-shrink: 0;
+/* @layer components so explicit Tailwind size utilities (h-6 w-6, etc.)
+   on the same element always win the cascade over this default sizing,
+   regardless of source order — without this, .icon (defined after
+   @tailwind utilities) would beat utility classes at matching
+   specificity purely by appearing later in the compiled CSS. */
+@layer components {
+  .icon {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+  }
 }
 
 /* daisyUI's .btn sets a fixed height/min-height per size (3rem for plain
