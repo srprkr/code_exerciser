@@ -3,14 +3,18 @@
   import {
     filteredExercises,
     currentExerciseIndex,
-    applyDeepLinkFromUrl
+    applyDeepLinkFromUrl,
+    stepExercise
   } from '../stores/ui.js';
   import { progress as progressStore } from '../stores/progress.js';
+  import { bindArrowKeyNav } from '../utils/keyboardNav.js';
   import ExerciseFilters from './ExerciseFilters.svelte';
   import DoneCheckmark from './DoneCheckmark.svelte';
   import SolutionToggle from './SolutionToggle.svelte';
   import SolutionDetails from './SolutionDetails.svelte';
   import CodeEditor from './CodeEditor.svelte';
+
+  const SKIP_AMOUNT = 10;
 
   const DIFFICULTY_BADGE_CLASS = {
     easy: 'badge-success',
@@ -38,20 +42,11 @@
     return !!(entry && entry.completed);
   });
 
-  function goNext() {
-    const len = $filteredExercises.length;
-    if (len === 0) return;
-    currentExerciseIndex.set(($currentExerciseIndex + 1) % len);
-  }
-
-  function goPrev() {
-    const len = $filteredExercises.length;
-    if (len === 0) return;
-    currentExerciseIndex.set(($currentExerciseIndex - 1 + len) % len);
-  }
+  const showSkipButtons = $derived($filteredExercises.length >= SKIP_AMOUNT);
 
   onMount(() => {
     applyDeepLinkFromUrl();
+    return bindArrowKeyNav({ onStep: stepExercise, skipAmount: SKIP_AMOUNT });
   });
 </script>
 
@@ -59,21 +54,53 @@
   <ExerciseFilters />
 
   <div class="carousel-controls">
-    <button type="button" class="carousel-button btn btn-outline btn-sm sm:btn-md" onclick={goPrev}>
-      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 18l-6-6 6-6" />
-      </svg>
-      Previous
-    </button>
+    <div class="carousel-controls-group">
+      {#if showSkipButtons}
+        <button
+          type="button"
+          class="carousel-button carousel-skip-button btn btn-outline btn-sm sm:btn-md"
+          aria-label="Back {SKIP_AMOUNT} problems"
+          onclick={() => stepExercise(-SKIP_AMOUNT)}
+        >
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 17l-5-5 5-5" />
+            <path d="M11 17l-5-5 5-5" />
+          </svg>
+        </button>
+      {/if}
+      <button type="button" class="carousel-button btn btn-outline btn-sm sm:btn-md" onclick={() => stepExercise(-1)}>
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+        Previous
+      </button>
+    </div>
+
     <span class="carousel-counter">
       {hasResults ? `${$currentExerciseIndex + 1} / ${$filteredExercises.length}` : '0 / 0'}
     </span>
-    <button type="button" class="carousel-button btn btn-outline btn-sm sm:btn-md" onclick={goNext}>
-      Next
-      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 18l6-6-6-6" />
-      </svg>
-    </button>
+
+    <div class="carousel-controls-group">
+      <button type="button" class="carousel-button btn btn-outline btn-sm sm:btn-md" onclick={() => stepExercise(1)}>
+        Next
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18l6-6-6-6" />
+        </svg>
+      </button>
+      {#if showSkipButtons}
+        <button
+          type="button"
+          class="carousel-button carousel-skip-button btn btn-outline btn-sm sm:btn-md"
+          aria-label="Forward {SKIP_AMOUNT} problems"
+          onclick={() => stepExercise(SKIP_AMOUNT)}
+        >
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 17l5-5-5-5" />
+            <path d="M13 17l5-5-5-5" />
+          </svg>
+        </button>
+      {/if}
+    </div>
   </div>
 
   {#if !hasResults}

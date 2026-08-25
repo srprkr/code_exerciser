@@ -204,6 +204,17 @@ body {
   margin-bottom: 1rem;
 }
 
+.carousel-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.carousel-skip-button {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
 .exercise {
   border: 1px solid var(--color-border);
   border-radius: 8px;

@@ -1,4 +1,4 @@
-import { writable, derived } from 'svelte/store';
+import { writable, derived, get } from 'svelte/store';
 import { exercises, KNOWN_FUNCTIONS, DIFFICULTIES, exerciseHasFunction } from '../data/exercises.js';
 
 export const currentView = writable('exercises'); // 'exercises' | 'profile'
@@ -23,6 +23,18 @@ export const filteredExercises = derived(
 
 export function resetIndexAndRender() {
   currentExerciseIndex.set(0);
+}
+
+// Moves the current exercise index by `delta` positions within the
+// currently filtered list, wrapping at both ends — shared by the
+// single-step Prev/Next buttons/arrow keys and the skip-10 buttons/
+// Shift+Arrow shortcut, so they all wrap consistently.
+export function stepExercise(delta) {
+  const filtered = get(filteredExercises);
+  const len = filtered.length;
+  if (len === 0) return;
+
+  currentExerciseIndex.update((current) => ((current + delta) % len + len) % len);
 }
 
 export function toggleFunctionFilter(fn) {
