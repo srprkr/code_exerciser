@@ -1,6 +1,6 @@
 <script>
   import { marked } from 'marked';
-  import readmeSource from '../../../README.md?raw';
+  import readmeSource from '../../../ARRAY_METHODS_DEEP_DIVE.md?raw';
 
   let dialogEl = $state(null);
 
