@@ -14,6 +14,7 @@
   let functionPillsExpanded = $state(false);
 
   const hiddenCount = $derived(KNOWN_FUNCTIONS.length - FUNCTION_PILLS_VISIBLE);
+  const hasActiveFilters = $derived($activeFunctionFilters.size > 0 || $activeDifficultyFilter !== null);
 </script>
 
 <div class="filters" aria-label="Filter exercises">
@@ -57,11 +58,13 @@
     {/each}
   </div>
 
-  <button type="button" id="clear-filters" class="btn btn-ghost btn-xs sm:btn-sm" onclick={clearFilters}>
-    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 6 6 18" />
-      <path d="M6 6l12 12" />
-    </svg>
-    Clear filters
-  </button>
+  {#if hasActiveFilters}
+    <button type="button" id="clear-filters" class="btn btn-ghost btn-xs sm:btn-sm" onclick={clearFilters}>
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6 6 18" />
+        <path d="M6 6l12 12" />
+      </svg>
+      Clear filters
+    </button>
+  {/if}
 </div>
