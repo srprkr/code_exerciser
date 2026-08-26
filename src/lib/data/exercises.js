@@ -244,7 +244,7 @@ console.log(maxOfFive);`,
   {
     id: 20,
     title: 'Problem 20',
-    question: 'Given an array of objects {name, price, inStock}, get the total price of only the items that are in stock (filter, then reduce)',
+    question: 'Given an array of objects {name, price, inStock}, get the total price (to the nearest cent) of only the items that are in stock (filter, then reduce)',
     sampleData: `const bag = [
   { name: "Keyboard", price: 45.00, inStock: true },
   { name: "Monitor", price: 199.99, inStock: false },
@@ -256,9 +256,9 @@ console.log(maxOfFive);`,
     .filter(item => item.inStock)
     .reduce((acc, val) => {
       return acc + val.price
-    }, 0);
+    }, 0).toFixed(2);
     console.log(currentStockTotal);`,
-    output: 150.5,
+    output: 150.50,
     functions: ['filter', 'reduce'],
     difficulty: 'hard'
   },
