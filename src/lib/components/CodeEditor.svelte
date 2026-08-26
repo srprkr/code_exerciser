@@ -39,6 +39,10 @@
   let checkResultText = $state('');
   let checkResultPassed = $state(false);
 
+  // Matches bindRunCheckShortcuts' own platform check, so the hint always
+  // names the key that actually triggers it.
+  const modKeyLabel = navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl';
+
   function isDarkTheme() {
     return document.documentElement.getAttribute('data-theme') === 'dark';
   }
@@ -352,13 +356,13 @@
 </div>
 
 <div class="editor-actions">
-  <button type="button" class="run-code-button btn btn-primary btn-sm sm:btn-md" onclick={handleRun}>
+  <button type="button" class="run-code-button btn btn-primary btn-sm sm:btn-md" onclick={handleRun} title="Run ({modKeyLabel}+Enter)">
     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M6 4l14 8-14 8V4z" />
     </svg>
     Run
   </button>
-  <button type="button" class="check-answer-button btn btn-outline btn-sm sm:btn-md" onclick={handleCheck}>
+  <button type="button" class="check-answer-button btn btn-outline btn-sm sm:btn-md" onclick={handleCheck} title="Check answer ({modKeyLabel}+Shift+Enter)">
     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M20 6 9 17l-5-5" />
     </svg>

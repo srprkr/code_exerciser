@@ -60,6 +60,7 @@
           type="button"
           class="carousel-button carousel-skip-button btn btn-outline btn-sm sm:btn-md"
           aria-label="Back {SKIP_AMOUNT} problems"
+          title="Back {SKIP_AMOUNT} (Shift+←)"
           onclick={() => stepExercise(-SKIP_AMOUNT)}
         >
           <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -68,7 +69,7 @@
           </svg>
         </button>
       {/if}
-      <button type="button" class="carousel-button btn btn-outline btn-sm sm:btn-md" onclick={() => stepExercise(-1)}>
+      <button type="button" class="carousel-button btn btn-outline btn-sm sm:btn-md" onclick={() => stepExercise(-1)} title="Previous (←)">
         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 18l-6-6 6-6" />
         </svg>
@@ -81,7 +82,7 @@
     </span>
 
     <div class="carousel-controls-group">
-      <button type="button" class="carousel-button btn btn-outline btn-sm sm:btn-md" onclick={() => stepExercise(1)}>
+      <button type="button" class="carousel-button btn btn-outline btn-sm sm:btn-md" onclick={() => stepExercise(1)} title="Next (→)">
         Next
         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 18l6-6-6-6" />
@@ -92,6 +93,7 @@
           type="button"
           class="carousel-button carousel-skip-button btn btn-outline btn-sm sm:btn-md"
           aria-label="Forward {SKIP_AMOUNT} problems"
+          title="Forward {SKIP_AMOUNT} (Shift+→)"
           onclick={() => stepExercise(SKIP_AMOUNT)}
         >
           <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

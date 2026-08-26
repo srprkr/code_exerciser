@@ -39,6 +39,26 @@ body {
   display: none !important;
 }
 
+/* Off-screen until keyboard-focused, so Tab from the page's start lets
+   keyboard users jump straight past the header to the exercise/profile
+   content instead of tabbing through every header button first. */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 0.5rem;
+}
+
 .page-wrap {
   max-width: 1100px;
   margin: 0 auto;
@@ -99,6 +119,16 @@ body {
 
 .theme-toggle {
   cursor: pointer;
+}
+
+/* daisyUI's .swap hides its real <input type="checkbox"> visually, so the
+   browser's native focus ring lands on an invisible element and keyboard
+   users tabbing to ThemeToggle/SolutionToggle see no focus indicator at
+   all. Draw the ring on the label (the actual visible surface) instead,
+   only while the checkbox has real keyboard focus. */
+.swap:has(input:focus-visible) {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 
 /* @layer components so explicit Tailwind size utilities (h-6 w-6, etc.)
@@ -246,6 +276,13 @@ body {
 .done-checkmark {
   color: #10b981;
   flex-shrink: 0;
+}
+
+/* #10b981 fails WCAG AA (2.4:1) against the light-mode surface color —
+   darkened only for light mode since the same green passes fine against
+   the darker dark-mode surface. */
+[data-theme='light'] .done-checkmark {
+  color: #047857;
 }
 
 .tough-it-out-toggle {
@@ -403,6 +440,13 @@ details[open] > summary .summary-chevron {
   color: #b3261e;
 }
 
+/* #b3261e fails WCAG AA (2.4:1) against the dark-mode console background —
+   a lighter red passes (5.7:1) while light mode's darker red still passes
+   as-is against its white background. */
+[data-theme='dark'] .console-error {
+  color: #f87171;
+}
+
 /* #look-it-up-modal uses daisyUI's .modal/.modal-box/.modal-action classes
    for structure and theming; only the "don't ask again" label needs its
    own layout rule since daisyUI doesn't style that. */
@@ -414,8 +458,10 @@ details[open] > summary .summary-chevron {
    daisyUI's shared --su/--p theme tokens so other success/primary-colored
    elements are unaffected. Dark mode keeps daisyUI's defaults. */
 [data-theme='light'] .badge-success {
-  background: #10b981;
-  border-color: #10b981;
+  /* #10b981 only gives white text a 2.5:1 contrast ratio; #047857 passes
+     WCAG AA (5.5:1) while staying the same green family. */
+  background: #047857;
+  border-color: #047857;
   color: #ffffff;
 }
 
@@ -556,6 +602,13 @@ a.achievement-card-earned:hover {
 .readme-content a {
   color: #7c3aed;
   text-decoration: underline;
+}
+
+/* #7c3aed fails WCAG AA (2.8:1) against the dark-mode modal background —
+   a lighter violet passes (5.8:1) while light mode's original purple
+   still passes as-is against its white background. */
+[data-theme='dark'] .readme-content a {
+  color: #a78bfa;
 }
 
 .readme-content code {

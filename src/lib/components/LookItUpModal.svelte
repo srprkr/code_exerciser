@@ -27,7 +27,7 @@
   }
 </script>
 
-<dialog bind:this={dialogEl} class="modal">
+<dialog bind:this={dialogEl} class="modal" aria-labelledby="look-it-up-title">
   <div class="modal-box relative">
     <form method="dialog">
       <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
@@ -38,7 +38,7 @@
       </button>
     </form>
 
-    <h3 class="text-lg font-bold">Are you sure?</h3>
+    <h3 id="look-it-up-title" class="text-lg font-bold">Are you sure?</h3>
     <p class="py-4">Practicing without the answers improves muscle memory. Try working through it a bit longer before peeking.</p>
     <label class="modal-dismiss flex items-center gap-2 text-sm cursor-pointer">
       <input type="checkbox" class="checkbox checkbox-sm" bind:checked={dontAskAgain} />

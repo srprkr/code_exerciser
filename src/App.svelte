@@ -12,6 +12,8 @@
   }
 </script>
 
+<a href="#main-content" class="skip-link">Skip to exercise content</a>
+
 <div class="page-wrap">
   {#if $currentView === 'exercises'}
     <div class="page-header">
@@ -41,9 +43,11 @@
       </div>
     </div>
 
-    <ExerciseCarousel />
+    <div id="main-content">
+      <ExerciseCarousel />
+    </div>
   {:else}
-    <div in:fly={{ x: 40, duration: 200 }} out:fly={{ x: -40, duration: 150 }}>
+    <div id="main-content" in:fly={{ x: 40, duration: 200 }} out:fly={{ x: -40, duration: 150 }}>
       <ProfilePanel onOpenReadme={openReadme} />
     </div>
   {/if}

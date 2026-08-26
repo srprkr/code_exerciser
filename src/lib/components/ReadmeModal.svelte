@@ -15,7 +15,7 @@
   }
 </script>
 
-<dialog bind:this={dialogEl} class="modal">
+<dialog bind:this={dialogEl} class="modal" aria-label="Function reference docs">
   <div class="modal-box relative max-w-3xl readme-modal-box">
     <form method="dialog">
       <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
