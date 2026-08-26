@@ -12,14 +12,17 @@ export function isTypingTarget(el) {
 
 // Wires document-level ArrowLeft/ArrowRight (single step) and
 // Shift+ArrowLeft/ArrowRight (skip step, e.g. 10) navigation, calling
-// onStep(delta) for each. Ignored while focus is on a typing target (see
-// isTypingTarget) so it never hijacks cursor movement in the code editor
-// or text entry in inputs. Returns a cleanup function.
+// onStep(delta) for each. Ctrl may be held too (harmlessly) so the same
+// physical shortcut used to reach through the code editor's own keymap
+// (see CodeEditor.svelte's Ctrl-Arrow bindings) still works here when
+// focus lands back outside it. Ignored while focus is on a typing target
+// (see isTypingTarget) so it never hijacks cursor movement in the code
+// editor or text entry in inputs. Returns a cleanup function.
 export function bindArrowKeyNav({ onStep, skipAmount = 10 }) {
   function handleKeydown(event) {
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     if (isTypingTarget(event.target)) return;
-    if (event.altKey || event.metaKey || event.ctrlKey) return;
+    if (event.altKey || event.metaKey) return;
 
     const direction = event.key === 'ArrowRight' ? 1 : -1;
     const delta = event.shiftKey ? direction * skipAmount : direction;

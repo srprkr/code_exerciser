@@ -140,7 +140,7 @@
 
       <div class="block mb-0">
         <h3 class="font-bold mt-4 mb-1">Your turn:</h3>
-        <CodeEditor {exercise} onCheckPassed={() => (solutionVisible = true)} />
+        <CodeEditor {exercise} onCheckPassed={() => (solutionVisible = true)} skipAmount={SKIP_AMOUNT} />
       </div>
 
       <SolutionDetails {exercise} {solutionVisible} />

@@ -11,13 +11,13 @@
   import { Progress } from '../stores/progress.js';
   import { runCode as sandboxRunCode, teardownSandbox } from '../grading/sandbox.js';
   import { decideCheckResult } from '../grading/grade.js';
-  import { hasPeekedThisSession } from '../stores/ui.js';
+  import { hasPeekedThisSession, stepExercise } from '../stores/ui.js';
   import { bindRunCheckShortcuts } from '../utils/keyboardNav.js';
 
   // Called by the parent when a Check-answer pass succeeds and it should
   // reveal the solution (even in tough-it-out mode) — mirrors the old
   // window.revealSolutionOnCorrectAnswer bridge, now just a prop callback.
-  let { exercise, onCheckPassed } = $props();
+  let { exercise, onCheckPassed, skipAmount = 10 } = $props();
 
   // Per-exercise in-memory attempt store, keyed by exercise id. Survives
   // Prev/Next navigation for the session but not a page refresh. Component-
@@ -147,6 +147,14 @@
       keymap.of([
         { key: 'Mod-Enter', run: () => { handleRun(); return true; } },
         { key: 'Mod-Shift-Enter', run: () => { handleCheck(); return true; } },
+        // Ctrl-Arrow (literal Ctrl, not "Mod", on every platform including
+        // Mac) steps exercises while the editor has focus, since plain
+        // arrow keys need to keep moving the text cursor. Mirrors
+        // bindArrowKeyNav's plain/Shift split for out-of-editor nav.
+        { key: 'Ctrl-ArrowLeft', run: () => { stepExercise(-1); return true; } },
+        { key: 'Ctrl-ArrowRight', run: () => { stepExercise(1); return true; } },
+        { key: 'Ctrl-Shift-ArrowLeft', run: () => { stepExercise(-skipAmount); return true; } },
+        { key: 'Ctrl-Shift-ArrowRight', run: () => { stepExercise(skipAmount); return true; } },
         ...defaultKeymap,
         ...historyKeymap,
         indentWithTab
