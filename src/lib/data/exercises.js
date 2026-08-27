@@ -757,7 +757,11 @@ console.log(maxOfFive);`,
     console.log(noCaseSort);`,
     output: ['Apple', 'banana', 'cherry', 'Date'],
     functions: ['sort', 'spread'],
-    difficulty: 'medium'
+    difficulty: 'medium',
+    hint: {
+      text: "Comparing strings with < or > works, but it's fragile and breaks down outside plain ASCII. localeCompare() is the idiomatic way to compare strings for sorting — it returns a proper -1/0/1 result and handles locale-aware ordering correctly.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare'
+    }
   },
   {
     id: 49,

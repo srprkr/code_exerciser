@@ -10,6 +10,7 @@
   import { bindArrowKeyNav } from '../utils/keyboardNav.js';
   import ExerciseFilters from './ExerciseFilters.svelte';
   import DoneCheckmark from './DoneCheckmark.svelte';
+  import ExerciseHint from './ExerciseHint.svelte';
   import SolutionToggle from './SolutionToggle.svelte';
   import SolutionDetails from './SolutionDetails.svelte';
   import CodeEditor from './CodeEditor.svelte';
@@ -119,20 +120,25 @@
     <section class="exercise">
       <div class="exercise-title-row">
         <div class="exercise-title-group">
-          <DoneCheckmark {completed} />
-          <h2 class="exercise-title text-xl sm:text-2xl font-bold">Problem {exercise.id}</h2>
+          <div class="exercise-title-heading">
+            <DoneCheckmark {completed} />
+            <h2 class="exercise-title text-xl sm:text-2xl font-bold">Problem {exercise.id}</h2>
+          </div>
+
+          <div class="block tags">
+            {#each exercise.functions as fn (fn)}
+              <span class="badge badge-info badge-outline">{fn}</span>
+            {/each}
+            <span class="badge {DIFFICULTY_BADGE_CLASS[exercise.difficulty]}">{exercise.difficulty}</span>
+          </div>
         </div>
 
         {#if !completed}
-          <SolutionToggle {exercise} bind:solutionVisible />
+          <div class="exercise-aids">
+            <SolutionToggle {exercise} bind:solutionVisible />
+            <ExerciseHint {exercise} />
+          </div>
         {/if}
-      </div>
-
-      <div class="block tags">
-        {#each exercise.functions as fn (fn)}
-          <span class="badge badge-info badge-outline">{fn}</span>
-        {/each}
-        <span class="badge {DIFFICULTY_BADGE_CLASS[exercise.difficulty]}">{exercise.difficulty}</span>
       </div>
 
       <div class="block">

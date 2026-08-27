@@ -40,8 +40,8 @@ body {
 }
 
 /* Off-screen until keyboard-focused, so Tab from the page's start lets
-   keyboard users jump straight past the header to the exercise/profile
-   content instead of tabbing through every header button first. */
+   keyboard users jump straight past the header and filters to the
+   exercise/profile content instead of tabbing through every control. */
 .skip-link {
   position: absolute;
   top: -40px;
@@ -223,7 +223,6 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  margin: .8rem 0;
 }
 
 .carousel-controls {
@@ -262,12 +261,18 @@ body {
 .exercise-title-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem 1rem;
 }
 
 .exercise-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.exercise-title-heading {
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -303,6 +308,49 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.02em;
   color: var(--color-text-muted);
+}
+
+.exercise-aids {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.hint-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.hint-trigger:hover {
+  color: var(--color-text);
+}
+
+.hint-popover {
+  max-width: 320px;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.hint-popover p {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+}
+
+.hint-popover a {
+  font-size: 0.85rem;
+  font-weight: bold;
 }
 
 .block {
