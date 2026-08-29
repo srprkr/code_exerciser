@@ -5,11 +5,11 @@ export default defineConfig({
   fullyParallel: true,
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:5173',
+    url: 'http://localhost:5173/code_exerciser/',
     reuseExistingServer: !process.env.CI
   },
   use: {
-    baseURL: 'http://localhost:5173'
+    baseURL: 'http://localhost:5173/code_exerciser/'
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },

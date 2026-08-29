@@ -19,7 +19,7 @@ beforeEach(() => {
 describe('App', () => {
   it('mounts without throwing and shows the first exercise', () => {
     render(App);
-    expect(screen.getByText('Coding function practice')).toBeInTheDocument();
+    expect(screen.getByText('JavaScript Exerciser')).toBeInTheDocument();
     expect(screen.getByText(/Problem 1$/)).toBeInTheDocument();
   });
 
