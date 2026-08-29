@@ -17,7 +17,7 @@
 <div class="page-wrap">
   {#if $currentView === 'exercises'}
     <div class="page-header">
-      <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">Coding function practice</h1>
+      <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">JavaScript Function Exerciser</h1>
 
       <div class="header-actions">
         <button
