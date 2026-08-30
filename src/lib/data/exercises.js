@@ -271,7 +271,10 @@ console.log(maxOfFive);`,
     console.log(fahrenheitTemps);`,
     output: [32, 68, 98.6, 212, 14],
     functions: ['map'],
-    difficulty: 'medium'
+    difficulty: 'medium',
+    hint: {
+      text: 'The formula to convert Celsius to Fahrenheit is F = (C * 9/5) + 32.',
+    }
   },
   {
     id: 22,
