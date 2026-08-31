@@ -133,12 +133,12 @@
           </div>
         </div>
 
-        {#if !completed}
-          <div class="exercise-aids">
+        <div class="exercise-aids">
+          {#if !completed}
             <SolutionToggle {exercise} bind:solutionVisible />
-            <ExerciseHint {exercise} />
-          </div>
-        {/if}
+          {/if}
+          <ExerciseHint {exercise} />
+        </div>
       </div>
 
       <div class="block">
