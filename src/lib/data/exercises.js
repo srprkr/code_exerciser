@@ -346,7 +346,10 @@ console.log(maxOfFive);`,
       { url: 'https://sub.example.co.uk/page', domain: 'sub.example.co.uk' }
     ],
     functions: ['map'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: "Don't hand-parse the string with split or regex — the built-in URL constructor (new URL(str)) parses a URL for you, and its .hostname property gives you the domain directly.",
+    }
   },
   {
     id: 26,
@@ -575,7 +578,10 @@ console.log(maxOfFive);`,
     console.log(avgSalaryByDept);`,
     output: { Engineering: 98333.33, Sales: 72500 },
     functions: ['reduce'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: 'One reduce pass gets you totals and counts per department, but not an average directly — do a second reduce (or map) over Object.entries() of that result to divide total by count.',
+    }
   },
   {
     id: 37,
@@ -656,7 +662,10 @@ console.log(maxOfFive);`,
     console.log(charges);`,
     output: [100, 70, 120, 100],
     functions: ['reduce'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: 'Your accumulator can hold more than one value — try an object like { tally, history }, updating tally each step and pushing it into history before returning the accumulator.',
+    }
   },
   {
     id: 41,
@@ -793,7 +802,10 @@ console.log(maxOfFive);`,
       { name: 'Mei', department: 'Sales' }
     ],
     functions: ['sort', 'spread'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: "Your comparator can check more than one field — compare department first, and only fall back to comparing name when the departments are equal.",
+    }
   },
   {
     id: 50,
@@ -933,7 +945,10 @@ let arrB = [4, 5, 6];`,
       { id: 3, name: 'Mouse', price: 25.5 }
     ],
     functions: ['map', 'spread'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: "Use .map() over the array, and inside the callback spread the item into a new object ({...item, ...}) only for the one you want to change — otherwise return it as-is so you don't mutate anything.",
+    }
   },
   {
     id: 61,
@@ -1187,7 +1202,10 @@ console.log(address);`,
     console.log(tagged);`,
     output: 'SAM is ADMIN',
     functions: ['reduce', 'spread', 'template-literal'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: 'strings and values line up by index, but strings always has one more element than values — reduce over strings and pull the matching (uppercased) value from values[i] as you go.',
+    }
   },
   {
     id: 81,
@@ -1503,7 +1521,10 @@ console.log(address);`,
     console.log(personFullNameObj);`,
     output: { fullName: 'Sam', age: 25, city: 'Austin' },
     functions: ['Object.entries', 'map', 'Object.fromEntries', 'destructure'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: "Map over the [key, value] entries and conditionally swap out just the key when it's 'name', leaving every other pair untouched, then rebuild the object with Object.fromEntries.",
+    }
   },
   {
     id: 106,
@@ -1554,7 +1575,10 @@ console.log(address);`,
     console.log(gradesSortObj);`,
     output: { science: 95, gym: 85, math: 70, art: 60 },
     functions: ['Object.entries', 'sort', 'Object.fromEntries'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: 'Object.entries turns your object into a sortable array of [key, value] pairs — sort that array by comparing the value (b[1] - a[1] for descending), then rebuild with Object.fromEntries.',
+    }
   },
   {
     id: 110,
@@ -1571,7 +1595,10 @@ console.log(address);`,
     console.log(mergedObj);`,
     output: { a: 1, b: 5, c: 4 },
     functions: ['Object.entries', 'reduce', 'spread', 'destructure'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: "Combine both objects' entries into one array first (spread both Object.entries() calls together), then reduce over that combined list, adding to any key that already exists in the accumulator.",
+    }
   },
   {
     id: 111,
@@ -1877,7 +1904,10 @@ console.log(address);`,
     console.log(gapStarts);`,
     output: [2, 5, 9],
     functions: ['filter'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: "filter's callback also gives you the index and the whole array — use those to peek at the next element and check whether it's exactly one more than the current one.",
+    }
   },
   {
     id: 130,
@@ -1951,7 +1981,10 @@ console.log(address);`,
     console.log(donationSummary);`,
     output: 'Sam: $10, Ana: $25, Luis: $5',
     functions: ['reduce', 'template-literal'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: "reduce's callback also gives you the current index — use it to skip prepending a comma before the very first item.",
+    }
   },
   {
     id: 135,
@@ -1991,7 +2024,10 @@ console.log(address);`,
     console.log(mode);`,
     output: { num: 4, count: 4 },
     functions: ['reduce', 'Object.entries', 'destructure'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: 'First build a frequency count with reduce (the same pattern as counting occurrences), then reduce over Object.entries of that count object to find the entry with the highest count.',
+    }
   },
   {
     id: 137,
@@ -2009,7 +2045,10 @@ console.log(address);`,
     console.log(Object.fromEntries(recordsById));`,
     output: { 101: 'Widget', 102: 'Gadget', 103: 'Doohickey' },
     functions: ['reduce'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: "Your reduce accumulator doesn't have to be {} — seed it with new Map() and call .set() inside the callback, remembering to still return the accumulator each time.",
+    }
   },
   {
     id: 138,
