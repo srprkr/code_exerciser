@@ -406,7 +406,10 @@ console.log(maxOfFive);`,
     console.log(primes);`,
     output: [2, 3, 5, 7, 11],
     functions: ['filter'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: "A number is prime if nothing from 2 up to its square root divides it evenly — you only need to check divisors up to Math.sqrt(num), not all the way up to num.",
+    }
   },
   {
     id: 29,
