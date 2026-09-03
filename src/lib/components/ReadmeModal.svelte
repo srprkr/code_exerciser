@@ -1,10 +1,17 @@
 <script>
   import { marked } from 'marked';
-  import readmeSource from '../../../ARRAY_METHODS_DEEP_DIVE.md?raw';
+  import javascriptReadme from '../../../JAVASCRIPT_REFERENCE.md?raw';
+  import pythonReadme from '../../../PYTHON_IDIOMS_REFERENCE.md?raw';
+  import { currentLanguage } from '../stores/language.js';
+
+  // One doc per language, mirroring how DOC_SITE_NAME/KNOWN_FUNCTION_DOC_LINKS
+  // already split per language module. Falls back to the JavaScript doc so an
+  // unrecognised language still shows something rather than a blank modal.
+  const README_SOURCES = { javascript: javascriptReadme, python: pythonReadme };
 
   let dialogEl = $state(null);
 
-  const html = marked.parse(readmeSource);
+  const html = $derived(marked.parse(README_SOURCES[$currentLanguage] ?? javascriptReadme));
 
   export function open() {
     dialogEl?.showModal();

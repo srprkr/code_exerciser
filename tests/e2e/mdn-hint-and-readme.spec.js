@@ -18,9 +18,10 @@ test('each achievement badge with an MDN mapping links out to MDN in a new tab',
 
 // The exercises page also has the (normally closed) look-it-up dialog in
 // the DOM, so `dialog.modal` alone matches two elements — scope to the one
-// containing the README's own heading text.
-function readmeModal(page) {
-  return page.locator('dialog.modal').filter({ hasText: "Deep Dive into JavaScript's Array Map function" });
+// containing the README's own heading text. Defaults to the JavaScript
+// heading since these tests run on the default language unless noted.
+function readmeModal(page, heading = "JavaScript Reference") {
+  return page.locator('dialog.modal').filter({ hasText: heading });
 }
 
 test('the function reference docs button opens the README modal from the exercises page', async ({ page }) => {

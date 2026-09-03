@@ -169,3 +169,34 @@ test('the same hint on a JavaScript problem still points at MDN', async ({ page 
   await expect(link).toBeVisible();
   await expect(link).toHaveAttribute('href', /developer\.mozilla\.org/);
 });
+
+test('the function reference book icon shows the Python idioms doc, not the JS one', async ({ page }) => {
+  await switchTo(page, 'Python');
+  await page.getByRole('button', { name: 'Function reference docs' }).click();
+
+  const modal = page.locator('dialog.modal').filter({ hasText: 'Python Idioms Reference' });
+  await expect(modal).toBeVisible();
+  await expect(modal).not.toContainText("JavaScript Reference");
+  await expect(modal.locator('pre code').first()).toBeVisible();
+});
+
+test('the reference doc updates after switching languages, close then reopen', async ({ page }) => {
+  // ReadmeModal is a single persistent instance for the whole session (not
+  // remounted per open), so this only passes if its content is reactive to
+  // the language store rather than computed once at initial mount.
+  const openModal = () => page.getByRole('button', { name: 'Function reference docs' }).click();
+  const closeModal = () => page.locator('dialog.modal[open]').getByLabel('Close').click();
+
+  await openModal();
+  await expect(page.locator('dialog.modal[open]')).toContainText("JavaScript Reference");
+  await closeModal();
+
+  await switchTo(page, 'Python');
+  await openModal();
+  await expect(page.locator('dialog.modal[open]')).toContainText('Python Idioms Reference');
+  await closeModal();
+
+  await switchTo(page, 'JavaScript');
+  await openModal();
+  await expect(page.locator('dialog.modal[open]')).toContainText("JavaScript Reference");
+});
