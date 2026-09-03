@@ -1,6 +1,7 @@
 <script>
   import { fly } from 'svelte/transition';
   import ThemeToggle from './lib/components/ThemeToggle.svelte';
+  import LanguageSelect from './lib/components/LanguageSelect.svelte';
   import ExerciseCarousel from './lib/components/ExerciseCarousel.svelte';
   import ProfilePanel from './lib/components/ProfilePanel.svelte';
   import ReadmeModal from './lib/components/ReadmeModal.svelte';
@@ -17,7 +18,10 @@
 <div class="page-wrap">
   {#if $currentView === 'exercises'}
     <div class="page-header">
-      <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">JavaScript Exerciser</h1>
+      <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight title-row">
+        <LanguageSelect />
+        Exerciser
+      </h1>
 
       <div class="header-actions">
         <button

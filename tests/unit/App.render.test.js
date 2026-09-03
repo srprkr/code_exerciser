@@ -19,7 +19,8 @@ beforeEach(() => {
 describe('App', () => {
   it('mounts without throwing and shows the first exercise', () => {
     render(App);
-    expect(screen.getByText('JavaScript Exerciser')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Select programming language' })).toHaveTextContent('JavaScript');
+    expect(screen.getByText('Exerciser')).toBeInTheDocument();
     expect(screen.getByText(/Problem 1$/)).toBeInTheDocument();
   });
 
