@@ -41,16 +41,77 @@ test('switching languages clears filters that the new language cannot show', asy
   await expect(position(page)).toHaveText('1 / 9');
 });
 
-test('Run and Check report that no Python runtime exists, rather than a JS error', async ({ page }) => {
+// Pyodide's first load in a fresh browser context pays the real ~1-2s WASM +
+// stdlib fetch cost (self-hosted from public/pyodide/, not mocked) — these
+// assertions get a generous timeout rather than racing the default 5s.
+const PYODIDE_TIMEOUT = { timeout: 20000 };
+
+test('Run executes real Python and prints the actual result', async ({ page }) => {
   await switchTo(page, 'Python');
 
+  const editor = page.locator('.cm-content');
+  await editor.click();
+  await page.keyboard.press('Control+End');
+  await page.keyboard.type(
+    '\nlong_words = [word for word in sentence.split() if len(word) > 4]\nprint(long_words)'
+  );
+
   await page.getByRole('button', { name: 'Run' }).click();
-  await expect(page.locator('.console-error')).toContainText('No Python runtime is wired up yet');
-  // A JS SyntaxError leaking through would mean the guard was bypassed.
-  await expect(page.locator('.console-error')).not.toContainText('SyntaxError');
+
+  await expect(page.locator('.console-log')).toContainText('quick', PYODIDE_TIMEOUT);
+  await expect(page.locator('.console-error')).toHaveCount(0);
+});
+
+test('Check answer passes a correct Python solution and marks it complete', async ({ page }) => {
+  await switchTo(page, 'Python');
+
+  const editor = page.locator('.cm-content');
+  await editor.click();
+  await page.keyboard.press('Control+End');
+  // Problem 1's actual solution, from python-exercises.js.
+  await page.keyboard.type(
+    '\nlong_words = [word for word in sentence.split() if len(word) > 4]\nprint(long_words)'
+  );
 
   await page.getByRole('button', { name: 'Check answer' }).click();
-  await expect(page.locator('.console-error')).toContainText('No Python runtime is wired up yet');
+
+  await expect(page.getByText('Correct! That matches the expected output.')).toBeVisible(PYODIDE_TIMEOUT);
+  await expect(page.locator('.done-checkmark')).toBeVisible();
+});
+
+test('Check answer fails an incorrect Python solution without crashing', async ({ page }) => {
+  await switchTo(page, 'Python');
+
+  const editor = page.locator('.cm-content');
+  await editor.click();
+  await page.keyboard.press('Control+End');
+  await page.keyboard.type('\nprint([1, 2, 3])');
+
+  await page.getByRole('button', { name: 'Check answer' }).click();
+
+  await expect(page.getByText("Not quite — that doesn't match the expected output yet.")).toBeVisible(
+    PYODIDE_TIMEOUT
+  );
+  await expect(page.locator('.done-checkmark')).toBeHidden();
+});
+
+test('a Python runtime error shows the real traceback, not a generic failure', async ({ page }) => {
+  await switchTo(page, 'Python');
+
+  const editor = page.locator('.cm-content');
+  await editor.click();
+  await page.keyboard.press('Control+End');
+  await page.keyboard.type('\nprint(this_name_does_not_exist)');
+
+  await page.getByRole('button', { name: 'Run' }).click();
+
+  // A failed run also has no successful print to report, so a second
+  // "no output" line follows the traceback — assert on the traceback
+  // specifically rather than the console as a whole.
+  await expect(page.locator('.console-error').first()).toContainText('NameError', PYODIDE_TIMEOUT);
+  // ...and confirms the earlier fix: that follow-up message should read
+  // print(...), not the JS sandbox's console.log(...) wording.
+  await expect(page.locator('.console-error').last()).toContainText('print(...)');
 });
 
 test('the selected language survives a page reload', async ({ page }) => {

@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Self-hosted Pyodide runtime — regenerated from node_modules/pyodide by
+# `npm install` (see package.json's postinstall / scripts/copy-pyodide-assets.mjs)
+/public/pyodide/
+
 # Playwright
 /test-results/
 /playwright-report/

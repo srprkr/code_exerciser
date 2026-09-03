@@ -17,6 +17,24 @@
       exercise.functions?.map((fn) => $KNOWN_FUNCTION_DOC_LINKS[fn]).find(Boolean) ??
       null
   );
+
+  // A native `popover` in its default "auto" state is specced to dismiss on
+  // Escape on its own, the same as <dialog> — but that's implicit browser
+  // behavior this component doesn't control, and not every browser/embedded
+  // Chromium build implements it. Handling it explicitly makes Escape work
+  // everywhere regardless, and is a safe no-op wherever the native behavior
+  // already fired first (the :popover-open check skips an already-closed
+  // popover rather than calling hidePopover() on it, which would throw).
+  $effect(() => {
+    function onDocumentKeydown(event) {
+      if (event.key !== 'Escape') return;
+      const popoverEl = document.getElementById(popoverId);
+      if (popoverEl?.matches(':popover-open')) popoverEl.hidePopover();
+    }
+
+    document.addEventListener('keydown', onDocumentKeydown);
+    return () => document.removeEventListener('keydown', onDocumentKeydown);
+  });
 </script>
 
 {#if exercise.hint}
@@ -30,6 +48,18 @@
   </button>
 
   <div popover id={popoverId} class="hint-popover">
+    <button
+      type="button"
+      class="btn btn-sm btn-circle btn-ghost hint-popover-close"
+      popovertarget={popoverId}
+      popovertargetaction="hide"
+      aria-label="Close"
+    >
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6 6 18" />
+        <path d="M6 6l12 12" />
+      </svg>
+    </button>
     <p>{exercise.hint.text}</p>
     {#if docUrl}
       <a href={docUrl} target="_blank" rel="noopener noreferrer">View on {$DOC_SITE_NAME}</a>

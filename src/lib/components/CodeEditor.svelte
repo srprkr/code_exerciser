@@ -11,6 +11,7 @@
   import { theme } from '../stores/theme.js';
   import { Progress } from '../stores/progress.js';
   import { runCode as sandboxRunCode, teardownSandbox } from '../grading/sandbox.js';
+  import { runCode as pythonRunCode, teardownSandbox as teardownPythonSandbox } from '../grading/pythonSandbox.js';
   import { decideCheckResult } from '../grading/grade.js';
   import { hasPeekedThisSession, stepExercise } from '../stores/ui.js';
   import { currentLanguage } from '../stores/language.js';
@@ -241,7 +242,7 @@
         // Already completed and no attempt typed yet this session (e.g. a
         // fresh page load) — pre-fill with the real solution so the editor
         // shows working code instead of a blank slate.
-        const solution = dedent(nextExercise.solution);
+        const solution = dedent(nextExercise.solution, $currentLanguage);
         doc = `${nextExercise.sampleData}\n\n${solution}\n`;
       } else {
         // Fresh visit: leave a blank line below the sample data and place
@@ -297,27 +298,27 @@
     consoleOutputEl.appendChild(line);
   }
 
+  const PRINT_CALL_BY_LANGUAGE = { javascript: 'console.log(...)', python: 'print(...)' };
+
   function markAttemptedIfOutput(payload) {
     if (!exercise) return;
     if (payload.hasLastLogValue) {
       Progress.markAttempted(exercise.id);
     } else {
-      appendConsoleLine('No output detected — use console.log(...) to print your result.', true);
+      const printCall = PRINT_CALL_BY_LANGUAGE[$currentLanguage] ?? PRINT_CALL_BY_LANGUAGE.javascript;
+      appendConsoleLine(`No output detected — use ${printCall} to print your result.`, true);
     }
   }
 
-  // The sandbox executes code with `new Function(...)`, so anything that
-  // isn't JavaScript comes back as a baffling JS SyntaxError. Report the
-  // real reason instead — an explicit TODO marker until each language gets a
-  // runtime of its own (Python needs Pyodide).
-  const RUNTIME_UNAVAILABLE_MESSAGE = {
-    python:
-      'No Python runtime is wired up yet, so Run and Check answer do not work on Python problems. Compare your answer against the solution for now.'
-  };
+  // pythonSandbox.js's runCode()/teardownSandbox() deliberately mirror
+  // sandbox.js's shape exactly, so picking between them is the only thing
+  // that needs to know two runtimes exist — everything downstream
+  // (onConsoleLine, onDone, grading) is identical either way.
+  const RUN_CODE_BY_LANGUAGE = { javascript: sandboxRunCode, python: pythonRunCode };
 
-  // Returns the message to show instead of running, or null to run normally.
-  function runtimeUnavailableMessage() {
-    return RUNTIME_UNAVAILABLE_MESSAGE[$currentLanguage] ?? null;
+  function runCodeForCurrentLanguage(code, callbacks) {
+    const run = RUN_CODE_BY_LANGUAGE[$currentLanguage] ?? sandboxRunCode;
+    run(code, callbacks);
   }
 
   function handleRun() {
@@ -326,13 +327,7 @@
     if (consoleOutputEl) consoleOutputEl.textContent = '';
     consoleVisible = true;
 
-    const unavailable = runtimeUnavailableMessage();
-    if (unavailable) {
-      appendConsoleLine(unavailable, true);
-      return;
-    }
-
-    sandboxRunCode(view.state.doc.toString(), {
+    runCodeForCurrentLanguage(view.state.doc.toString(), {
       onConsoleLine: appendConsoleLine,
       onDone: (payload) => {
         markAttemptedIfOutput(payload);
@@ -346,13 +341,7 @@
     if (consoleOutputEl) consoleOutputEl.textContent = '';
     consoleVisible = true;
 
-    const unavailable = runtimeUnavailableMessage();
-    if (unavailable) {
-      appendConsoleLine(unavailable, true);
-      return;
-    }
-
-    sandboxRunCode(view.state.doc.toString(), {
+    runCodeForCurrentLanguage(view.state.doc.toString(), {
       onConsoleLine: appendConsoleLine,
       onDone: (payload) => {
         markAttemptedIfOutput(payload);
@@ -388,6 +377,7 @@
   onDestroy(() => {
     if (view) view.destroy();
     teardownSandbox();
+    teardownPythonSandbox();
   });
 </script>
 

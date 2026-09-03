@@ -1,5 +1,6 @@
 <script>
   import { dedent } from '../utils/dedent.js';
+  import { currentLanguage } from '../stores/language.js';
 
   let { exercise, solutionVisible = false } = $props();
 </script>
@@ -13,7 +14,7 @@
       Solution
     </summary>
     <div class="solution-panel">
-      <pre class="solution">{dedent(exercise.solution)}</pre>
+      <pre class="solution">{dedent(exercise.solution, $currentLanguage)}</pre>
       <div class="output-window">
         <strong>Output</strong>
         <pre class="output">{JSON.stringify(exercise.output, null, 2)}</pre>

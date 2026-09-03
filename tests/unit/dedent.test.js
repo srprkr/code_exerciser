@@ -25,4 +25,29 @@ describe('dedent', () => {
   it('handles a single-line snippet with no nesting', () => {
     expect(dedent('let a = 1;')).toBe('let a = 1;');
   });
+
+  it('defaults to javascript reformatting when no language is given', () => {
+    const input = `let x = [\n      1,\n      2\n    ];`;
+    expect(dedent(input)).toBe(dedent(input, 'javascript'));
+  });
+
+  describe('python', () => {
+    it('leaves indented blocks untouched, rather than flattening them to an IndentationError', () => {
+      // The brace/bracket-depth tracking above sees no open bracket on a
+      // `for ...:` line, so it would otherwise flatten the loop body to
+      // column 0 — invalid Python. Python source must pass through as-is.
+      const input = 'total = 0\nfor n in [1, 2, 3]:\n    total += n\nprint(total)';
+      expect(dedent(input, 'python')).toBe(input);
+    });
+
+    it('still trims leading and trailing blank lines', () => {
+      const input = '\n\ndef f():\n    return 1\n\n\n';
+      expect(dedent(input, 'python')).toBe('def f():\n    return 1');
+    });
+
+    it('preserves nested indentation exactly as authored', () => {
+      const input = 'def outer():\n    if True:\n        return [1, 2]\n    return None';
+      expect(dedent(input, 'python')).toBe(input);
+    });
+  });
 });

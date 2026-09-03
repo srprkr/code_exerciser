@@ -339,14 +339,29 @@ body {
   color: var(--color-text);
 }
 
+/* Native popovers get a ::backdrop like <dialog>, but transparent by
+   default — without this the hint reads as floating over the page with
+   nothing dimmed behind it, unlike every other overlay in the app. */
+.hint-popover::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
 .hint-popover {
   max-width: 320px;
-  padding: 0.9rem 1rem;
+  /* Extra right padding reserves room for the close button so it can sit
+     in the corner without ever overlapping the hint text, however long. */
+  padding: 0.9rem 2.5rem 0.9rem 1rem;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-surface);
   color: var(--color-text);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.hint-popover-close {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
 }
 
 .hint-popover p {
