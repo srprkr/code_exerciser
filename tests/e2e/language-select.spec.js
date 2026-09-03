@@ -13,24 +13,28 @@ test('title shows a language dropdown defaulted to JavaScript', async ({ page })
   await expect(page.getByText('Exerciser')).toBeVisible();
 });
 
-test('python is listed but not selectable until its content ships', async ({ page }) => {
+test('both shipped languages are listed and selectable', async ({ page }) => {
   await trigger(page).click();
 
   const options = page.getByRole('option');
   await expect(options).toHaveCount(2);
-  await expect(options.nth(0)).toHaveAttribute('aria-disabled', 'false');
+  await expect(options.nth(0)).toHaveText('JavaScript');
   await expect(options.nth(1)).toHaveText('Python');
-  await expect(options.nth(1)).toHaveAttribute('aria-disabled', 'true');
+  await expect(options.nth(0)).toHaveAttribute('aria-disabled', 'false');
+  await expect(options.nth(1)).toHaveAttribute('aria-disabled', 'false');
 
-  // Playwright's actionability check reads the option as disabled, which is
-  // itself the assertion that it reaches the accessibility tree as disabled.
-  await expect(options.nth(1)).toBeDisabled();
+  // Rust and Ruby are planned but have no exercise module, so they must not
+  // appear at all rather than appearing as dead entries.
+  await expect(options.filter({ hasText: /Rust|Ruby/ })).toHaveCount(0);
+});
 
-  // Forced past that check, the click still has to be a no-op: the list stays
-  // open and the language is unchanged.
-  await options.nth(1).click({ force: true });
-  await expect(page.getByRole('listbox')).toBeVisible();
-  await expect(trigger(page)).toHaveText(/JavaScript/);
+test('choosing Python updates the trigger and closes the list', async ({ page }) => {
+  await trigger(page).click();
+  await page.getByRole('option', { name: 'Python' }).click();
+
+  await expect(page.getByRole('listbox')).toBeHidden();
+  await expect(trigger(page)).toHaveText(/Python/);
+  await expect(trigger(page)).toHaveAttribute('aria-expanded', 'false');
 });
 
 // The whole reason this is a custom listbox rather than a native <select>:
@@ -67,12 +71,16 @@ test('the popup is themed from the app tokens in both light and dark', async ({ 
   await expect(listbox).toHaveCSS('color', 'rgb(229, 231, 235)');
 });
 
-test('the disabled python option is muted rather than full-contrast', async ({ page }) => {
+test('the selected option is marked so the active language is identifiable', async ({ page }) => {
+  await trigger(page).click();
+  await expect(page.getByRole('option').nth(0)).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('option').nth(1)).toHaveAttribute('aria-selected', 'false');
+
+  await page.getByRole('option', { name: 'Python' }).click();
   await trigger(page).click();
 
-  // --color-text-muted #666666, distinct from the enabled option's #222222.
-  await expect(page.getByRole('option').nth(1)).toHaveCSS('color', 'rgb(102, 102, 102)');
-  await expect(page.getByRole('option').nth(0)).toHaveCSS('color', 'rgb(34, 34, 34)');
+  await expect(page.getByRole('option').nth(0)).toHaveAttribute('aria-selected', 'false');
+  await expect(page.getByRole('option').nth(1)).toHaveAttribute('aria-selected', 'true');
 });
 
 test('opens with the keyboard and closes on Escape, returning focus to the trigger', async ({ page }) => {

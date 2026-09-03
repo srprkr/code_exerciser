@@ -1,10 +1,22 @@
 <script>
+  import { KNOWN_FUNCTION_DOC_LINKS, DOC_SITE_NAME } from '../stores/ui.js';
+
   let { exercise } = $props();
 
   // Popover ids must be unique per exercise since CodeEditor/SolutionDetails
   // keep exercises mounted across navigation in some cases — cheap to scope
   // by id rather than risk two hints fighting over one shared anchor.
   const popoverId = $derived(`hint-popover-${exercise.id}`);
+
+  // Derived from the exercise's own tags rather than stored per problem, so
+  // every exercise gets the right docs link without repeating URLs across the
+  // data file. `hint.mdnUrl` still wins when set, for the cases where the
+  // useful page isn't one of the filter tags (e.g. localeCompare).
+  const docUrl = $derived(
+    exercise.hint?.mdnUrl ??
+      exercise.functions?.map((fn) => $KNOWN_FUNCTION_DOC_LINKS[fn]).find(Boolean) ??
+      null
+  );
 </script>
 
 {#if exercise.hint}
@@ -19,8 +31,8 @@
 
   <div popover id={popoverId} class="hint-popover">
     <p>{exercise.hint.text}</p>
-    {#if exercise.hint.mdnUrl}
-      <a href={exercise.hint.mdnUrl} target="_blank" rel="noopener noreferrer">View on MDN</a>
+    {#if docUrl}
+      <a href={docUrl} target="_blank" rel="noopener noreferrer">View on {$DOC_SITE_NAME}</a>
     {/if}
   </div>
 {/if}

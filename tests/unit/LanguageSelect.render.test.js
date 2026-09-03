@@ -30,7 +30,7 @@ describe('LanguageSelect', () => {
     expect(getByRole('button', { name: 'Select programming language' })).toHaveAttribute('aria-expanded', 'true');
   });
 
-  it('marks the active language selected and python as disabled but present', async () => {
+  it('marks the active language selected, with both languages now selectable', async () => {
     const { getByRole, getAllByRole } = render(LanguageSelect);
     getByRole('button', { name: 'Select programming language' }).click();
     await tick();
@@ -39,19 +39,19 @@ describe('LanguageSelect', () => {
     expect(javascript).toHaveAttribute('aria-selected', 'true');
     expect(javascript).toHaveAttribute('aria-disabled', 'false');
     expect(python).toHaveAttribute('aria-selected', 'false');
-    expect(python).toHaveAttribute('aria-disabled', 'true');
+    expect(python).toHaveAttribute('aria-disabled', 'false');
   });
 
-  it('clicking the disabled python option does not change the language or close the list', async () => {
-    const { getByRole, getAllByRole } = render(LanguageSelect);
+  it('choosing python switches the language and closes the list', async () => {
+    const { getByRole, getAllByRole, queryByRole } = render(LanguageSelect);
     getByRole('button', { name: 'Select programming language' }).click();
     await tick();
 
     getAllByRole('option')[1].click();
     await tick();
 
-    expect(getByRole('listbox')).toBeInTheDocument();
-    expect(getByRole('button', { name: 'Select programming language' })).toHaveTextContent('JavaScript');
+    expect(queryByRole('listbox')).not.toBeInTheDocument();
+    expect(getByRole('button', { name: 'Select programming language' })).toHaveTextContent('Python');
   });
 
   it('clicking an available option selects it and closes the list', async () => {

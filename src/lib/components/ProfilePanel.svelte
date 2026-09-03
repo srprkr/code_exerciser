@@ -1,7 +1,6 @@
 <script>
   import { Progress } from '../stores/progress.js';
-  import { currentView, currentExerciseIndex } from '../stores/ui.js';
-  import { exercises } from '../data/exercises.js';
+  import { currentView, currentExerciseIndex, languageExercises } from '../stores/ui.js';
   import ThemeToggle from './ThemeToggle.svelte';
   import AchievementsGrid from './AchievementsGrid.svelte';
   import ProgressList from './ProgressList.svelte';
@@ -48,7 +47,7 @@
   // the index now lives in a shared store instead of being re-derived from
   // a fresh page load each time.
   function selectExercise(exerciseId) {
-    const index = exercises.findIndex((e) => e.id === exerciseId);
+    const index = $languageExercises.findIndex((e) => e.id === exerciseId);
     if (index === -1) return;
     currentExerciseIndex.set(index);
     currentView.set('exercises');

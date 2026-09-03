@@ -15,7 +15,7 @@ async function freshProgressStore() {
 describe('Progress.getBadges', () => {
   it('reports a badge as earned only when every exercise carrying that tag is completed', async () => {
     const { Progress } = await freshProgressStore();
-    const { exercises } = await import('../../src/lib/data/exercises.js');
+    const { exercises } = await import('../../src/lib/data/javascript-exercises.js');
 
     const mapExercises = exercises.filter((e) => e.functions.includes('map'));
     expect(mapExercises.length).toBeGreaterThan(0);
@@ -39,7 +39,7 @@ describe('Progress.getBadges', () => {
 
   it('the Object pseudo-tag badge matches any Object.* tagged exercise', async () => {
     const { Progress } = await freshProgressStore();
-    const { exercises } = await import('../../src/lib/data/exercises.js');
+    const { exercises } = await import('../../src/lib/data/javascript-exercises.js');
 
     const objectExercises = exercises.filter((e) =>
       e.functions.some((f) => f.startsWith('Object.'))

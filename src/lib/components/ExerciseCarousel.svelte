@@ -6,7 +6,7 @@
     applyDeepLinkFromUrl,
     stepExercise
   } from '../stores/ui.js';
-  import { progress as progressStore } from '../stores/progress.js';
+  import { progress as progressStore, Progress } from '../stores/progress.js';
   import { bindArrowKeyNav } from '../utils/keyboardNav.js';
   import ExerciseFilters from './ExerciseFilters.svelte';
   import DoneCheckmark from './DoneCheckmark.svelte';
@@ -38,9 +38,10 @@
 
   const completed = $derived.by(() => {
     if (!exercise) return false;
-    const allProgress = $progressStore; // actually read the store's value so this re-derives on any progress change
-    const entry = allProgress[exercise.id];
-    return !!(entry && entry.completed);
+    $progressStore; // actually read the store's value so this re-derives on any progress change
+    // Progress is nested by language, so go through getExercise() rather than
+    // indexing the store value — the top level holds language ids, not ids.
+    return !!Progress.getExercise(exercise.id).completed;
   });
 
   const showSkipButtons = $derived($filteredExercises.length >= SKIP_AMOUNT);

@@ -2117,11 +2117,15 @@ export function exerciseHasFunction(exercise, fn) {
   return exercise.functions.includes(fn);
 }
 
-// MDN reference link for each known tag, shown on profile.html's
-// achievement cards. Array methods link to their Array.prototype page;
+// Human name of the documentation site these links point at, shown in the
+// achievements copy. Each language module supplies its own.
+export const DOC_SITE_NAME = 'MDN';
+
+// Reference link for each known tag, shown on the profile's achievement
+// cards. Array methods link to their Array.prototype page;
 // spread/destructure/template-literal are language syntax, not methods,
 // so they link to MDN's syntax-reference pages instead.
-export const KNOWN_FUNCTION_MDN_LINKS = {
+export const KNOWN_FUNCTION_DOC_LINKS = {
   map: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map',
   filter: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter',
   reduce: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce',

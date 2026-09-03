@@ -4,6 +4,7 @@
   import { EditorState } from '@codemirror/state';
   import { defaultKeymap, indentWithTab, history, historyKeymap } from '@codemirror/commands';
   import { javascript } from '@codemirror/lang-javascript';
+  import { python } from '@codemirror/lang-python';
   import { syntaxHighlighting, defaultHighlightStyle, bracketMatching, indentOnInput } from '@codemirror/language';
   import { oneDark } from '@codemirror/theme-one-dark';
   import { dedent } from '../utils/dedent.js';
@@ -12,6 +13,7 @@
   import { runCode as sandboxRunCode, teardownSandbox } from '../grading/sandbox.js';
   import { decideCheckResult } from '../grading/grade.js';
   import { hasPeekedThisSession, stepExercise } from '../stores/ui.js';
+  import { currentLanguage } from '../stores/language.js';
   import { bindRunCheckShortcuts } from '../utils/keyboardNav.js';
 
   // Called by the parent when a Check-answer pass succeeds and it should
@@ -24,7 +26,15 @@
   // instance state now (not module-level), since CodeEditor has a real
   // lifecycle boundary — the vanilla version simulated this with a
   // module-level Map because there was only ever one editor on the page.
+  // Keyed by "<language>:<id>", not a bare id: exercise ids restart at 1 for
+  // each language, so JavaScript problem 1 and Python problem 1 would
+  // otherwise share a draft and restore each other's code into the wrong
+  // editor.
   const attempts = new Map();
+
+  function attemptKey(exerciseId) {
+    return `${$currentLanguage}:${exerciseId}`;
+  }
 
   let view = null;
   let currentExerciseId = null;
@@ -133,6 +143,14 @@
     });
   }
 
+  // CodeMirror language mode per language id. Falls back to JavaScript so an
+  // unrecognised id still gets a usable editor rather than no highlighting.
+  const LANGUAGE_MODES = { javascript, python };
+
+  function languageMode() {
+    return (LANGUAGE_MODES[$currentLanguage] ?? javascript)();
+  }
+
   function buildExtensions() {
     const base = [
       lineNumbers(),
@@ -141,7 +159,7 @@
       drawSelection(),
       bracketMatching(),
       indentOnInput(),
-      javascript(),
+      languageMode(),
       syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
       // Mod-Enter/Mod-Shift-Enter run/check the code while the editor has
       // focus (Ctrl on Windows/Linux, Cmd on Mac, via CodeMirror's
@@ -165,7 +183,7 @@
       ]),
       EditorView.updateListener.of((update) => {
         if (update.docChanged && currentExerciseId !== null) {
-          attempts.set(currentExerciseId, update.state.doc.toString());
+          attempts.set(attemptKey(currentExerciseId), update.state.doc.toString());
         }
       }),
       gutterPaddingTheme,
@@ -205,7 +223,7 @@
   // restored in-session attempt), without touching the theme.
   function docForExercise(nextExercise) {
     currentExerciseId = nextExercise.id;
-    const existing = attempts.get(nextExercise.id);
+    const existing = attempts.get(attemptKey(nextExercise.id));
 
     // The sample data plus its trailing newline is the locked region, so
     // an insertion right at the end of the last sample-data line can't
@@ -232,7 +250,7 @@
       }
 
       cursorPos = doc.length;
-      attempts.set(nextExercise.id, doc);
+      attempts.set(attemptKey(nextExercise.id), doc);
     }
 
     return { doc, cursorPos };
@@ -252,6 +270,7 @@
   // (like the CodeMirror background) rendered under the light theme.
   $effect(() => {
     $theme; // actually read the store's value so this reruns on toggle
+    $currentLanguage; // likewise — the editor's syntax mode is language-dependent
     if (!exercise) return;
 
     const { doc, cursorPos } = docForExercise(exercise);
@@ -287,11 +306,31 @@
     }
   }
 
+  // The sandbox executes code with `new Function(...)`, so anything that
+  // isn't JavaScript comes back as a baffling JS SyntaxError. Report the
+  // real reason instead — an explicit TODO marker until each language gets a
+  // runtime of its own (Python needs Pyodide).
+  const RUNTIME_UNAVAILABLE_MESSAGE = {
+    python:
+      'No Python runtime is wired up yet, so Run and Check answer do not work on Python problems. Compare your answer against the solution for now.'
+  };
+
+  // Returns the message to show instead of running, or null to run normally.
+  function runtimeUnavailableMessage() {
+    return RUNTIME_UNAVAILABLE_MESSAGE[$currentLanguage] ?? null;
+  }
+
   function handleRun() {
     if (!view) return;
     checkResultVisible = false;
     if (consoleOutputEl) consoleOutputEl.textContent = '';
     consoleVisible = true;
+
+    const unavailable = runtimeUnavailableMessage();
+    if (unavailable) {
+      appendConsoleLine(unavailable, true);
+      return;
+    }
 
     sandboxRunCode(view.state.doc.toString(), {
       onConsoleLine: appendConsoleLine,
@@ -306,6 +345,12 @@
     checkResultVisible = false;
     if (consoleOutputEl) consoleOutputEl.textContent = '';
     consoleVisible = true;
+
+    const unavailable = runtimeUnavailableMessage();
+    if (unavailable) {
+      appendConsoleLine(unavailable, true);
+      return;
+    }
 
     sandboxRunCode(view.state.doc.toString(), {
       onConsoleLine: appendConsoleLine,

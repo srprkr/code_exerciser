@@ -1,6 +1,6 @@
 <script>
-  import { CORE_FUNCTIONS } from '../data/exercises.js';
   import {
+    CORE_FUNCTIONS,
     KNOWN_FUNCTIONS,
     DIFFICULTIES,
     activeFunctionFilters,
@@ -10,22 +10,24 @@
     clearFilters
   } from '../stores/ui.js';
 
-  const FUNCTION_PILLS_VISIBLE = CORE_FUNCTIONS.length;
+  // Tag lists are per-language stores now, so the "Show N more" split has to
+  // recompute on a language switch rather than being fixed at init.
+  const functionPillsVisible = $derived($CORE_FUNCTIONS.length);
   let functionPillsExpanded = $state(false);
 
-  const hiddenCount = $derived(KNOWN_FUNCTIONS.length - FUNCTION_PILLS_VISIBLE);
+  const hiddenCount = $derived($KNOWN_FUNCTIONS.length - functionPillsVisible);
   const hasActiveFilters = $derived($activeFunctionFilters.size > 0 || $activeDifficultyFilter !== null);
 </script>
 
 <div class="filters" aria-label="Filter exercises">
   <div class="filter-group" id="function-filters">
     <span class="filter-label">Functions</span>
-    {#each KNOWN_FUNCTIONS as fn, index (fn)}
+    {#each $KNOWN_FUNCTIONS as fn, index (fn)}
       <button
         type="button"
         class="pill btn btn-outline btn-xs sm:btn-sm"
         class:btn-active={$activeFunctionFilters.has(fn)}
-        class:collapsed={!functionPillsExpanded && index >= FUNCTION_PILLS_VISIBLE}
+        class:collapsed={!functionPillsExpanded && index >= functionPillsVisible}
         data-value={fn}
         onclick={() => toggleFunctionFilter(fn)}
       >
@@ -45,7 +47,7 @@
 
   <div class="filter-group" id="difficulty-filters">
     <span class="filter-label">Difficulty</span>
-    {#each DIFFICULTIES as level (level)}
+    {#each $DIFFICULTIES as level (level)}
       <button
         type="button"
         class="pill btn btn-outline btn-xs sm:btn-sm"

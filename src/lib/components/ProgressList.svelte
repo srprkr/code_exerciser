@@ -1,5 +1,5 @@
 <script>
-  import { exercises } from '../data/exercises.js';
+  import { languageExercises } from '../stores/ui.js';
   import { progress, Progress } from '../stores/progress.js';
 
   let { onSelectExercise } = $props();
@@ -12,15 +12,21 @@
 
   let activeStatus = $state('completed');
 
-  const allProgress = $derived($progress);
+  // `$progress` is nested by language now, so read the active language's
+  // slice through Progress.getAll() rather than indexing it directly. The
+  // bare `$progress` reference keeps this re-deriving on every change.
+  const allProgress = $derived.by(() => {
+    $progress;
+    return Progress.getAll();
+  });
 
-  const total = $derived(exercises.length);
+  const total = $derived($languageExercises.length);
   const completedCount = $derived(
-    exercises.filter((e) => allProgress[e.id] && allProgress[e.id].completed).length
+    $languageExercises.filter((e) => allProgress[e.id] && allProgress[e.id].completed).length
   );
 
   const listForStatus = $derived.by(() => {
-    return exercises.filter((exercise) => {
+    return $languageExercises.filter((exercise) => {
       const entry = allProgress[exercise.id];
       if (activeStatus === 'completed') return entry && entry.completed;
       if (activeStatus === 'attempted') return entry && entry.attempted && !entry.completed;
