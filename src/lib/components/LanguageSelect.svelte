@@ -185,11 +185,12 @@
     background: transparent;
     color: inherit;
     font: inherit;
+    font-size: 0.8em;
     font-weight: inherit;
     letter-spacing: inherit;
     border: 1.5px solid color-mix(in srgb, currentColor 30%, transparent);
     border-radius: 999px;
-    padding: 0 0.7em 0.1em 0.8em;
+    padding: 0 0.5em 0.1em 0.6em;
     cursor: pointer;
   }
 

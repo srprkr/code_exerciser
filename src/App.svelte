@@ -18,7 +18,7 @@
 <div class="page-wrap">
   {#if $currentView === 'exercises'}
     <div class="page-header">
-      <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight title-row">
+      <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight title-row">
         <LanguageSelect />
         Exerciser
       </h1>
