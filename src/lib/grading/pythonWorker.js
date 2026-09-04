@@ -13,8 +13,15 @@ import { RUNNER_PY, runPythonSource } from './pythonRunner.js';
 
 let pyodideReadyPromise = null;
 
+// Status messages fire exactly once per page session — the first call
+// that actually triggers a real load. Every call after that returns the
+// same resolved promise without re-entering this branch, so the main
+// thread's "loaded" UI state (which persists once set) never needs a
+// repeat signal.
 function getPyodide() {
   if (!pyodideReadyPromise) {
+    self.postMessage({ type: 'runtime-status', payload: { status: 'loading' } });
+
     pyodideReadyPromise = (async () => {
       const indexURL = `${self.location.origin}${import.meta.env.BASE_URL}pyodide/`;
       // Loaded by URL rather than `import 'pyodide'` so the JS glue and the
@@ -23,6 +30,7 @@ function getPyodide() {
       const { loadPyodide } = await import(/* @vite-ignore */ `${indexURL}pyodide.mjs`);
       const pyodide = await loadPyodide({ indexURL });
       pyodide.runPython(RUNNER_PY);
+      self.postMessage({ type: 'runtime-status', payload: { status: 'loaded' } });
       return pyodide;
     })();
   }
@@ -35,9 +43,9 @@ self.onmessage = async (event) => {
 
   let pyodide;
   try {
-    self.postMessage({ type: 'loading' });
     pyodide = await getPyodide();
   } catch (err) {
+    self.postMessage({ type: 'runtime-status', payload: { status: 'error' } });
     self.postMessage({ type: 'console', payload: { level: 'error', args: [`Failed to load the Python runtime: ${err.message}`] } });
     self.postMessage({ type: 'done', payload: { hasLastLogValue: false, lastLogValue: null, allLogValues: [] } });
     return;

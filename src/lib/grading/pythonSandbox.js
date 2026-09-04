@@ -13,10 +13,13 @@ function getWorker() {
 }
 
 // Runs `code` as Python. onConsoleLine(text, isError) fires for each printed
-// line (in order) and for a runtime error's traceback. onDone(payload) fires
-// once with { hasLastLogValue, lastLogValue, allLogValues } — identical
-// shape to sandbox.js's JS runner, so the same grading code handles both.
-export function runCode(code, { onConsoleLine, onDone } = {}) {
+// line (in order) and for a runtime error's traceback. onRuntimeStatus(status)
+// fires with 'loading'/'loaded'/'error' — only on the very first Python run
+// this page load, since the worker's loadPyodide() promise is memoized and
+// resolves instantly after that. onDone(payload) fires once with
+// { hasLastLogValue, lastLogValue, allLogValues } — identical shape to
+// sandbox.js's JS runner, so the same grading code handles both.
+export function runCode(code, { onConsoleLine, onRuntimeStatus, onDone } = {}) {
   const w = getWorker();
 
   if (messageHandler) {
@@ -26,12 +29,8 @@ export function runCode(code, { onConsoleLine, onDone } = {}) {
   messageHandler = (event) => {
     const { type, payload } = event.data;
 
-    if (type === 'loading') {
-      // Only true on the very first Python run this page load — the
-      // worker resolves its cached loadPyodide() promise instantly after
-      // that — so this is a one-time "why did this take a second" signal,
-      // not noise on every run.
-      if (onConsoleLine) onConsoleLine('Loading the Python runtime…', false);
+    if (type === 'runtime-status') {
+      if (onRuntimeStatus) onRuntimeStatus(payload.status);
     } else if (type === 'console') {
       if (onConsoleLine) onConsoleLine(payload.args.join(' '), payload.level === 'error');
     } else if (type === 'done') {

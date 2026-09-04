@@ -480,9 +480,15 @@ details[open] > summary .summary-chevron {
   background: var(--color-bg);
 }
 
-.console-output strong {
-  display: block;
+.console-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
   padding: 0.5rem 0.75rem 0;
+}
+
+.console-label {
   font-family: Arial, sans-serif;
   font-size: 0.75rem;
   font-weight: bold;

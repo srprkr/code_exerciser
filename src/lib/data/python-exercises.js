@@ -26,6 +26,136 @@ print(long_words)`,
     }
   },
   {
+    id: 2,
+    title: 'Problem 2',
+    question: 'Given a list of numbers, produce their squares',
+    sampleData: 'numbers = [1, 2, 3, 4, 5, 6]',
+    solution: `squares = [n ** 2 for n in numbers]
+print(squares)`,
+    output: [1, 4, 9, 16, 25, 36],
+    functions: ['list-comprehension'],
+    difficulty: 'easy',
+    hint: {
+      text: 'The simplest comprehension form is just [expression for item in iterable] — a pure transform, no filtering.'
+    }
+  },
+  {
+    id: 3,
+    title: 'Problem 3',
+    question: 'Given a list of numbers, keep only the positive ones',
+    sampleData: 'numbers = [-3, 5, -1, 8, 0, -7, 2]',
+    solution: `positives = [n for n in numbers if n > 0]
+print(positives)`,
+    output: [5, 8, 2],
+    functions: ['list-comprehension'],
+    difficulty: 'easy',
+    hint: {
+      text: 'A comprehension can filter without transforming at all — the expression can just be the loop variable itself, unchanged.'
+    }
+  },
+  {
+    id: 4,
+    title: 'Problem 4',
+    question: 'Given a list of words, uppercase the ones that start with a vowel',
+    sampleData: `words = ["apple", "banana", "orange", "kiwi", "egg"]`,
+    solution: `vowel_words = [w.upper() for w in words if w[0] in "aeiou"]
+print(vowel_words)`,
+    output: ['APPLE', 'ORANGE', 'EGG'],
+    functions: ['list-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: 'A string is a sequence of characters, so w[0] in "aeiou" checks whether that one character is a member of the string — the same `in` check you\'d use against a list.'
+    }
+  },
+  {
+    id: 5,
+    title: 'Problem 5',
+    question: 'Flatten this list of lists into a single list',
+    sampleData: 'matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]',
+    solution: `flat = [n for row in matrix for n in row]
+print(flat)`,
+    output: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    functions: ['list-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: 'A comprehension can have more than one for clause — they nest in the same order as writing the loops out by hand, outermost first: for row in matrix, then for n in row.'
+    }
+  },
+  {
+    id: 6,
+    title: 'Problem 6',
+    question: 'Label each number as "even" or "odd"',
+    sampleData: 'numbers = [1, 2, 3, 4, 5]',
+    solution: `labels = ["even" if n % 2 == 0 else "odd" for n in numbers]
+print(labels)`,
+    output: ['odd', 'even', 'odd', 'even', 'odd'],
+    functions: ['list-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: 'This is a conditional expression (x if cond else y) sitting in the expression slot — different from a filter if at the end. A filter drops items; this keeps every item and just picks which value to use.'
+    }
+  },
+  {
+    id: 7,
+    title: 'Problem 7',
+    question: 'Pair each name with its length',
+    sampleData: `names = ["sam", "ana", "kimberly"]`,
+    solution: `name_lengths = [(name, len(name)) for name in names]
+print(name_lengths)`,
+    output: [
+      ['sam', 3],
+      ['ana', 3],
+      ['kimberly', 8]
+    ],
+    functions: ['list-comprehension'],
+    difficulty: 'easy',
+    hint: {
+      text: 'The expression can build anything, including a tuple — (name, len(name)) pairs each item with a value computed from it.'
+    }
+  },
+  {
+    id: 8,
+    title: 'Problem 8',
+    question: 'Clean up this list by removing the extra whitespace around each entry',
+    sampleData: `raw = ["  sam ", "ana  ", " kim"]`,
+    solution: `cleaned = [s.strip() for s in raw]
+print(cleaned)`,
+    output: ['sam', 'ana', 'kim'],
+    functions: ['list-comprehension'],
+    difficulty: 'easy',
+    hint: {
+      text: '.strip() removes leading and trailing whitespace from a string. Running it inside a comprehension is a common one-line cleanup pass over a whole list.'
+    }
+  },
+  {
+    id: 9,
+    title: 'Problem 9',
+    question: 'Build a list of "item: price" labels from this dictionary',
+    sampleData: `prices = {"apple": 1.5, "bread": 3.0, "milk": 2.25}`,
+    solution: `labels = [f"{item}: {price}" for item, price in prices.items()]
+print(labels)`,
+    output: ['apple: 1.5', 'bread: 3.0', 'milk: 2.25'],
+    functions: ['list-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: 'A comprehension can iterate over anything, not just a list — dict.items() yields (key, value) pairs, unpacked directly in the for clause.'
+    }
+  },
+  {
+    id: 10,
+    title: 'Problem 10',
+    question: 'From this list, keep only the numbers divisible by both 2 and 3',
+    sampleData: 'numbers = [4, 6, 9, 12, 15, 18, 20, 24, 30, 35]',
+    solution: `both = [n for n in numbers if n % 2 == 0 if n % 3 == 0]
+print(both)`,
+    output: [6, 12, 18, 24, 30],
+    functions: ['list-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Chaining multiple if clauses in a comprehension ANDs them together — equivalent to one if with n % 2 == 0 and n % 3 == 0.'
+    }
+  },
+  {
     id: 11,
     title: 'Problem 11',
     question: 'Given a list of words, build a dictionary mapping each word to its length',
@@ -40,6 +170,137 @@ print(lengths)`,
     }
   },
   {
+    id: 12,
+    title: 'Problem 12',
+    question: 'Invert this dictionary so its values become the keys and vice versa',
+    sampleData: `codes = {"US": 1, "UK": 44, "FR": 33}`,
+    solution: `by_code = {value: key for key, value in codes.items()}
+print(by_code)`,
+    output: { 1: 'US', 44: 'UK', 33: 'FR' },
+    functions: ['dict-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Swapping key: value to value: key inverts the mapping. This only works cleanly when the original values are unique — a repeated value would silently overwrite an earlier entry.'
+    }
+  },
+  {
+    id: 13,
+    title: 'Problem 13',
+    question: 'Keep only the entries with a passing score (60 or above)',
+    sampleData: `scores = {"sam": 62, "ana": 91, "kim": 45, "tom": 78}`,
+    solution: `passing = {name: score for name, score in scores.items() if score >= 60}
+print(passing)`,
+    output: { sam: 62, ana: 91, tom: 78 },
+    functions: ['dict-comprehension'],
+    difficulty: 'easy',
+    hint: {
+      text: 'A dict comprehension can filter too — the if goes after the for clause, same placement as in a list comprehension.'
+    }
+  },
+  {
+    id: 14,
+    title: 'Problem 14',
+    question: 'Combine these two parallel lists into a single dictionary',
+    sampleData: `keys = ["a", "b", "c"]
+values = [1, 2, 3]`,
+    solution: `combined = {k: v for k, v in zip(keys, values)}
+print(combined)`,
+    output: { a: 1, b: 2, c: 3 },
+    functions: ['dict-comprehension', 'zip'],
+    difficulty: 'easy',
+    hint: {
+      text: 'zip(a, b) pairs up items from two sequences positionally into tuples. For a plain pairing like this with no transform, dict(zip(keys, values)) does the same thing directly, without needing a comprehension at all.'
+    }
+  },
+  {
+    id: 15,
+    title: 'Problem 15',
+    question: 'Build a dictionary mapping each word\'s position to the word itself',
+    sampleData: `words = ["red", "green", "blue"]`,
+    solution: `by_index = {i: word for i, word in enumerate(words)}
+print(by_index)`,
+    output: { 0: 'red', 1: 'green', 2: 'blue' },
+    functions: ['dict-comprehension', 'enumerate'],
+    difficulty: 'easy',
+    hint: {
+      text: 'enumerate() yields (index, item) pairs as you iterate — unpack them directly in the for clause, the same way as any other pair-yielding iterable.'
+    }
+  },
+  {
+    id: 16,
+    title: 'Problem 16',
+    question: 'Double every price in this dictionary',
+    sampleData: `prices = {"apple": 1.5, "bread": 3.0, "milk": 2.25}`,
+    solution: `doubled = {item: price * 2 for item, price in prices.items()}
+print(doubled)`,
+    output: { apple: 3, bread: 6, milk: 4.5 },
+    functions: ['dict-comprehension'],
+    difficulty: 'easy',
+    hint: {
+      text: 'The keys can pass through unchanged while only the value expression transforms — item stays as-is, price * 2 does the work.'
+    }
+  },
+  {
+    id: 17,
+    title: 'Problem 17',
+    question: 'Lowercase every key in this dictionary',
+    sampleData: `raw = {"NAME": "Sam", "AGE": 30, "CITY": "Boston"}`,
+    solution: `normalized = {key.lower(): value for key, value in raw.items()}
+print(normalized)`,
+    output: { name: 'Sam', age: 30, city: 'Boston' },
+    functions: ['dict-comprehension'],
+    difficulty: 'easy',
+    hint: {
+      text: 'This time the key expression does the work (key.lower()) while the value passes through unchanged — either side of the : can be any expression, independently of the other.'
+    }
+  },
+  {
+    id: 18,
+    title: 'Problem 18',
+    question: 'Label each score as "pass" or "fail" (passing is 60 or above)',
+    sampleData: `scores = {"sam": 62, "ana": 91, "kim": 45}`,
+    solution: `results = {name: ("pass" if score >= 60 else "fail") for name, score in scores.items()}
+print(results)`,
+    output: { sam: 'pass', ana: 'pass', kim: 'fail' },
+    functions: ['dict-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: 'A conditional expression works as the value side of a dict comprehension the same way it does in a list comprehension\'s expression slot — the parentheses here are just for readability, not required.'
+    }
+  },
+  {
+    id: 19,
+    title: 'Problem 19',
+    question: 'Given a dictionary of people with nested details, build name -> age',
+    sampleData: `people = {
+    "sam": {"age": 39, "city": "Boston"},
+    "ana": {"age": 28, "city": "Miami"},
+}`,
+    solution: `ages = {name: info["age"] for name, info in people.items()}
+print(ages)`,
+    output: { sam: 39, ana: 28 },
+    functions: ['dict-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: 'The value from .items() can be anything — here it\'s itself a dictionary, so info["age"] just indexes into it like any other dict.'
+    }
+  },
+  {
+    id: 20,
+    title: 'Problem 20',
+    question: 'For each candidate action, record whether it appears in the allowed set',
+    sampleData: `allowed = {"read", "write"}
+candidates = ["read", "delete", "write", "execute"]`,
+    solution: `access = {action: (action in allowed) for action in candidates}
+print(access)`,
+    output: { read: true, delete: false, write: true, execute: false },
+    functions: ['dict-comprehension', 'set'],
+    difficulty: 'medium',
+    hint: {
+      text: 'in checks membership against any collection. Checking against a set (rather than a list) is much faster for larger collections, since sets use hashing instead of scanning item by item.'
+    }
+  },
+  {
     id: 21,
     title: 'Problem 21',
     question: 'Format this price as a string showing exactly two decimal places',
@@ -51,6 +312,136 @@ print(label)`,
     difficulty: 'easy',
     hint: {
       text: 'An f-string can carry a format spec after a colon: {value:.2f} rounds to two decimals, {value:>8} right-aligns in eight columns, and {value:,} adds thousands separators.'
+    }
+  },
+  {
+    id: 22,
+    title: 'Problem 22',
+    question: 'Format this population figure with thousands separators',
+    sampleData: 'population = 8419600',
+    solution: `label = f"{population:,}"
+print(label)`,
+    output: '8,419,600',
+    functions: ['f-string'],
+    difficulty: 'easy',
+    hint: {
+      text: 'The , format spec inserts thousands separators automatically — no manual string manipulation needed.'
+    }
+  },
+  {
+    id: 23,
+    title: 'Problem 23',
+    question: 'Build a table row: the name left-aligned in 10 characters, the score right-aligned in 5',
+    sampleData: `name = "Sam"
+score = 91`,
+    solution: `row = f"{name:<10}{score:>5}"
+print(row)`,
+    output: 'Sam'.padEnd(10) + String(91).padStart(5),
+    functions: ['f-string'],
+    difficulty: 'medium',
+    hint: {
+      text: '< left-aligns and > right-aligns within the given width, padding with spaces — the basis for lining up simple text tables.'
+    }
+  },
+  {
+    id: 24,
+    title: 'Problem 24',
+    question: 'Report how many items are in this list, as a sentence',
+    sampleData: `items = ["apple", "banana", "cherry", "date"]`,
+    solution: `summary = f"You have {len(items)} items"
+print(summary)`,
+    output: 'You have 4 items',
+    functions: ['f-string'],
+    difficulty: 'easy',
+    hint: {
+      text: 'Any valid Python expression can go inside {} — not just a variable name, but a function call like len(items) too.'
+    }
+  },
+  {
+    id: 25,
+    title: 'Problem 25',
+    question: 'Report this score as a percentage with one decimal place',
+    sampleData: `correct = 17
+total = 20`,
+    solution: `accuracy = f"{correct / total:.1%}"
+print(accuracy)`,
+    output: '85.0%',
+    functions: ['f-string'],
+    difficulty: 'medium',
+    hint: {
+      text: 'The % format spec multiplies by 100, appends a % sign, and rounds to the given decimal places, all in one step — no manual * 100 needed.'
+    }
+  },
+  {
+    id: 26,
+    title: 'Problem 26',
+    question: 'Build a list of "name xQty" labels from these (name, quantity) pairs',
+    sampleData: `items = [("apple", 3), ("bread", 2), ("milk", 1)]`,
+    solution: `labels = [f"{name} x{qty}" for name, qty in items]
+print(labels)`,
+    output: ['apple x3', 'bread x2', 'milk x1'],
+    functions: ['f-string', 'list-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: 'f-strings and comprehensions combine naturally — the f-string is just the expression a comprehension builds on each pass.'
+    }
+  },
+  {
+    id: 27,
+    title: 'Problem 27',
+    question: 'Build a short bio string from these three pieces of data',
+    sampleData: `first = "Ada"
+last = "Lovelace"
+year = 1815`,
+    solution: `bio = f"{first} {last}, born {year}"
+print(bio)`,
+    output: 'Ada Lovelace, born 1815',
+    functions: ['f-string'],
+    difficulty: 'easy',
+    hint: {
+      text: 'An f-string can hold as many {} placeholders as you like, mixed freely with ordinary text.'
+    }
+  },
+  {
+    id: 28,
+    title: 'Problem 28',
+    question: 'Print the area of this circle using Python\'s self-documenting f-string syntax',
+    sampleData: 'radius = 4',
+    solution: `area = 3.14159 * radius ** 2
+print(f"{area=}")`,
+    output: 'area=50.26544',
+    functions: ['f-string'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Adding = right before the closing brace prints both the expression\'s source text and its value — a quick debugging shortcut for f"area={area}" written by hand.'
+    }
+  },
+  {
+    id: 29,
+    title: 'Problem 29',
+    question: 'Describe the weather as "hot" (80 or above) or "mild"',
+    sampleData: 'temperature = 72',
+    solution: `label = f"It's {'hot' if temperature >= 80 else 'mild'} today"
+print(label)`,
+    output: "It's mild today",
+    functions: ['f-string'],
+    difficulty: 'medium',
+    hint: {
+      text: 'A placeholder can hold any expression, including a conditional one — just use a different quote style inside the braces than the f-string\'s own outer quotes.'
+    }
+  },
+  {
+    id: 30,
+    title: 'Problem 30',
+    question: 'Format this ticket number as a 3-digit code with leading zeros',
+    sampleData: 'ticket_number = 42',
+    solution: `code = f"TICKET-{ticket_number:03d}"
+print(code)`,
+    output: 'TICKET-042',
+    functions: ['f-string'],
+    difficulty: 'easy',
+    hint: {
+      text: '03d pads an integer to at least 3 digits with leading zeros — common for ids, codes, and timestamps.'
     }
   },
   {

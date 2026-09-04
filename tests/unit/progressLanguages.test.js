@@ -64,6 +64,128 @@ describe('legacy progress migration', () => {
   });
 });
 
+describe('importing a pre-multi-language sync export', () => {
+  // Exactly what the currently-deployed (pre-branch) site's "Copy my
+  // progress" produces: exerciseProgress is the OLD flat shape, and there is
+  // no `language` field at all — that key doesn't exist in the old build.
+  // This is what an active user has sitting in a saved note/clipboard right
+  // now, and would paste into "Import progress" after this branch deploys.
+  function oldSiteExportJson() {
+    return JSON.stringify({
+      exerciseProgress: JSON.stringify({
+        1: { attempted: true, completed: true },
+        21: { attempted: true, completed: true },
+        70: { attempted: true, completed: false }
+      }),
+      displayName: 'Sean',
+      theme: 'dark',
+      lookItUpDismissed: 'true'
+    });
+  }
+
+  it('migrates a pasted old-site export into the javascript bucket, not just a fresh page load', async () => {
+    // Import happens on an ALREADY-RUNNING module (the user has the new site
+    // open in a tab), not at cold module-load time like the other migration
+    // tests — this is what actually exercises the Sync panel's code path.
+    const { Progress } = await freshStores();
+    localStorage.clear(); // the importing session starts with nothing of its own
+
+    const success = Progress.importData(oldSiteExportJson());
+
+    expect(success).toBe(true);
+    expect(Progress.getExercise(1).completed).toBe(true);
+    expect(Progress.getExercise(21).completed).toBe(true);
+    expect(Progress.getExercise(70).attempted).toBe(true);
+    expect(Progress.getExercise(70).completed).toBe(false);
+    expect(Progress.getAllLanguages()).toEqual({
+      javascript: {
+        1: { attempted: true, completed: true },
+        21: { attempted: true, completed: true },
+        70: { attempted: true, completed: false }
+      }
+    });
+  });
+
+  it('carries over the other old fields (display name, theme) alongside the migrated progress', async () => {
+    const { Progress } = await freshStores();
+    localStorage.clear();
+
+    Progress.importData(oldSiteExportJson());
+
+    expect(Progress.getDisplayName()).toBe('Sean');
+    expect(localStorage.getItem('theme')).toBe('dark');
+  });
+
+  it('defaults the language to javascript, since an old export has no language field at all', async () => {
+    const { Progress, currentLanguage } = await freshStores();
+    localStorage.clear();
+
+    Progress.importData(oldSiteExportJson());
+
+    // importData() only writes localStorage; it doesn't touch the
+    // already-loaded currentLanguage store (matching every other imported
+    // field — SyncPanel reloads the page after a successful import, and
+    // it's that reload, not importData() itself, that re-derives language
+    // from localStorage). Confirm the reload path lands on javascript by
+    // re-loading the language store fresh, the way the reload would.
+    vi.resetModules();
+    const { currentLanguage: reloadedLanguage } = await freshStores();
+    const { get } = await import('svelte/store');
+    expect(get(reloadedLanguage)).toBe('javascript');
+  });
+
+  it('does not clobber existing python progress already present in this browser', async () => {
+    // A user who already has some Python progress in this browser (from
+    // using the site pre-import) pastes an old JS-only export from another
+    // browser — their Python progress must survive the import untouched.
+    localStorage.setItem('exerciseProgress', JSON.stringify({ python: { 1: { attempted: true, completed: true } } }));
+    const { Progress, currentLanguage } = await freshStores();
+
+    Progress.importData(oldSiteExportJson());
+
+    expect(Progress.getAllLanguages().javascript).toEqual({
+      1: { attempted: true, completed: true },
+      21: { attempted: true, completed: true },
+      70: { attempted: true, completed: false }
+    });
+
+    currentLanguage.set('python');
+    expect(Progress.getExercise(1).completed).toBe(true);
+  });
+
+  it('merges conflicting state for the same problem by OR-ing, never regressing a completion', async () => {
+    // This browser has problem 1 completed; the imported blob only has it
+    // attempted (e.g. exported from a browser where it was later re-solved
+    // elsewhere but that export predates it). The merge must not downgrade
+    // an already-recorded completion just because the imported side is behind.
+    localStorage.setItem(
+      'exerciseProgress',
+      JSON.stringify({ javascript: { 1: { attempted: true, completed: true } } })
+    );
+    const { Progress } = await freshStores();
+
+    Progress.importData(
+      JSON.stringify({ exerciseProgress: JSON.stringify({ 1: { attempted: true, completed: false } }) })
+    );
+
+    expect(Progress.getExercise(1)).toEqual({ attempted: true, completed: true });
+  });
+
+  it('picks up a completion from the imported side even if this browser only has it attempted', async () => {
+    localStorage.setItem(
+      'exerciseProgress',
+      JSON.stringify({ javascript: { 1: { attempted: true, completed: false } } })
+    );
+    const { Progress } = await freshStores();
+
+    Progress.importData(
+      JSON.stringify({ exerciseProgress: JSON.stringify({ 1: { attempted: true, completed: true } }) })
+    );
+
+    expect(Progress.getExercise(1)).toEqual({ attempted: true, completed: true });
+  });
+});
+
 describe('per-language progress isolation', () => {
   it('keeps identical exercise ids in different languages separate', async () => {
     const { Progress, currentLanguage } = await freshStores();

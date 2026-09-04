@@ -50,6 +50,26 @@
   let checkResultText = $state('');
   let checkResultPassed = $state(false);
 
+  // 'idle' | 'loading' | 'loaded' | 'error'. Only ever set by pythonSandbox's
+  // onRuntimeStatus callback (sandboxRunCode's JS path never calls it), and
+  // deliberately not reset when switching away from Python — the runtime
+  // stays loaded in the worker for the rest of the page session, so the
+  // status shown on returning to a Python problem should still say so.
+  let pythonRuntimeStatus = $state('idle');
+
+  const PYTHON_RUNTIME_STATUS_TEXT = {
+    loading: 'Loading the Python runtime…',
+    loaded: 'Python runtime loaded successfully',
+    error: 'Python runtime failed to load'
+  };
+
+  // Only shown while Python is the active language — the status genuinely
+  // doesn't apply to a JavaScript problem, even if Python was loaded earlier
+  // this session.
+  const pythonRuntimeStatusText = $derived(
+    $currentLanguage === 'python' ? (PYTHON_RUNTIME_STATUS_TEXT[pythonRuntimeStatus] ?? null) : null
+  );
+
   // Matches bindRunCheckShortcuts' own platform check, so the hint always
   // names the key that actually triggers it.
   const modKeyLabel = navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl';
@@ -329,6 +349,7 @@
 
     runCodeForCurrentLanguage(view.state.doc.toString(), {
       onConsoleLine: appendConsoleLine,
+      onRuntimeStatus: (status) => { pythonRuntimeStatus = status; },
       onDone: (payload) => {
         markAttemptedIfOutput(payload);
       }
@@ -343,6 +364,7 @@
 
     runCodeForCurrentLanguage(view.state.doc.toString(), {
       onConsoleLine: appendConsoleLine,
+      onRuntimeStatus: (status) => { pythonRuntimeStatus = status; },
       onDone: (payload) => {
         markAttemptedIfOutput(payload);
 
@@ -385,7 +407,12 @@
   <div class="code-editor" bind:this={editorParentEl}></div>
 
   <div class="console-output" hidden={!consoleVisible}>
-    <strong>Console</strong>
+    <div class="console-header">
+      <strong class="console-label">Console</strong>
+      {#if pythonRuntimeStatusText}
+        <span class="console-label">{pythonRuntimeStatusText}</span>
+      {/if}
+    </div>
     <pre class="console-log" bind:this={consoleOutputEl}></pre>
   </div>
 </div>

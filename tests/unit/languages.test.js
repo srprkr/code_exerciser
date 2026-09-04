@@ -67,9 +67,51 @@ describe('python exercise set', () => {
     });
   });
 
-  it('seeds exactly one problem per core tag block', () => {
-    expect(python.exercises.map((e) => e.id)).toEqual([1, 11, 21, 31, 41, 51, 61, 71, 81]);
+  it('has all nine core blocks reserved, at least their seed problem present', () => {
     expect(python.CORE_FUNCTIONS).toHaveLength(9);
+    const seedIds = python.CORE_FUNCTIONS.map((_tag, i) => i * 10 + 1);
+    const presentIds = new Set(python.exercises.map((e) => e.id));
+    seedIds.forEach((id) => expect(presentIds.has(id), `Block seed id ${id} is missing`).toBe(true));
+  });
+
+  it('fills each block contiguously from its first id, with no gaps', () => {
+    // A block can be partially filled (this set grows incrementally), but
+    // whatever's there must be contiguous from the block's head — a gap
+    // would mean some id doesn't correspond to its block's "next slot",
+    // which is exactly what the reserved-block scheme exists to prevent.
+    const idsByBlock = new Map();
+    python.exercises.forEach((exercise) => {
+      const blockIndex = Math.floor((exercise.id - 1) / 10);
+      if (!idsByBlock.has(blockIndex)) idsByBlock.set(blockIndex, []);
+      idsByBlock.get(blockIndex).push(exercise.id);
+    });
+
+    idsByBlock.forEach((ids, blockIndex) => {
+      const sorted = [...ids].sort((a, b) => a - b);
+      const blockStart = blockIndex * 10 + 1;
+      sorted.forEach((id, i) => {
+        const expectedId = blockStart + i;
+        expect(
+          id,
+          `Block ${blockIndex} (${python.CORE_FUNCTIONS[blockIndex]}) has a gap: expected id ${expectedId}, got ${id}`
+        ).toBe(expectedId);
+      });
+    });
+  });
+
+  it('never exceeds a block\'s reserved ten ids', () => {
+    const countByBlock = new Map();
+    python.exercises.forEach((exercise) => {
+      const blockIndex = Math.floor((exercise.id - 1) / 10);
+      countByBlock.set(blockIndex, (countByBlock.get(blockIndex) ?? 0) + 1);
+    });
+
+    countByBlock.forEach((count, blockIndex) => {
+      expect(
+        count,
+        `Block ${blockIndex} (${python.CORE_FUNCTIONS[blockIndex]}) has ${count} problems, over its reserved 10`
+      ).toBeLessThanOrEqual(10);
+    });
   });
 
   it('gives every problem a hint, since Python is the unfamiliar language here', () => {

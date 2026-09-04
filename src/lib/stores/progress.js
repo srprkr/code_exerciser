@@ -140,6 +140,35 @@ function exportData() {
   return JSON.stringify(data, null, 2);
 }
 
+// attempted/completed are permanent achievements, so a merge should only
+// ever be able to add one, never lose one already recorded on either side —
+// hence OR rather than "imported wins" or "existing wins".
+function mergeProgressEntry(existing, incoming) {
+  if (!existing) return incoming;
+  if (!incoming) return existing;
+  return { attempted: existing.attempted || incoming.attempted, completed: existing.completed || incoming.completed };
+}
+
+function mergeLanguageBucket(existing = {}, incoming = {}) {
+  const merged = { ...existing };
+  Object.entries(incoming).forEach(([exerciseId, entry]) => {
+    merged[exerciseId] = mergeProgressEntry(existing[exerciseId], entry);
+  });
+  return merged;
+}
+
+// Merges per exercise id, within each language independently — an imported
+// blob for one language (e.g. an old, pre-multi-language export, which is
+// always JS-only) must never touch another language's bucket it has nothing
+// to say about, let alone wipe it by replacing the whole progress key.
+function mergeAllLanguages(existing, incoming) {
+  const merged = { ...existing };
+  Object.keys(incoming).forEach((language) => {
+    merged[language] = mergeLanguageBucket(existing[language], incoming[language]);
+  });
+  return merged;
+}
+
 // Returns true on success, false if the JSON was invalid or empty.
 function importData(jsonString) {
   let data;
@@ -151,13 +180,33 @@ function importData(jsonString) {
   if (!data || typeof data !== 'object') return false;
 
   ALL_SYNC_KEYS.forEach((key) => {
+    // Progress is merged below rather than blindly overwritten here — a
+    // straight localStorage.setItem would replace this browser's entire
+    // progress with whatever was imported, silently destroying any other
+    // language's progress an old (pre-multi-language, JS-only) export has
+    // nothing to say about.
+    if (key === PROGRESS_KEY) return;
     if (typeof data[key] === 'string') {
       localStorage.setItem(key, data[key]);
     }
   });
 
+  if (typeof data[PROGRESS_KEY] === 'string') {
+    let incomingRaw;
+    try {
+      incomingRaw = JSON.parse(data[PROGRESS_KEY]);
+    } catch {
+      incomingRaw = null;
+    }
+
+    if (incomingRaw && typeof incomingRaw === 'object') {
+      const incoming = migrateLegacyShape(incomingRaw);
+      saveProgress(mergeAllLanguages(loadProgress(), incoming));
+    }
+  }
+
   // Progress store must be refreshed from localStorage after an import,
-  // since PROGRESS_KEY may have just been overwritten directly above.
+  // since PROGRESS_KEY may have just changed via the merge above.
   progress.set(loadProgress());
 
   return true;

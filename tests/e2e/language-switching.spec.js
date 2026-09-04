@@ -22,7 +22,7 @@ test('switching to Python swaps the exercise set and the filter tags', async ({ 
 
   await switchTo(page, 'Python');
 
-  await expect(position(page)).toHaveText('1 / 9');
+  await expect(position(page)).toHaveText('1 / 36');
   await expect(page.locator('#function-filters .pill').first()).toHaveText('list-comprehension');
   // A JavaScript-only tag must not survive the switch.
   await expect(page.locator('#function-filters .pill', { hasText: /^spread$/ })).toHaveCount(0);
@@ -38,13 +38,50 @@ test('switching languages clears filters that the new language cannot show', asy
   // an empty carousel with a pill the new language never renders.
   await expect(page.locator('#clear-filters')).toBeHidden();
   await expect(page.locator('#function-filters .pill.btn-active')).toHaveCount(0);
-  await expect(position(page)).toHaveText('1 / 9');
+  await expect(position(page)).toHaveText('1 / 36');
 });
 
 // Pyodide's first load in a fresh browser context pays the real ~1-2s WASM +
 // stdlib fetch cost (self-hosted from public/pyodide/, not mocked) — these
 // assertions get a generous timeout rather than racing the default 5s.
 const PYODIDE_TIMEOUT = { timeout: 20000 };
+
+test('the Python runtime status shows next to Console while loading, then confirms once loaded', async ({ page }) => {
+  await switchTo(page, 'Python');
+
+  // "Console" and the status text share the .console-label class but differ
+  // in tag (strong vs span), so scope by tag rather than relying on order.
+  const status = page.locator('.console-header span.console-label');
+  const header = page.locator('.console-header');
+
+  // Not visible at all until a run is actually attempted.
+  await expect(status).toHaveCount(0);
+
+  const editor = page.locator('.cm-content');
+  await editor.click();
+  await page.keyboard.press('Control+End');
+  await page.keyboard.type('\nprint(sentence)');
+  await page.getByRole('button', { name: 'Run' }).click();
+
+  await expect(status).toHaveText('Loading the Python runtime…');
+  // Same line as "Console", not a line in the console log body.
+  await expect(header).toContainText('Console');
+  await expect(page.locator('.console-log')).not.toContainText('Loading the Python runtime');
+
+  await expect(status).toHaveText('Python runtime loaded successfully', PYODIDE_TIMEOUT);
+
+  // Running again must not flicker back to "loading" — the runtime is
+  // already warm in the worker for the rest of the page session.
+  await page.getByRole('button', { name: 'Run' }).click();
+  await page.waitForTimeout(300);
+  await expect(status).toHaveText('Python runtime loaded successfully');
+});
+
+test('the Python runtime status never shows on a JavaScript problem', async ({ page }) => {
+  await page.getByRole('button', { name: 'Run' }).click();
+  await expect(page.locator('.console-log')).not.toBeEmpty();
+  await expect(page.locator('.console-header .console-label')).toHaveCount(1); // just "Console"
+});
 
 test('Run executes real Python and prints the actual result', async ({ page }) => {
   await switchTo(page, 'Python');
@@ -119,7 +156,7 @@ test('the selected language survives a page reload', async ({ page }) => {
   await page.reload();
 
   await expect(trigger(page)).toHaveText(/Python/);
-  await expect(position(page)).toHaveText('1 / 9');
+  await expect(position(page)).toHaveText('1 / 36');
 });
 
 test('the editor highlights Python syntax, not JavaScript', async ({ page }) => {
@@ -206,7 +243,7 @@ test('the progress summary counts only the active language', async ({ page }) =>
   await switchTo(page, 'Python');
   await page.getByLabel('View profile').click();
 
-  await expect(page.getByText(/0 \/ 9 problems completed/)).toBeVisible();
+  await expect(page.getByText(/0 \/ 36 problems completed/)).toBeVisible();
 });
 
 test('the hint links out to the Python docs for that problem\'s idiom', async ({ page }) => {
