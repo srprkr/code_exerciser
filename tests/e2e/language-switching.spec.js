@@ -22,7 +22,7 @@ test('switching to Python swaps the exercise set and the filter tags', async ({ 
 
   await switchTo(page, 'Python');
 
-  await expect(position(page)).toHaveText('1 / 36');
+  await expect(position(page)).toHaveText('1 / 90');
   await expect(page.locator('#function-filters .pill').first()).toHaveText('list-comprehension');
   // A JavaScript-only tag must not survive the switch.
   await expect(page.locator('#function-filters .pill', { hasText: /^spread$/ })).toHaveCount(0);
@@ -38,7 +38,7 @@ test('switching languages clears filters that the new language cannot show', asy
   // an empty carousel with a pill the new language never renders.
   await expect(page.locator('#clear-filters')).toBeHidden();
   await expect(page.locator('#function-filters .pill.btn-active')).toHaveCount(0);
-  await expect(position(page)).toHaveText('1 / 36');
+  await expect(position(page)).toHaveText('1 / 90');
 });
 
 // Pyodide's first load in a fresh browser context pays the real ~1-2s WASM +
@@ -156,7 +156,7 @@ test('the selected language survives a page reload', async ({ page }) => {
   await page.reload();
 
   await expect(trigger(page)).toHaveText(/Python/);
-  await expect(position(page)).toHaveText('1 / 36');
+  await expect(position(page)).toHaveText('1 / 90');
 });
 
 test('the editor highlights Python syntax, not JavaScript', async ({ page }) => {
@@ -243,7 +243,7 @@ test('the progress summary counts only the active language', async ({ page }) =>
   await switchTo(page, 'Python');
   await page.getByLabel('View profile').click();
 
-  await expect(page.getByText(/0 \/ 36 problems completed/)).toBeVisible();
+  await expect(page.getByText(/0 \/ 90 problems completed/)).toBeVisible();
 });
 
 test('the hint links out to the Python docs for that problem\'s idiom', async ({ page }) => {

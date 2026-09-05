@@ -463,6 +463,132 @@ print(ranked)`,
     }
   },
   {
+    id: 32,
+    title: 'Problem 32',
+    question: 'Sort these words alphabetically, ignoring letter case',
+    sampleData: `words = ["banana", "Apple", "cherry", "Fig"]`,
+    solution: `alphabetical = sorted(words, key=str.lower)
+print(alphabetical)`,
+    output: ['Apple', 'banana', 'cherry', 'Fig'],
+    functions: ['sorted'],
+    difficulty: 'easy',
+    hint: {
+      text: 'key=str.lower applies .lower() to each item before comparing, without changing the items themselves — this sorts case-insensitively without calling .lower() by hand in a loop.'
+    }
+  },
+  {
+    id: 33,
+    title: 'Problem 33',
+    question: 'Sort these words from shortest to longest',
+    sampleData: `words = ["kiwi", "fig", "banana", "date"]`,
+    solution: `by_length = sorted(words, key=len)
+print(by_length)`,
+    output: ['fig', 'kiwi', 'date', 'banana'],
+    functions: ['sorted'],
+    difficulty: 'easy',
+    hint: {
+      text: 'key= can be any function, including a builtin like len — words with equal length keep their original relative order, since sorted() is stable.'
+    }
+  },
+  {
+    id: 34,
+    title: 'Problem 34',
+    question: 'Sort these people by age, then return just their names in that order',
+    sampleData: `people = [{"name": "sam", "age": 39}, {"name": "ana", "age": 28}, {"name": "kim", "age": 45}]`,
+    solution: `by_age = sorted(people, key=lambda person: person["age"])
+print([p["name"] for p in by_age])`,
+    output: ['ana', 'sam', 'kim'],
+    functions: ['sorted', 'lambda'],
+    difficulty: 'medium',
+    hint: {
+      text: 'The key function can look up a field on each item — sorting a list of dicts by one of their values is one of the most common uses of key=.'
+    }
+  },
+  {
+    id: 35,
+    title: 'Problem 35',
+    question: 'Sort these words by length, and alphabetically among words of the same length',
+    sampleData: `words = ["fig", "kiwi", "date", "pear", "kale"]`,
+    solution: `ranked = sorted(words, key=lambda w: (len(w), w))
+print(ranked)`,
+    output: ['fig', 'date', 'kale', 'kiwi', 'pear'],
+    functions: ['sorted'],
+    difficulty: 'hard',
+    hint: {
+      text: 'A tuple key sorts by its first element, then breaks ties using the next — (len(w), w) sorts by length first, alphabetically within the same length.'
+    }
+  },
+  {
+    id: 36,
+    title: 'Problem 36',
+    question: 'Sort these names in reverse alphabetical order',
+    sampleData: `names = ["sam", "ana", "kim"]`,
+    solution: `reverse_alpha = sorted(names, reverse=True)
+print(reverse_alpha)`,
+    output: ['sam', 'kim', 'ana'],
+    functions: ['sorted'],
+    difficulty: 'easy',
+    hint: {
+      text: 'reverse=True flips the sort direction without needing a custom key — use it whenever the default ordering is right, just backwards.'
+    }
+  },
+  {
+    id: 37,
+    title: 'Problem 37',
+    question: 'Sort these words by their last letter',
+    sampleData: `words = ["cat", "dog", "ant", "owl"]`,
+    solution: `by_last_letter = sorted(words, key=lambda w: w[-1])
+print(by_last_letter)`,
+    output: ['dog', 'owl', 'cat', 'ant'],
+    functions: ['sorted'],
+    difficulty: 'medium',
+    hint: {
+      text: 'The key function can extract just one character (or any slice) from each item — w[-1] looks at the last letter only, ignoring the rest of the word.'
+    }
+  },
+  {
+    id: 38,
+    title: 'Problem 38',
+    question: 'Find the three highest scores in this list',
+    sampleData: `scores = [55, 92, 78, 61, 89, 73]`,
+    solution: `top_three = sorted(scores, reverse=True)[:3]
+print(top_three)`,
+    output: [92, 89, 78],
+    functions: ['sorted', 'slice'],
+    difficulty: 'medium',
+    hint: {
+      text: 'sorted() and slicing combine naturally: sort descending, then take the first few — a common pattern for "top N" style problems.'
+    }
+  },
+  {
+    id: 39,
+    title: 'Problem 39',
+    question: 'Sort this list, then show that the original list was never changed',
+    sampleData: `original = [3, 1, 2]`,
+    solution: `ordered = sorted(original)
+print(original)`,
+    output: [3, 1, 2],
+    functions: ['sorted'],
+    difficulty: 'easy',
+    hint: {
+      text: 'sorted() always returns a new list, leaving the original untouched — unlike the in-place list.sort() method, which mutates the list and returns None.'
+    }
+  },
+  {
+    id: 40,
+    title: 'Problem 40',
+    question: 'Sort these numbers by their distance from zero, ignoring sign',
+    sampleData: `numbers = [-7, 3, -1, 5, -4]`,
+    solution: `by_magnitude = sorted(numbers, key=abs)
+print(by_magnitude)`,
+    output: [-1, 3, -4, 5, -7],
+    functions: ['sorted'],
+    difficulty: 'medium',
+    hint: {
+      text: 'key=abs sorts by each number\'s absolute value while leaving the numbers themselves (sign included) in the output unchanged.'
+    }
+  },
+  {
     id: 41,
     title: 'Problem 41',
     question: 'Given a list of fruits, number them starting at 1, like "1. apple"',
@@ -474,6 +600,145 @@ print(numbered)`,
     difficulty: 'easy',
     hint: {
       text: 'enumerate() yields (index, item) pairs as you loop. It counts from 0 unless you pass start=1.'
+    }
+  },
+  {
+    id: 42,
+    title: 'Problem 42',
+    question: 'Find the positions in this list where the value is 7',
+    sampleData: 'numbers = [4, 7, 2, 9, 7, 3]',
+    solution: `seven_indices = [i for i, n in enumerate(numbers) if n == 7]
+print(seven_indices)`,
+    output: [1, 4],
+    functions: ['enumerate', 'list-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: 'enumerate() pairs each item with its index, so a comprehension can filter on the value while collecting the index instead of the value itself.'
+    }
+  },
+  {
+    id: 43,
+    title: 'Problem 43',
+    question: 'Assign each task a ticket id, counting up from 100',
+    sampleData: `tasks = ["design", "build", "test"]`,
+    solution: `ids = [f"TASK-{n}" for n, task in enumerate(tasks, start=100)]
+print(ids)`,
+    output: ['TASK-100', 'TASK-101', 'TASK-102'],
+    functions: ['enumerate', 'f-string'],
+    difficulty: 'easy',
+    hint: {
+      text: 'start= isn\'t limited to 0 or 1 — enumerate can begin counting from any number, handy for ids, ticket numbers, or anything with its own numbering scheme.'
+    }
+  },
+  {
+    id: 44,
+    title: 'Problem 44',
+    question: 'Pair each character in this word with its position',
+    sampleData: 'word = "hello"',
+    solution: `positions = [(i, ch) for i, ch in enumerate(word)]
+print(positions)`,
+    output: [
+      [0, 'h'],
+      [1, 'e'],
+      [2, 'l'],
+      [3, 'l'],
+      [4, 'o']
+    ],
+    functions: ['enumerate'],
+    difficulty: 'easy',
+    hint: {
+      text: 'enumerate works on any iterable, including strings — each character comes paired with its position, the same as it would for a list.'
+    }
+  },
+  {
+    id: 45,
+    title: 'Problem 45',
+    question: 'Find the index of the first grade that is 90 or above',
+    sampleData: 'grades = [72, 85, 91, 68, 77]',
+    solution: `matches = [i for i, grade in enumerate(grades) if grade >= 90]
+first_A_index = matches[0]
+print(first_A_index)`,
+    output: 2,
+    functions: ['enumerate', 'list-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Collecting every matching index and then taking the first one is a simple way to answer "where is the first match", without a manual loop that stops early.'
+    }
+  },
+  {
+    id: 46,
+    title: 'Problem 46',
+    question: 'Increase every price in this list by 10%, updating it in place',
+    sampleData: 'prices = [10, 20, 30]',
+    solution: `for i, price in enumerate(prices):
+    prices[i] = price * 1.1
+print(prices)`,
+    output: [11, 22, 33],
+    functions: ['enumerate'],
+    difficulty: 'medium',
+    hint: {
+      text: 'enumerate() gives you the index alongside the value, so you can write back into the original list at that position — something a plain "for price in prices" loop can\'t do, since price is just a copy of each value.'
+    }
+  },
+  {
+    id: 47,
+    title: 'Problem 47',
+    question: 'Collect only the items sitting at an even position (0, 2, 4, ...)',
+    sampleData: `items = ["a", "b", "c", "d", "e", "f"]`,
+    solution: `even_position_items = [item for i, item in enumerate(items) if i % 2 == 0]
+print(even_position_items)`,
+    output: ['a', 'c', 'e'],
+    functions: ['enumerate', 'list-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: "enumerate's index can be used in the condition too, not just the value — filtering by position (like every other item) is a common use for it."
+    }
+  },
+  {
+    id: 48,
+    title: 'Problem 48',
+    question: 'Find the index of the highest score in this list',
+    sampleData: 'scores = [55, 92, 78, 91, 60]',
+    solution: `best_index, best_score = max(enumerate(scores), key=lambda pair: pair[1])
+print(best_index)`,
+    output: 1,
+    functions: ['enumerate'],
+    difficulty: 'hard',
+    hint: {
+      text: 'enumerate(scores) yields (index, value) pairs; max() with key=lambda pair: pair[1] picks the pair whose value is largest, and unpacking pulls both parts out in one line.'
+    }
+  },
+  {
+    id: 49,
+    title: 'Problem 49',
+    question: 'Pair each name with the score at the same position in the other list',
+    sampleData: `names = ["sam", "ana", "kim"]
+scores = [91, 78, 85]`,
+    solution: `pairs = [(name, scores[i]) for i, name in enumerate(names)]
+print(pairs)`,
+    output: [
+      ['sam', 91],
+      ['ana', 78],
+      ['kim', 85]
+    ],
+    functions: ['enumerate'],
+    difficulty: 'medium',
+    hint: {
+      text: 'This works by using the index to reach into the second list — though when you don\'t otherwise need the index, zip(names, scores) does the same pairing more directly.'
+    }
+  },
+  {
+    id: 50,
+    title: 'Problem 50',
+    question: 'Label each item in the queue with how many are left, including itself',
+    sampleData: `queue = ["first", "second", "third"]`,
+    solution: `remaining = [f"{len(queue) - i} left: {item}" for i, item in enumerate(queue)]
+print(remaining)`,
+    output: ['3 left: first', '2 left: second', '1 left: third'],
+    functions: ['enumerate', 'f-string'],
+    difficulty: 'medium',
+    hint: {
+      text: 'The index from enumerate can feed into any calculation, not just direct numbering — here it\'s used to count down instead of up.'
     }
   },
   {
@@ -492,6 +757,141 @@ print(names)`,
     }
   },
   {
+    id: 52,
+    title: 'Problem 52',
+    question: 'Swap the values of a and b without using a temporary variable',
+    sampleData: 'a = 1\nb = 2',
+    solution: `a, b = b, a
+print([a, b])`,
+    output: [2, 1],
+    functions: ['unpacking'],
+    difficulty: 'easy',
+    hint: {
+      text: 'The right side builds a tuple (b, a) first, then unpacks it into a, b — this is how Python swaps values without a temporary variable.'
+    }
+  },
+  {
+    id: 53,
+    title: 'Problem 53',
+    question: 'Unpack this point into its x and y coordinates',
+    sampleData: 'point = (3, 7)',
+    solution: `x, y = point
+print(f"x={x}, y={y}")`,
+    output: 'x=3, y=7',
+    functions: ['unpacking', 'f-string'],
+    difficulty: 'easy',
+    hint: {
+      text: 'A tuple on the right can be unpacked directly into separate names on the left, one name per position.'
+    }
+  },
+  {
+    id: 54,
+    title: 'Problem 54',
+    question: 'Get the first and last score, discarding everything in between',
+    sampleData: 'scores = [88, 91, 76, 82, 95]',
+    solution: `first, *_, last = scores
+print([first, last])`,
+    output: [88, 95],
+    functions: ['unpacking'],
+    difficulty: 'medium',
+    hint: {
+      text: 'An underscore is a normal variable name, conventionally used to mean "I don\'t need this" — *_ absorbs everything between first and last without naming it meaningfully.'
+    }
+  },
+  {
+    id: 55,
+    title: 'Problem 55',
+    question: 'Unpack this nested record into name, age, and city',
+    sampleData: 'record = ("sam", (39, "Boston"))',
+    solution: `name, (age, city) = record
+print(f"{name} is {age} and lives in {city}")`,
+    output: 'sam is 39 and lives in Boston',
+    functions: ['unpacking', 'f-string'],
+    difficulty: 'hard',
+    hint: {
+      text: 'The pattern on the left can nest to mirror the structure being unpacked — (age, city) matches the inner tuple directly.'
+    }
+  },
+  {
+    id: 56,
+    title: 'Problem 56',
+    question: 'Capture both values this function returns',
+    sampleData: `def min_and_max(nums):
+    return min(nums), max(nums)
+
+numbers = [4, 8, 1, 9, 3]`,
+    solution: `low, high = min_and_max(numbers)
+print([low, high])`,
+    output: [1, 9],
+    functions: ['unpacking'],
+    difficulty: 'medium',
+    hint: {
+      text: 'A function that returns multiple comma-separated values is really returning one tuple — unpacking on the calling side splits it back into separate names.'
+    }
+  },
+  {
+    id: 57,
+    title: 'Problem 57',
+    question: 'Swap the first and last items of this list, in place',
+    sampleData: `items = ["a", "b", "c", "d"]`,
+    solution: `items[0], items[-1] = items[-1], items[0]
+print(items)`,
+    output: ['d', 'b', 'c', 'a'],
+    functions: ['unpacking'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Unpacking assignment works on list elements too, not just plain variables — this swaps the first and last items without a temporary variable.'
+    }
+  },
+  {
+    id: 58,
+    title: 'Problem 58',
+    question: 'Call this function by spreading a list into its three separate arguments',
+    sampleData: `def volume(length, width, height):
+    return length * width * height
+
+dimensions = [2, 3, 4]`,
+    solution: `result = volume(*dimensions)
+print(result)`,
+    output: 24,
+    functions: ['unpacking'],
+    difficulty: 'medium',
+    hint: {
+      text: '* isn\'t only for the left side of an assignment — using it in a function call spreads a list\'s items into separate positional arguments, as if you\'d written volume(2, 3, 4) by hand.'
+    }
+  },
+  {
+    id: 59,
+    title: 'Problem 59',
+    question: 'Call this function by spreading a dictionary into its keyword arguments',
+    sampleData: `def greet(name, greeting):
+    return f"{greeting}, {name}!"
+
+info = {"name": "Ana", "greeting": "Hello"}`,
+    solution: `message = greet(**info)
+print(message)`,
+    output: 'Hello, Ana!',
+    functions: ['unpacking'],
+    difficulty: 'medium',
+    hint: {
+      text: '** spreads a dict\'s key/value pairs into keyword arguments — the dict\'s keys must match the function\'s parameter names exactly.'
+    }
+  },
+  {
+    id: 60,
+    title: 'Problem 60',
+    question: 'Unpack this RGB color tuple and format it as a hex color code',
+    sampleData: 'color = (255, 128, 0)',
+    solution: `red, green, blue = color
+print(f"#{red:02x}{green:02x}{blue:02x}")`,
+    output: '#ff8000',
+    functions: ['unpacking', 'f-string'],
+    difficulty: 'hard',
+    hint: {
+      text: 'Unpacking three values needs exactly three names on the left. The :02x format spec used here converts each number to two-digit hexadecimal, handy for color codes.'
+    }
+  },
+  {
     id: 61,
     title: 'Problem 61',
     question: 'Report whether every number in the list is even',
@@ -503,6 +903,133 @@ print(all_even)`,
     difficulty: 'medium',
     hint: {
       text: 'all() is True when every item passes the test, any() when at least one does. Both take an expression that produces True/False for each item.'
+    }
+  },
+  {
+    id: 62,
+    title: 'Problem 62',
+    question: 'Report whether at least one number in the list is even',
+    sampleData: 'numbers = [3, 7, 12, 9]',
+    solution: `has_even = any(n % 2 == 0 for n in numbers)
+print(has_even)`,
+    output: true,
+    functions: ['any'],
+    difficulty: 'easy',
+    hint: {
+      text: 'any() stops checking as soon as it finds one item that passes, rather than scanning the whole list every time.'
+    }
+  },
+  {
+    id: 63,
+    title: 'Problem 63',
+    question: 'Report whether every word in this list starts with a capital letter',
+    sampleData: `words = ["Cat", "Dog", "Owl"]`,
+    solution: `all_capitalized = all(word[0].isupper() for word in words)
+print(all_capitalized)`,
+    output: true,
+    functions: ['all'],
+    difficulty: 'easy',
+    hint: {
+      text: 'The expression inside all() can be as rich as needed — here it checks a single character\'s case via .isupper() on each word.'
+    }
+  },
+  {
+    id: 64,
+    title: 'Problem 64',
+    question: 'Report whether at least one of these users is active',
+    sampleData: `users = [{"name": "sam", "active": False}, {"name": "ana", "active": True}]`,
+    solution: `has_active_user = any(user["active"] for user in users)
+print(has_active_user)`,
+    output: true,
+    functions: ['any'],
+    difficulty: 'medium',
+    hint: {
+      text: 'The generator expression can be any boolean-ish expression per item — here it\'s just reading a field that\'s already True/False.'
+    }
+  },
+  {
+    id: 65,
+    title: 'Problem 65',
+    question: 'Report whether every number in this empty list is positive',
+    sampleData: 'numbers = []',
+    solution: `all_positive = all(n > 0 for n in numbers)
+print(all_positive)`,
+    output: true,
+    functions: ['all'],
+    difficulty: 'hard',
+    hint: {
+      text: 'all() on an empty iterable is always True — there\'s nothing to fail the check. This is called "vacuous truth", and it surprises a lot of people the first time they hit it.'
+    }
+  },
+  {
+    id: 66,
+    title: 'Problem 66',
+    question: 'Report whether any number in this empty list is positive',
+    sampleData: 'numbers = []',
+    solution: `any_positive = any(n > 0 for n in numbers)
+print(any_positive)`,
+    output: false,
+    functions: ['any'],
+    difficulty: 'hard',
+    hint: {
+      text: 'any() on an empty iterable is always False, the mirror image of all()\'s vacuous-truth True — there\'s nothing that could have passed.'
+    }
+  },
+  {
+    id: 67,
+    title: 'Problem 67',
+    question: 'Report whether at least one of these passwords is long and not purely alphabetic',
+    sampleData: `passwords = ["abc123", "password", "Xk9#mP2"]`,
+    solution: `has_strong_password = any(len(p) >= 7 and not p.isalpha() for p in passwords)
+print(has_strong_password)`,
+    output: true,
+    functions: ['any'],
+    difficulty: 'hard',
+    hint: {
+      text: 'The condition inside any() can combine multiple checks with and/or, just like a regular if statement would.'
+    }
+  },
+  {
+    id: 68,
+    title: 'Problem 68',
+    question: 'Report whether every temperature in this list is a comfortable value (65 to 80 inclusive)',
+    sampleData: 'temperatures = [68, 72, 75, 70]',
+    solution: `all_comfortable = all(65 <= t <= 80 for t in temperatures)
+print(all_comfortable)`,
+    output: true,
+    functions: ['all'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Python allows chained comparisons like 65 <= t <= 80 — it reads naturally as "t is between 65 and 80", rather than needing 65 <= t and t <= 80.'
+    }
+  },
+  {
+    id: 69,
+    title: 'Problem 69',
+    question: 'Report whether any of the wanted items are actually available',
+    sampleData: `wanted = ["apple", "kiwi"]
+available = ["banana", "kiwi", "cherry"]`,
+    solution: `can_fulfill = any(item in available for item in wanted)
+print(can_fulfill)`,
+    output: true,
+    functions: ['any'],
+    difficulty: 'medium',
+    hint: {
+      text: 'any() combined with in checks overlap between two collections, stopping as soon as one match is found.'
+    }
+  },
+  {
+    id: 70,
+    title: 'Problem 70',
+    question: 'Report whether this list of numbers is already sorted in ascending order',
+    sampleData: 'numbers = [3, 5, 5, 8, 10]',
+    solution: `is_sorted = all(numbers[i] <= numbers[i + 1] for i in range(len(numbers) - 1))
+print(is_sorted)`,
+    output: true,
+    functions: ['all', 'range'],
+    difficulty: 'hard',
+    hint: {
+      text: 'Comparing each item to its neighbor checks the whole sequence is non-decreasing — range(len(numbers) - 1) stops one short so numbers[i + 1] never runs past the end.'
     }
   },
   {
@@ -520,6 +1047,138 @@ print(backwards)`,
     }
   },
   {
+    id: 72,
+    title: 'Problem 72',
+    question: 'Get the first three letters from this list',
+    sampleData: `letters = ["a", "b", "c", "d", "e", "f"]`,
+    solution: `first_three = letters[:3]
+print(first_three)`,
+    output: ['a', 'b', 'c'],
+    functions: ['slice'],
+    difficulty: 'easy',
+    hint: {
+      text: 'Leaving off the start in a slice defaults to the beginning — list[:3] means "from the start, up to (not including) index 3".'
+    }
+  },
+  {
+    id: 73,
+    title: 'Problem 73',
+    question: 'Get the last two letters from this list',
+    sampleData: `letters = ["a", "b", "c", "d", "e", "f"]`,
+    solution: `last_two = letters[-2:]
+print(last_two)`,
+    output: ['e', 'f'],
+    functions: ['slice'],
+    difficulty: 'easy',
+    hint: {
+      text: 'A negative start counts from the end — list[-2:] means "starting two from the end, through the rest of the list".'
+    }
+  },
+  {
+    id: 74,
+    title: 'Problem 74',
+    question: 'Get every second number from this list, starting from the first',
+    sampleData: 'numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]',
+    solution: `evens_by_position = numbers[::2]
+print(evens_by_position)`,
+    output: [0, 2, 4, 6, 8],
+    functions: ['slice'],
+    difficulty: 'medium',
+    hint: {
+      text: 'The third slice value is the step — [::2] takes every second item starting from the beginning, without needing a comprehension or condition.'
+    }
+  },
+  {
+    id: 75,
+    title: 'Problem 75',
+    question: 'Replace the middle three items of this list with two new values',
+    sampleData: 'items = [1, 2, 3, 4, 5]',
+    solution: `items[1:4] = [20, 30]
+print(items)`,
+    output: [1, 20, 30, 5],
+    functions: ['slice'],
+    difficulty: 'hard',
+    hint: {
+      text: 'A slice can appear on the left side of an assignment too — this replaces items[1:4] with a new (possibly different-length) chunk, shrinking or growing the list as needed.'
+    }
+  },
+  {
+    id: 76,
+    title: 'Problem 76',
+    question: 'Extract just the area code from this phone number string',
+    sampleData: 'phone = "555-123-4567"',
+    solution: `area_code = phone[:3]
+print(area_code)`,
+    output: '555',
+    functions: ['slice'],
+    difficulty: 'easy',
+    hint: {
+      text: 'Strings support the exact same slicing syntax as lists — slice[start:stop] on a string returns a substring.'
+    }
+  },
+  {
+    id: 77,
+    title: 'Problem 77',
+    question: 'Get everyone in this queue except the first and last person',
+    sampleData: `queue = ["sam", "ana", "kim", "tom", "lee"]`,
+    solution: `middle = queue[1:-1]
+print(middle)`,
+    output: ['ana', 'kim', 'tom'],
+    functions: ['slice'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Mixing a positive start with a negative stop is a common way to say "everything except the first and last item".'
+    }
+  },
+  {
+    id: 78,
+    title: 'Problem 78',
+    question: 'Make an independent copy of this list, then show the original is unaffected by changes to the copy',
+    sampleData: 'original = [1, 2, 3]',
+    solution: `copy = original[:]
+copy.append(4)
+print(original)`,
+    output: [1, 2, 3],
+    functions: ['slice'],
+    difficulty: 'medium',
+    hint: {
+      text: 'original[:] (a full slice) makes a real, independent copy — unlike copy = original, which would just be another name for the same list, so mutating one would affect the other too.'
+    }
+  },
+  {
+    id: 79,
+    title: 'Problem 79',
+    question: 'Get every second number from this list, in reverse order',
+    sampleData: 'numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]',
+    solution: `every_other_reversed = numbers[::-2]
+print(every_other_reversed)`,
+    output: [9, 7, 5, 3, 1],
+    functions: ['slice'],
+    difficulty: 'hard',
+    hint: {
+      text: 'A negative step walks backwards through the list — [::-2] starts at the end and takes every second item from there.'
+    }
+  },
+  {
+    id: 80,
+    title: 'Problem 80',
+    question: 'Split this list into two halves',
+    sampleData: 'numbers = [1, 2, 3, 4, 5, 6]',
+    solution: `midpoint = len(numbers) // 2
+first_half = numbers[:midpoint]
+second_half = numbers[midpoint:]
+print([first_half, second_half])`,
+    output: [
+      [1, 2, 3],
+      [4, 5, 6]
+    ],
+    functions: ['slice'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Computing the midpoint with integer division (//) first, then slicing on either side of it, is the standard way to split a sequence in half regardless of its length.'
+    }
+  },
+  {
     id: 81,
     title: 'Problem 81',
     question: 'Build a list of every even number from 0 up to (but not including) stop',
@@ -531,6 +1190,131 @@ print(evens)`,
     difficulty: 'easy',
     hint: {
       text: 'range(start, stop, step) counts from start up to but never including stop. It produces values lazily, so wrap it in a list or a comprehension to see them.'
+    }
+  },
+  {
+    id: 82,
+    title: 'Problem 82',
+    question: 'Build a list of numbers from 0 up to (but not including) count',
+    sampleData: 'count = 5',
+    solution: `numbers = list(range(count))
+print(numbers)`,
+    output: [0, 1, 2, 3, 4],
+    functions: ['range'],
+    difficulty: 'easy',
+    hint: {
+      text: 'range() with just one argument counts from 0 up to (but not including) that value — the same default starting point as enumerate().'
+    }
+  },
+  {
+    id: 83,
+    title: 'Problem 83',
+    question: 'Build a list of numbers from start up to (but not including) stop',
+    sampleData: 'start = 5\nstop = 10',
+    solution: `numbers = list(range(start, stop))
+print(numbers)`,
+    output: [5, 6, 7, 8, 9],
+    functions: ['range'],
+    difficulty: 'easy',
+    hint: {
+      text: 'range(start, stop) counts from start up to but never including stop.'
+    }
+  },
+  {
+    id: 84,
+    title: 'Problem 84',
+    question: 'Count down from start to 1',
+    sampleData: 'start = 10',
+    solution: `countdown = list(range(start, 0, -1))
+print(countdown)`,
+    output: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+    functions: ['range'],
+    difficulty: 'medium',
+    hint: {
+      text: 'A negative step counts down — range(10, 0, -1) starts at 10 and stops just before 0, so 0 itself is excluded.'
+    }
+  },
+  {
+    id: 85,
+    title: 'Problem 85',
+    question: 'Add up every number from 1 to n',
+    sampleData: 'n = 5',
+    solution: `total = sum(range(1, n + 1))
+print(total)`,
+    output: 15,
+    functions: ['range', 'sum'],
+    difficulty: 'easy',
+    hint: {
+      text: 'sum() works directly on a range, no list() conversion needed — range(1, n + 1) includes n itself, since range stops just before its second argument.'
+    }
+  },
+  {
+    id: 86,
+    title: 'Problem 86',
+    question: 'Using each item\'s position, double it and collect the results',
+    sampleData: `items = ["a", "b", "c"]`,
+    solution: `doubled_positions = [items[i] * 2 for i in range(len(items))]
+print(doubled_positions)`,
+    output: ['aa', 'bb', 'cc'],
+    functions: ['range', 'list-comprehension'],
+    difficulty: 'medium',
+    hint: {
+      text: 'range(len(items)) generates valid indices for items — though when you also need the value itself (not just the index), enumerate(items) is usually the more direct tool for the job.'
+    }
+  },
+  {
+    id: 87,
+    title: 'Problem 87',
+    question: 'List every multiple of 7 below this limit',
+    sampleData: 'limit = 50',
+    solution: `multiples_of_seven = list(range(7, limit, 7))
+print(multiples_of_seven)`,
+    output: [7, 14, 21, 28, 35, 42, 49],
+    functions: ['range'],
+    difficulty: 'medium',
+    hint: {
+      text: 'A step doesn\'t have to be 1 or -1 — range(7, limit, 7) starts at 7 and jumps by 7 each time, landing exactly on the multiples.'
+    }
+  },
+  {
+    id: 88,
+    title: 'Problem 88',
+    question: 'Build a list of numbers from 1 up to (but not including) n',
+    sampleData: 'n = 5',
+    solution: `numbers = list(range(1, n))
+print(numbers)`,
+    output: [1, 2, 3, 4],
+    functions: ['range'],
+    difficulty: 'medium',
+    hint: {
+      text: 'range(1, n) stops just before n — to include n itself, you\'d need range(1, n + 1). This off-by-one is one of the most common range() mistakes.'
+    }
+  },
+  {
+    id: 89,
+    title: 'Problem 89',
+    question: 'List every number up to limit that is a multiple of 3 or 5',
+    sampleData: 'limit = 30',
+    solution: `fizz_buzz_numbers = [n for n in range(1, limit + 1) if n % 3 == 0 or n % 5 == 0]
+print(fizz_buzz_numbers)`,
+    output: [3, 5, 6, 9, 10, 12, 15, 18, 20, 21, 24, 25, 27, 30],
+    functions: ['range', 'list-comprehension'],
+    difficulty: 'hard',
+    hint: {
+      text: 'range() combines with a comprehension\'s if clause the same way any other iterable does — the classic "FizzBuzz" condition is just an or of two modulo checks.'
+    }
+  },
+  {
+    id: 90,
+    title: 'Problem 90',
+    question: 'Check what type of object range() actually produces',
+    sampleData: 'r = range(5)',
+    solution: `print(type(r).__name__)`,
+    output: 'range',
+    functions: ['range'],
+    difficulty: 'hard',
+    hint: {
+      text: 'range() produces a lightweight range object, not a list — it computes values on demand as you iterate, which is why wrapping it in list(...) is needed to see or compare its contents directly.'
     }
   }
 ];

@@ -122,12 +122,14 @@ describe('python exercise set', () => {
 
   it('keeps hints free of JavaScript comparisons', () => {
     // Problems should teach Python on its own terms rather than transliterating
-    // JavaScript idioms, so hints must not lean on JS equivalents.
+    // JavaScript idioms, so hints must not lean on JS equivalents. Matches the
+    // actual JS terms ("spread syntax"/"spread operator"), not the ordinary
+    // English verb "spread(s)" used to describe what Python's own */** do.
     python.exercises.forEach((exercise) => {
       expect(
         exercise.hint.text,
         `Problem ${exercise.id}'s hint explains Python via JavaScript`
-      ).not.toMatch(/javascript|\.map\(|\.filter\(|template literal|spread/i);
+      ).not.toMatch(/javascript|\.map\(|\.filter\(|template literal|spread (syntax|operator)/i);
     });
   });
 

@@ -37,18 +37,49 @@ test('choosing Python updates the trigger and closes the list', async ({ page })
   await expect(trigger(page)).toHaveAttribute('aria-expanded', 'false');
 });
 
-// The whole reason this is a custom listbox rather than a native <select>:
-// a native popup always spans the trigger's full border-box width, so it
-// overhangs the flat run of a pill-shaped border by one cap-radius each side.
-test('the popup aligns with the flat section of the pill, not its rounded caps', async ({ page }) => {
+// The popup spans the trigger's full width edge-to-edge, so it's never
+// narrower than the pill above it — combined with the trigger being pinned
+// to the widest language's width (see the test below), this is what
+// guarantees the popup is always wide enough for "JavaScript", even while a
+// shorter language like "Python" is the one currently selected.
+test('the popup spans the trigger\'s full width, edge to edge', async ({ page }) => {
   await trigger(page).click();
 
   const triggerBox = await trigger(page).boundingBox();
   const listBox = await page.getByRole('listbox').boundingBox();
-  const capRadius = triggerBox.height / 2;
 
-  expect(listBox.x).toBeCloseTo(triggerBox.x + capRadius, 0);
-  expect(listBox.width).toBeCloseTo(triggerBox.width - capRadius * 2, 0);
+  expect(listBox.x).toBeCloseTo(triggerBox.x, 0);
+  expect(listBox.width).toBeCloseTo(triggerBox.width, 0);
+});
+
+// "Python" is shorter than "JavaScript" — without pinning, the trigger (and
+// so the popup, which sizes off it) would shrink when Python is selected,
+// leaving too little room to comfortably show "JavaScript" as an option.
+test('the trigger and popup stay pinned to the widest language\'s width regardless of selection', async ({
+  page
+}) => {
+  const jsWidth = (await trigger(page).boundingBox()).width;
+
+  await trigger(page).click();
+  await page.getByRole('option', { name: 'Python' }).click();
+  const pythonWidth = (await trigger(page).boundingBox()).width;
+
+  expect(pythonWidth).toBeCloseTo(jsWidth, 0);
+
+  await trigger(page).click();
+  const listBoxWidth = (await page.getByRole('listbox').boundingBox()).width;
+  expect(listBoxWidth).toBeCloseTo(jsWidth, 0);
+
+  // The option text itself must fit comfortably, not just the container —
+  // guards against a container-only fix that still clips or wraps the text.
+  const jsOption = page.getByRole('option', { name: 'JavaScript' });
+  const optionBox = await jsOption.boundingBox();
+  const textWidth = await jsOption.evaluate((el) => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    return range.getBoundingClientRect().width;
+  });
+  expect(textWidth).toBeLessThan(optionBox.width);
 });
 
 test('the popup is themed from the app tokens in both light and dark', async ({ page }) => {

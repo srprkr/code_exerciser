@@ -10,21 +10,40 @@
   let activeIndex = $state(0);
   let triggerEl = $state(null);
   let listEl = $state(null);
+  let measureEls = $state([]);
   let flatSection = $state({ left: 0, width: 0 });
+  // The trigger's own natural width changes with whichever language is
+  // selected ("Python" is shorter than "JavaScript") — and since the popup's
+  // width is measured off the trigger (see measureFlatSection below), an
+  // unpinned trigger would make the popup too narrow to comfortably fit the
+  // longest option whenever a shorter one is currently selected. Pinning the
+  // trigger's min-width to the widest label fixes both at once.
+  let triggerMinWidth = $state(0);
 
   const currentLabel = $derived(
     LANGUAGES.find((lang) => lang.id === $currentLanguage)?.label ?? ''
   );
 
-  // A pill's rounded caps eat `height / 2` of horizontal run at each end, so
-  // the flat part of its border starts one cap-radius in and ends one
-  // cap-radius short. Measured rather than hardcoded because the title font
-  // (and so the pill's height) changes at the sm: breakpoint.
+  // The popup spans the trigger's full width edge-to-edge — not inset by the
+  // pill's cap radius the way an earlier version of this did, since insetting
+  // shrinks the popup below the pill's own width, defeating the point of
+  // pinning the trigger to the widest label in the first place (the popup
+  // must never end up narrower than that). Measured rather than hardcoded
+  // because the title font (and so the pill's width) changes at the sm:
+  // breakpoint.
   function measureFlatSection() {
     if (!triggerEl) return;
     const rect = triggerEl.getBoundingClientRect();
-    const capRadius = rect.height / 2;
-    flatSection = { left: capRadius, width: Math.max(rect.width - capRadius * 2, 0) };
+    flatSection = { left: 0, width: rect.width };
+  }
+
+  // Measures each language's natural pill width via off-screen clones (see
+  // .language-trigger-measure below) rather than approximating text width in
+  // JS — a real rendered clone automatically accounts for the current font,
+  // padding, border and chevron exactly as CSS actually lays them out.
+  function measureWidestTriggerWidth() {
+    const widths = measureEls.filter(Boolean).map((el) => el.getBoundingClientRect().width);
+    if (widths.length > 0) triggerMinWidth = Math.max(...widths);
   }
 
   function openList() {
@@ -106,6 +125,16 @@
     if (open) listEl?.focus();
   });
 
+  // Runs regardless of open/closed state — the trigger's width has to be
+  // correct before the user ever opens the dropdown, not just once they do.
+  // Re-measures on resize since the font (and so every clone's width)
+  // changes at the title's sm: breakpoint.
+  $effect(() => {
+    measureWidestTriggerWidth();
+    window.addEventListener('resize', measureWidestTriggerWidth);
+    return () => window.removeEventListener('resize', measureWidestTriggerWidth);
+  });
+
   $effect(() => {
     if (!open) return;
 
@@ -128,6 +157,7 @@
     bind:this={triggerEl}
     type="button"
     class="language-trigger"
+    style={triggerMinWidth ? `min-width: ${triggerMinWidth}px` : undefined}
     aria-label="Select programming language"
     aria-haspopup="listbox"
     aria-expanded={open}
@@ -137,6 +167,19 @@
     <span class="language-chevron" aria-hidden="true"></span>
     {currentLabel}
   </button>
+
+  <!-- Invisible but laid-out (not display:none) clones of every language's
+       pill, purely so measureWidestTriggerWidth() can read a real rendered
+       width per label — this is what lets the trigger (and so the popup,
+       which sizes off the trigger) stay pinned to the widest one. -->
+  <div class="language-trigger-measure" aria-hidden="true">
+    {#each LANGUAGES as lang, index (lang.id)}
+      <span class="language-trigger" bind:this={measureEls[index]}>
+        <span class="language-chevron"></span>
+        {lang.label}
+      </span>
+    {/each}
+  </div>
 
   {#if open}
     <ul
@@ -176,6 +219,20 @@
     position: relative;
     display: inline-flex;
     align-items: center;
+  }
+
+  /* Laid out for real (not display:none, which would give zero width) so
+     measureWidestTriggerWidth() gets accurate rendered widths, but taken
+     out of flow and clipped to zero size so it never affects visible
+     layout or the page's scroll dimensions. */
+  .language-trigger-measure {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .language-trigger {
