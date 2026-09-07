@@ -6,7 +6,7 @@ import { DEFAULT_LANGUAGE, isKnownLanguage } from '../data/languages.js';
 // exercise modules exist.
 export const LANGUAGES = [
   { id: 'javascript', label: 'JavaScript', available: true },
-  { id: 'python', label: 'Python', available: true }
+  { id: 'python', label: 'Python (Beta)', available: true }
 ];
 
 const LANGUAGE_KEY = 'language';
