@@ -19,7 +19,7 @@ test('both shipped languages are listed and selectable', async ({ page }) => {
   const options = page.getByRole('option');
   await expect(options).toHaveCount(2);
   await expect(options.nth(0)).toHaveText('JavaScript');
-  await expect(options.nth(1)).toHaveText('Python');
+  await expect(options.nth(1)).toHaveText('Python (Beta)');
   await expect(options.nth(0)).toHaveAttribute('aria-disabled', 'false');
   await expect(options.nth(1)).toHaveAttribute('aria-disabled', 'false');
 

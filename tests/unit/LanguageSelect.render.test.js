@@ -26,7 +26,7 @@ describe('LanguageSelect', () => {
     await tick();
 
     const options = getAllByRole('option');
-    expect(options.map((o) => o.textContent.trim())).toEqual(['JavaScript', 'Python']);
+    expect(options.map((o) => o.textContent.trim())).toEqual(['JavaScript', 'Python (Beta)']);
     expect(getByRole('button', { name: 'Select programming language' })).toHaveAttribute('aria-expanded', 'true');
   });
 

@@ -245,6 +245,7 @@
     font-size: 0.8em;
     font-weight: inherit;
     letter-spacing: inherit;
+    white-space: nowrap;
     border: 1.5px solid color-mix(in srgb, currentColor 30%, transparent);
     border-radius: 999px;
     padding: 0 0.5em 0.1em 0.6em;
