@@ -28,9 +28,9 @@ test('done checkmark persists across navigation and a page reload', async ({ pag
   await expect(page.locator('.done-checkmark')).toBeVisible();
 
   // Navigate away and back within the same session.
-  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: 'Next (→)' }).click();
   await expect(page.locator('.done-checkmark')).not.toBeVisible();
-  await page.getByRole('button', { name: 'Previous' }).click();
+  await page.getByRole('button', { name: 'Previous (←)' }).click();
   await expect(page.locator('.done-checkmark')).toBeVisible();
 
   // A fresh page load should read the same completed state back from localStorage.

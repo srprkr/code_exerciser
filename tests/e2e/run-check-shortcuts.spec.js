@@ -45,7 +45,7 @@ test('Ctrl+Enter runs the code even when focus is elsewhere on the page (e.g. a 
   await page.keyboard.type('\nconsole.log("ran from outside the editor");');
 
   // Move focus off the editor onto a plain button before triggering the shortcut.
-  await page.getByRole('button', { name: 'Previous' }).focus();
+  await page.getByRole('button', { name: 'Previous (←)' }).focus();
 
   await page.keyboard.press('Control+Enter');
 
@@ -58,7 +58,7 @@ test('Ctrl+Shift+Enter checks the answer even when focus is elsewhere on the pag
   await page.keyboard.press('Control+End');
   await page.keyboard.type('\nlet doubled = oneToFive.map(n => n * 2);\nconsole.log(doubled);');
 
-  await page.getByRole('button', { name: 'Previous' }).focus();
+  await page.getByRole('button', { name: 'Previous (←)' }).focus();
   await page.keyboard.press('Control+Shift+Enter');
 
   await expect(page.locator('.check-result')).toHaveClass(/check-pass/);

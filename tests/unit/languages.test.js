@@ -187,3 +187,14 @@ describe('python exercise set', () => {
     expect(python.exerciseHasFunction({ functions: ['sorted'] }, 'dict')).toBe(false);
   });
 });
+
+describe('javascript exercise set', () => {
+  it('problem 20 expects a number, not the string toFixed returns', () => {
+    // toFixed(2) yields '150.50' (a string); the grader compares strictly, so
+    // the expected output is the Number()-converted value and the hint says so.
+    const exercise = getLanguageData('javascript').exercises.find((ex) => ex.id === 20);
+    expect(exercise.output).toBe(150.5);
+    expect(exercise.solution).toMatch(/Number\(/);
+    expect(exercise.hint.text).toMatch(/Number\(\)/);
+  });
+});

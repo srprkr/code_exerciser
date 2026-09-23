@@ -256,11 +256,15 @@ console.log(maxOfFive);`,
     .filter(item => item.inStock)
     .reduce((acc, val) => {
       return acc + val.price
-    }, 0).toFixed(2);
-    console.log(currentStockTotal);`,
-    output: 150.50,
+    }, 0);
+    console.log(Number(currentStockTotal.toFixed(2)));`,
+    output: 150.5,
     functions: ['filter', 'reduce'],
-    difficulty: 'hard'
+    difficulty: 'hard',
+    hint: {
+      text: "toFixed(2) rounds to the nearest cent, but it returns a string ('150.50'), not a number. Numbers often get treated as strings unless you convert them yourself, so wrap the result in Number(), the same way you did in Problem 6.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed'
+    }
   },
   {
     id: 21,

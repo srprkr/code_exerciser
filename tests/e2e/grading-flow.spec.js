@@ -67,3 +67,32 @@ test('a multi-log loop exercise (id 70 style) can pass via the all-logs fallback
   await expect(checkResult).toBeVisible();
   await expect(checkResult).toHaveClass(/check-pass/);
 });
+
+test.describe('problem 20 (rounded total must be a number)', () => {
+  const pipeline =
+    '\nlet total = bag.filter(item => item.inStock).reduce((acc, val) => acc + val.price, 0);';
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/?exercise=20');
+    const editor = page.locator('.cm-content');
+    await editor.click();
+    await page.keyboard.press('Control+End');
+  });
+
+  test('passes when the toFixed result is converted with Number()', async ({ page }) => {
+    await page.keyboard.type(`${pipeline}\nconsole.log(Number(total.toFixed(2)));`);
+    await page.getByRole('button', { name: 'Check answer' }).click();
+    await expect(page.locator('.check-result')).toHaveClass(/check-pass/);
+  });
+
+  test('fails when the bare toFixed string is logged', async ({ page }) => {
+    await page.keyboard.type(`${pipeline}\nconsole.log(total.toFixed(2));`);
+    await page.getByRole('button', { name: 'Check answer' }).click();
+    await expect(page.locator('.check-result')).toHaveClass(/check-fail/);
+  });
+
+  test('offers a hint pointing at Number()', async ({ page }) => {
+    await page.getByRole('button', { name: /See hint/ }).click();
+    await expect(page.locator('.hint-popover')).toContainText('Number()');
+  });
+});

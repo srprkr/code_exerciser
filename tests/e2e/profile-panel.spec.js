@@ -5,8 +5,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('navigating to profile and back preserves the current exercise position', async ({ page }) => {
-  await page.getByRole('button', { name: 'Next' }).click();
-  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: 'Next (→)' }).click();
+  await page.getByRole('button', { name: 'Next (→)' }).click();
   await expect(page.locator('.exercise-title')).toHaveText(/Problem 3$/);
 
   await page.getByRole('button', { name: 'View profile' }).click();

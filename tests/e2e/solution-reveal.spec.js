@@ -86,7 +86,7 @@ test('solution visibility resets when navigating to the next exercise', async ({
   await page.getByRole('button', { name: 'Show me the solution' }).click();
   await expect(page.locator('.solution-block')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: 'Next (→)' }).click();
   await expect(page.locator('.solution-block')).toBeHidden();
   await expect(toughItOutCheckbox(page)).not.toBeChecked();
 });

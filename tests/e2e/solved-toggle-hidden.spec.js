@@ -40,6 +40,6 @@ test('navigating from a solved problem to an unsolved one brings the toggle back
   await expect(page.locator('.check-result')).toHaveClass(/check-pass/);
   await expect(page.locator('.tough-it-out-toggle')).toHaveCount(0);
 
-  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: 'Next (→)' }).click();
   await expect(page.locator('.tough-it-out-toggle')).toBeVisible();
 });

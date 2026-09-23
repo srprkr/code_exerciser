@@ -30,8 +30,8 @@ describe('App', () => {
   });
 
   it('navigates to the next exercise on click', async () => {
-    const { getByText } = render(App);
-    const nextButton = getByText('Next').closest('button');
+    const { getByText, getByTitle } = render(App);
+    const nextButton = getByTitle('Next (→)');
     nextButton.click();
     await new Promise((r) => setTimeout(r, 0));
     expect(getByText(/Problem 2$/)).toBeInTheDocument();

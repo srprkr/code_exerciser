@@ -31,7 +31,7 @@ test('toggling to dark then switching exercises then back to light leaves no res
   const lightBg = await editor.evaluate((el) => getComputedStyle(el).backgroundColor);
 
   await page.getByLabel('Toggle day/night theme').click();
-  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: 'Next (→)' }).click();
   await page.getByLabel('Toggle day/night theme').click();
 
   const finalBg = await editor.evaluate((el) => getComputedStyle(el).backgroundColor);
@@ -46,7 +46,7 @@ test('syntax highlighting colors change with the theme and stay consistent acros
   const darkColor = await token.evaluate((el) => getComputedStyle(el).color);
   expect(darkColor).not.toBe(lightColor);
 
-  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: 'Next (→)' }).click();
   const darkColorAfterNext = await page.locator('.cm-content [class*="ͼ"]').first().evaluate((el) => getComputedStyle(el).color);
   expect(darkColorAfterNext).toBe(darkColor);
 
