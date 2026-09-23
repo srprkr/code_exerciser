@@ -2174,7 +2174,7 @@ const immediate = "now";`,
     functions: ['setTimeout'],
     difficulty: 'medium',
     hint: {
-      text: "Every timer starts counting the moment it's created, not when the previous one fires. To space them out, give each one a bigger delay (i * 100) rather than the same delay."
+      text: "Every timer starts counting the moment it's created, not when the previous one fires. To space them out, give each one a bigger delay than the last (one more multiple of 100) rather than the same delay."
     }
   },
   {
