@@ -1,4 +1,8 @@
 import { expect, test } from '@playwright/test';
+import { exercises } from '../../src/lib/data/javascript-exercises.js';
+
+// Derived from the data so adding problems doesn't break these counts.
+const TOTAL = exercises.length;
 
 const trigger = (page) => page.getByRole('button', { name: 'Select programming language' });
 const position = (page) => page.getByText(/^\d+ \/ \d+$/);
@@ -17,7 +21,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('switching to Python swaps the exercise set and the filter tags', async ({ page }) => {
-  await expect(position(page)).toHaveText('1 / 140');
+  await expect(position(page)).toHaveText(`1 / ${TOTAL}`);
   await expect(page.locator('#function-filters .pill', { hasText: 'reduce' })).toBeVisible();
 
   await switchTo(page, 'Python');
@@ -224,7 +228,7 @@ test('an unknown ?lang= falls back to JavaScript instead of blanking the page', 
   await page.goto('/?lang=rust');
 
   await expect(trigger(page)).toHaveText(/JavaScript/);
-  await expect(position(page)).toHaveText('1 / 140');
+  await expect(position(page)).toHaveText(`1 / ${TOTAL}`);
 });
 
 test('achievements swap to the Python tag set and its docs links', async ({ page }) => {

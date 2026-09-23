@@ -8,6 +8,7 @@ import {
   activeDifficultyFilter
 } from '../../src/lib/stores/ui.js';
 import { Progress } from '../../src/lib/stores/progress.js';
+import { exercises } from '../../src/lib/data/javascript-exercises.js';
 
 beforeEach(() => {
   localStorage.clear();
@@ -25,7 +26,7 @@ describe('ProfilePanel', () => {
     currentView.set('profile');
 
     const { getByText, getAllByText } = render(App);
-    expect(getByText(/1 \/ 140 problems completed/)).toBeInTheDocument();
+    expect(getByText(`1 / ${exercises.length} problems completed`, { exact: false })).toBeInTheDocument();
     expect(getAllByText(/Problem 1:/).length).toBeGreaterThan(0);
   });
 

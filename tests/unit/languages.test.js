@@ -197,4 +197,30 @@ describe('javascript exercise set', () => {
     expect(exercise.solution).toMatch(/Number\(/);
     expect(exercise.hint.text).toMatch(/Number\(\)/);
   });
+
+  it('appends the async tags after the original core tags without reordering them', () => {
+    const js = getLanguageData('javascript');
+    expect(js.CORE_FUNCTIONS.slice(0, 9)).toEqual([
+      'map', 'filter', 'reduce', 'sort', 'spread', 'destructure', 'template-literal', 'some', 'every'
+    ]);
+    expect(js.CORE_FUNCTIONS.slice(9)).toEqual(['setTimeout', 'async-await', 'fetch']);
+  });
+
+  it.each([
+    ['setTimeout', 141],
+    ['async-await', 151],
+    ['fetch', 161]
+  ])('%s has an MDN link and a block of ten problems starting at id %i', (tag, firstId) => {
+    const js = getLanguageData('javascript');
+    expect(js.KNOWN_FUNCTION_DOC_LINKS[tag]).toMatch(/^https:\/\/developer\.mozilla\.org\//);
+
+    const block = js.exercises.filter((ex) => ex.id >= firstId && ex.id < firstId + 10);
+    expect(block).toHaveLength(10);
+    block.forEach((ex) => {
+      expect(ex.functions, `id ${ex.id}`).toContain(tag);
+      // Every new problem has a hint, and so a docs link in its popover.
+      expect(ex.hint?.text, `id ${ex.id}`).toBeTruthy();
+      if (ex.hint.mdnUrl) expect(ex.hint.mdnUrl).toMatch(/^https:\/\/developer\.mozilla\.org\//);
+    });
+  });
 });

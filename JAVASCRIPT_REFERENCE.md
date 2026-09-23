@@ -441,3 +441,96 @@ These turn an object into an array so it can be looped over, mapped, or
 filtered — objects aren't directly iterable on their own.
 `Object.fromEntries()` does the reverse, building an object back from a list
 of key/value pairs.
+
+## setTimeout()
+
+```javascript
+console.log("first");
+
+const timerId = setTimeout(() => {
+  console.log("third — runs after about 100ms");
+}, 100);
+
+console.log("second");
+
+clearTimeout(timerId); // cancels it, if it hasn't run yet
+```
+
+`setTimeout(callback, delay)` schedules the callback to run once, after at
+least `delay` milliseconds. It doesn't pause anything: the lines after it
+keep running right away, and the callback waits in a queue until the
+current code has finished — even with a delay of `0`. It returns a timer id
+that `clearTimeout()` can use to cancel it.
+
+Wrapping it in a Promise gives you a reusable pause for async code:
+
+```javascript
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+await sleep(500);
+```
+
+## async / await
+
+```javascript
+async function getUserName(id) {
+  const user = await getUser(id); // pauses here until the promise settles
+  return user.name;               // an async function always returns a Promise
+}
+
+try {
+  const name = await getUserName(1);
+  console.log(name);
+} catch (err) {
+  console.log(err.message);       // a rejected await throws, so try/catch works
+}
+
+// Independent work runs faster in parallel:
+const [profile, settings] = await Promise.all([getProfile(), getSettings()]);
+```
+
+`await` unwraps a promise's resolved value, or throws its rejection. Two
+awaits in a row run one after the other; `Promise.all` starts them together
+and resolves to an array of results in order. Its siblings handle
+failures differently: `Promise.allSettled` reports every outcome,
+`Promise.any` takes the first success, and `Promise.race` takes the first
+to finish, success or not. This editor allows `await` at the top level,
+like an ES module; in a regular script it has to be inside an `async`
+function.
+
+## fetch()
+
+```javascript
+const res = await fetch("https://api.example.com/users/1");
+
+if (!res.ok) {
+  // fetch only rejects on network failure — a 404 or 500 still resolves
+  throw new Error(`Request failed with status ${res.status}`);
+}
+
+const user = await res.json(); // parsing the body is async too
+
+// Sending JSON:
+await fetch("https://api.example.com/posts", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ title: "Hello", userId: 1 })
+});
+```
+
+`fetch()` resolves to a `Response`: check `res.ok` / `res.status`, then read
+the body with `res.json()` (or `res.text()`). Pass an `AbortController`'s
+`signal` in the options to cancel a request that's taking too long.
+
+The exercises run against a built-in practice API (no real network) at
+`https://api.example.com`:
+
+| Endpoint | Returns |
+| --- | --- |
+| `GET /users` | `[{ id, name, email }, ...]` |
+| `GET /users/:id` | `{ id, name, email }`, or a 404 |
+| `GET /todos` | `[{ id, title, completed }, ...]` |
+| `GET /posts?userId=:id` | `[{ id, userId, title, likes }, ...]` (all posts without `userId`) |
+| `POST /posts` | `201 { id, ...body }`; needs a JSON body and `Content-Type: application/json` |
+| `GET /products?page=:n` | `{ page, products: [{ name }, ...], nextPage }` (`nextPage` is `null` on the last page) |
+| `GET /slow` | `{ message }` after one second |

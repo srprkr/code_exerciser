@@ -2097,6 +2097,673 @@ console.log(address);`,
     output: false,
     functions: ['reduce'],
     difficulty: 'medium'
+  },
+  {
+    id: 141,
+    title: 'Problem 141',
+    question: 'After 100 milliseconds, log the message.',
+    sampleData: 'const message = "Time\'s up!";',
+    solution: `setTimeout(() => {
+      console.log(message);
+    }, 100);`,
+    output: "Time's up!",
+    functions: ['setTimeout'],
+    difficulty: 'easy',
+    hint: {
+      text: "setTimeout(callback, delay) runs the callback once, after at least delay milliseconds. It doesn't pause your code — everything after the setTimeout call keeps running right away."
+    }
+  },
+  {
+    id: 142,
+    title: 'Problem 142',
+    question: 'Schedule a log of the delayed message with a 0ms delay, then log the immediate message on the next line. Which one prints first?',
+    sampleData: `const delayed = "later";
+const immediate = "now";`,
+    solution: `setTimeout(() => console.log(delayed), 0);
+    console.log(immediate);`,
+    output: ['now', 'later'],
+    functions: ['setTimeout'],
+    difficulty: 'easy',
+    hint: {
+      text: 'A 0ms delay doesn\'t mean "right now" — it means "as soon as the current code finishes." Timer callbacks wait in a queue until the call stack is empty, so every synchronous line runs first.',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model'
+    }
+  },
+  {
+    id: 143,
+    title: 'Problem 143',
+    question: 'Call greet with the name "Ana" after 50ms. Pass the name through setTimeout itself instead of wrapping greet in an arrow function.',
+    sampleData: `function greet(name) {
+  console.log(\`Hello, \${name}!\`);
+}`,
+    solution: `setTimeout(greet, 50, "Ana");`,
+    output: 'Hello, Ana!',
+    functions: ['setTimeout'],
+    difficulty: 'easy',
+    hint: {
+      text: 'Any arguments after the delay are passed to the callback when it runs: setTimeout(fn, delay, arg1, arg2).'
+    }
+  },
+  {
+    id: 144,
+    title: 'Problem 144',
+    question: 'An alarm is scheduled to go off in 100ms. Cancel it before it fires, then log "Alarm cancelled".',
+    sampleData: `const alarm = setTimeout(() => {
+  console.log("ALARM!");
+}, 100);`,
+    solution: `clearTimeout(alarm);
+    console.log("Alarm cancelled");`,
+    output: 'Alarm cancelled',
+    functions: ['setTimeout'],
+    difficulty: 'medium',
+    hint: {
+      text: "setTimeout returns a timer id. Passing that id to clearTimeout cancels the callback, as long as it hasn't run yet.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/API/Window/clearTimeout'
+    }
+  },
+  {
+    id: 145,
+    title: 'Problem 145',
+    question: 'Count down from start: log each number 100ms apart, then log "Liftoff!" 100ms after the last number.',
+    sampleData: 'const start = 3;',
+    solution: `for (let n = start; n > 0; n--) {
+      setTimeout(() => console.log(n), (start - n) * 100);
+    }
+    setTimeout(() => console.log("Liftoff!"), start * 100);`,
+    output: [3, 2, 1, 'Liftoff!'],
+    functions: ['setTimeout'],
+    difficulty: 'medium',
+    hint: {
+      text: "Every timer starts counting the moment it's created, not when the previous one fires. To space them out, give each one a bigger delay (i * 100) rather than the same delay."
+    }
+  },
+  {
+    id: 146,
+    title: 'Problem 146',
+    question: 'Using a for loop, schedule a log of each index (0, 1, 2) after 50ms. Make sure each timer logs its own index, not the final value of the loop counter.',
+    sampleData: 'const count = 3;',
+    solution: `for (let i = 0; i < count; i++) {
+      setTimeout(() => console.log(i), 50);
+    }`,
+    output: [0, 1, 2],
+    functions: ['setTimeout'],
+    difficulty: 'medium',
+    hint: {
+      text: 'With var, there is only one i shared by the whole loop — by the time the timers fire, the loop has finished and i is 3 for all of them. let creates a fresh i for each iteration, so each callback keeps its own copy.',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let'
+    }
+  },
+  {
+    id: 147,
+    title: 'Problem 147',
+    question: 'Write a sleep(ms) function that returns a Promise, which resolves with ms after ms milliseconds. Call sleep(nap) and, once it resolves, log "Rested for 100ms" using the resolved value (not a hardcoded 100).',
+    sampleData: 'const nap = 100;',
+    solution: `function sleep(ms) {
+      return new Promise(resolve => setTimeout(() => resolve(ms), ms));
+    }
+
+    sleep(nap).then(ms => console.log(\`Rested for \${ms}ms\`));`,
+    output: 'Rested for 100ms',
+    functions: ['setTimeout'],
+    difficulty: 'medium',
+    hint: {
+      text: 'new Promise(resolve => ...) hands you a resolve function. Call it from inside the setTimeout callback — whatever you pass to resolve becomes the value .then() receives.',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/Promise'
+    }
+  },
+  {
+    id: 148,
+    title: 'Problem 148',
+    question: 'Without using setInterval, log "tick 1", "tick 2", "tick 3" 50ms apart by having each setTimeout callback schedule the next one. Stop after the last tick.',
+    sampleData: 'const totalTicks = 3;',
+    solution: `function tick(n) {
+      console.log(\`tick \${n}\`);
+      if (n < totalTicks) {
+        setTimeout(() => tick(n + 1), 50);
+      }
+    }
+
+    setTimeout(() => tick(1), 50);`,
+    output: ['tick 1', 'tick 2', 'tick 3'],
+    functions: ['setTimeout'],
+    difficulty: 'medium',
+    hint: {
+      text: "A callback can call setTimeout again to schedule the next run. Unlike setInterval, the next tick is only scheduled once the current one finishes, so slow callbacks never pile up — and stopping is just a matter of not scheduling another.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval'
+    }
+  },
+  {
+    id: 149,
+    title: 'Problem 149',
+    question: 'slowTask takes 300ms. Race it against a timer that rejects with new Error("Timed out") after 100ms, catch the rejection, and log its message.',
+    sampleData: `const slowTask = new Promise(resolve => {
+  setTimeout(() => resolve("done"), 300);
+});`,
+    solution: `const timeout = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Timed out")), 100);
+    });
+
+    Promise.race([slowTask, timeout])
+      .then(result => console.log(result))
+      .catch(err => console.log(err.message));`,
+    output: 'Timed out',
+    functions: ['setTimeout'],
+    difficulty: 'hard',
+    hint: {
+      text: 'Promise.race settles as soon as the first promise in the array settles — whether it resolves or rejects. A promise that rejects after a delay makes a reusable timeout.',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race'
+    }
+  },
+  {
+    id: 150,
+    title: 'Problem 150',
+    question: 'Write debounce(fn, delay): it returns a function that waits until it has stopped being called for delay ms, then calls fn once with the latest arguments. Pass debounce(search, 100) to simulateTyping so only the final query gets searched.',
+    sampleData: `const keystrokes = ["j", "ja", "jav", "java"];
+const searched = [];
+
+function search(query) {
+  searched.push(query);
+}
+
+// Fires one keystroke every 30ms, then logs every query search() received.
+function simulateTyping(onInput) {
+  keystrokes.forEach((query, i) => setTimeout(() => onInput(query), i * 30));
+  setTimeout(() => console.log(searched), 400);
+}`,
+    solution: `function debounce(fn, delay) {
+      let timerId;
+      return (...args) => {
+        clearTimeout(timerId);
+        timerId = setTimeout(() => fn(...args), delay);
+      };
+    }
+
+    simulateTyping(debounce(search, 100));`,
+    output: ['java'],
+    functions: ['setTimeout'],
+    difficulty: 'hard',
+    hint: {
+      text: 'Keep the pending timer id in a variable the returned function closes over. Each new call clears the previous timer and starts a fresh one, so fn only runs once the calls stop coming.',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/API/Window/clearTimeout'
+    }
+  },
+  {
+    id: 151,
+    title: 'Problem 151',
+    question: 'getGreeting() returns a Promise. Await it and log the greeting.',
+    sampleData: `function getGreeting() {
+  return new Promise(resolve => {
+    setTimeout(() => resolve("Hello, async!"), 50);
+  });
+}`,
+    solution: `const greeting = await getGreeting();
+    console.log(greeting);`,
+    output: 'Hello, async!',
+    functions: ['async-await'],
+    difficulty: 'easy',
+    hint: {
+      text: "await pauses until the promise settles and hands you its resolved value. This editor allows await at the top level (like an ES module does); in a regular script you'd put it inside an async function.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await'
+    }
+  },
+  {
+    id: 152,
+    title: 'Problem 152',
+    question: 'Write an async function double(n) that returns n * 2, and log what it gives back for input. (You\'ll need to await the call to get the number out.)',
+    sampleData: 'const input = 21;',
+    solution: `async function double(n) {
+      return n * 2;
+    }
+
+    console.log(await double(input));`,
+    output: 42,
+    functions: ['async-await'],
+    difficulty: 'easy',
+    hint: {
+      text: 'An async function always returns a Promise, even when you return a plain value — console.log(double(21)) would log a Promise, not 42. await (or .then) unwraps it.'
+    }
+  },
+  {
+    id: 153,
+    title: 'Problem 153',
+    question: 'Get user 1, then use their id to get their orders. Log "<name> has <count> orders".',
+    sampleData: `const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+async function getUser(id) {
+  await wait(50);
+  return { id, name: "Ana" };
+}
+
+async function getOrders(userId) {
+  await wait(50);
+  return userId === 1 ? ["book", "lamp", "mug"] : [];
+}`,
+    solution: `const user = await getUser(1);
+    const orders = await getOrders(user.id);
+    console.log(\`\${user.name} has \${orders.length} orders\`);`,
+    output: 'Ana has 3 orders',
+    functions: ['async-await'],
+    difficulty: 'medium',
+    hint: {
+      text: "When one call needs the result of another, await them one after the other — the second line doesn't start until the first one has its value."
+    }
+  },
+  {
+    id: 154,
+    title: 'Problem 154',
+    question: 'chargeCard rejects any amount over 100. Try to charge 250, catch the error, and log its message.',
+    sampleData: `const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+async function chargeCard(amount) {
+  await wait(50);
+  if (amount > 100) {
+    throw new Error("Card declined");
+  }
+  return "Approved";
+}`,
+    solution: `try {
+      const result = await chargeCard(250);
+      console.log(result);
+    } catch (err) {
+      console.log(err.message);
+    }`,
+    output: 'Card declined',
+    functions: ['async-await'],
+    difficulty: 'medium',
+    hint: {
+      text: 'When an awaited promise rejects, the await line throws — so an ordinary try...catch around the await catches it.',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch'
+    }
+  },
+  {
+    id: 155,
+    title: 'Problem 155',
+    question: 'Load all three dashboard pieces in parallel (not one after another), then log "<name>: <count> notifications, <theme> theme".',
+    sampleData: `const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+async function getProfile() {
+  await wait(100);
+  return { name: "Sam" };
+}
+
+async function getNotifications() {
+  await wait(100);
+  return ["New follower", "Comment reply", "Weekly summary"];
+}
+
+async function getSettings() {
+  await wait(100);
+  return { theme: "dark" };
+}`,
+    solution: `const [profile, notifications, settings] = await Promise.all([
+      getProfile(),
+      getNotifications(),
+      getSettings()
+    ]);
+    console.log(\`\${profile.name}: \${notifications.length} notifications, \${settings.theme} theme\`);`,
+    output: 'Sam: 3 notifications, dark theme',
+    functions: ['async-await'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Three awaits in a row take about 300ms, since each waits for the one before. Promise.all starts them together and resolves to an array of results in the same order — about 100ms total. Destructure the array to name each result.',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all'
+    }
+  },
+  {
+    id: 156,
+    title: 'Problem 156',
+    question: 'Run each step in order, one at a time, logging each result as soon as it finishes. (The steps take different amounts of time, so starting them all at once would finish out of order.)',
+    sampleData: `const steps = ["wash", "rinse", "dry"];
+const durations = { wash: 90, rinse: 30, dry: 60 };
+
+function runStep(step) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(\`\${step} done\`), durations[step]);
+  });
+}`,
+    solution: `for (const step of steps) {
+      const result = await runStep(step);
+      console.log(result);
+    }`,
+    output: ['wash done', 'rinse done', 'dry done'],
+    functions: ['async-await'],
+    difficulty: 'medium',
+    hint: {
+      text: "forEach doesn't wait for an async callback — it starts all three at once. A for...of loop with await inside really does pause on each step before starting the next.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of'
+    }
+  },
+  {
+    id: 157,
+    title: 'Problem 157',
+    question: 'Get every user in ids and log their names as an array, in the same order as ids.',
+    sampleData: `const ids = [3, 1, 2];
+const names = { 1: "Ana", 2: "Sam", 3: "Luis" };
+
+function getUser(id) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve({ id, name: names[id] }), id * 30);
+  });
+}`,
+    solution: `const userNames = await Promise.all(ids.map(async id => {
+      const user = await getUser(id);
+      return user.name;
+    }));
+    console.log(userNames);`,
+    output: ['Luis', 'Ana', 'Sam'],
+    functions: ['async-await'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Mapping with an async callback gives you an array of promises, not values. Wrap it in Promise.all to wait for all of them — the results come back in array order, even though user 1 finishes first.',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all'
+    }
+  },
+  {
+    id: 158,
+    title: 'Problem 158',
+    question: 'Check every server. Some of the checks fail — log the names of only the servers that responded, as an array.',
+    sampleData: `const servers = ["alpha", "beta", "gamma", "delta"];
+const down = ["beta", "delta"];
+
+function checkServer(name) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (down.includes(name)) {
+        reject(new Error(\`\${name} is down\`));
+      } else {
+        resolve(name);
+      }
+    }, 50);
+  });
+}`,
+    solution: `const results = await Promise.allSettled(servers.map(checkServer));
+    const up = results
+      .filter(result => result.status === "fulfilled")
+      .map(result => result.value);
+    console.log(up);`,
+    output: ['alpha', 'gamma'],
+    functions: ['async-await'],
+    difficulty: 'medium',
+    hint: {
+      text: "Promise.all rejects as soon as any one promise fails. Promise.allSettled waits for all of them and gives you { status, value } or { status, reason } for each, so one failure doesn't hide the rest.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled'
+    }
+  },
+  {
+    id: 159,
+    title: 'Problem 159',
+    question: 'Download from whichever mirror succeeds first and log the result. Watch out: the fastest mirror fails.',
+    sampleData: `const mirrors = [
+  { name: "mirror-a", delay: 150, works: true },
+  { name: "mirror-b", delay: 80, works: true },
+  { name: "mirror-c", delay: 20, works: false }
+];
+
+function download(mirror) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (mirror.works) {
+        resolve(\`downloaded from \${mirror.name}\`);
+      } else {
+        reject(new Error(\`\${mirror.name} failed\`));
+      }
+    }, mirror.delay);
+  });
+}`,
+    solution: `const result = await Promise.any(mirrors.map(download));
+    console.log(result);`,
+    output: 'downloaded from mirror-b',
+    functions: ['async-await'],
+    difficulty: 'hard',
+    hint: {
+      text: 'Promise.race settles with whichever promise finishes first — even if that one failed. Promise.any skips over rejections and resolves with the first success (it only rejects if every promise fails).',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any'
+    }
+  },
+  {
+    id: 160,
+    title: 'Problem 160',
+    question: 'unreliableTask fails the first two times it\'s called. Write retry(fn, attempts), which calls fn and, if it throws, tries again (up to attempts calls in total). Log the result of retry(unreliableTask, 5).',
+    sampleData: `const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+let calls = 0;
+
+async function unreliableTask() {
+  calls++;
+  await wait(20);
+  if (calls < 3) {
+    throw new Error(\`Attempt \${calls} failed\`);
+  }
+  return \`Success on attempt \${calls}\`;
+}`,
+    solution: `async function retry(fn, attempts) {
+      for (let attempt = 1; attempt <= attempts; attempt++) {
+        try {
+          return await fn();
+        } catch (err) {
+          if (attempt === attempts) throw err;
+        }
+      }
+    }
+
+    console.log(await retry(unreliableTask, 5));`,
+    output: 'Success on attempt 3',
+    functions: ['async-await'],
+    difficulty: 'hard',
+    hint: {
+      text: "Put try...catch inside a loop: return as soon as an attempt succeeds, and only rethrow on the last attempt. Note it's return await fn(), not return fn() — without the await, the rejection escapes the try block uncaught."
+    }
+  },
+  {
+    id: 161,
+    title: 'Problem 161',
+    question: 'Fetch the list of users from the API and log how many there are.',
+    sampleData: `const API = "https://api.example.com";
+// GET /users -> [{ id, name, email }, ...]`,
+    solution: `const res = await fetch(\`\${API}/users\`);
+    const users = await res.json();
+    console.log(users.length);`,
+    output: 4,
+    functions: ['fetch'],
+    difficulty: 'easy',
+    hint: {
+      text: 'fetch resolves to a Response object, not the data itself. Call res.json() (which also returns a promise) to parse the body.',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/API/Response/json'
+    }
+  },
+  {
+    id: 162,
+    title: 'Problem 162',
+    question: 'Fetch the user whose id is userId and log their name.',
+    sampleData: `const API = "https://api.example.com";
+// GET /users/:id -> { id, name, email }
+const userId = 2;`,
+    solution: `const res = await fetch(\`\${API}/users/\${userId}\`);
+    const user = await res.json();
+    console.log(user.name);`,
+    output: 'Sam Ortiz',
+    functions: ['fetch'],
+    difficulty: 'easy',
+    hint: {
+      text: 'Build the URL with a template literal so the id comes from the variable: `${API}/users/${userId}`.'
+    }
+  },
+  {
+    id: 163,
+    title: 'Problem 163',
+    question: 'Fetch the todo list and log the titles of the todos that aren\'t completed yet.',
+    sampleData: `const API = "https://api.example.com";
+// GET /todos -> [{ id, title, completed }, ...]`,
+    solution: `const res = await fetch(\`\${API}/todos\`);
+    const todos = await res.json();
+    const remaining = todos
+      .filter(todo => !todo.completed)
+      .map(todo => todo.title);
+    console.log(remaining);`,
+    output: ['Walk the dog', 'Fix the bike', 'Read a book'],
+    functions: ['fetch'],
+    difficulty: 'medium',
+    hint: {
+      text: "Once you've parsed the JSON, it's just an ordinary array — filter and map work on it like on any other.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch'
+    }
+  },
+  {
+    id: 164,
+    title: 'Problem 164',
+    question: 'Fetch the user whose id is userId (they don\'t exist). If the response isn\'t OK, log "Request failed with status <status>"; otherwise log the user\'s name.',
+    sampleData: `const API = "https://api.example.com";
+// GET /users/:id -> { id, name, email }, or a 404 if there's no such user
+const userId = 99;`,
+    solution: `const res = await fetch(\`\${API}/users/\${userId}\`);
+    if (!res.ok) {
+      console.log(\`Request failed with status \${res.status}\`);
+    } else {
+      const user = await res.json();
+      console.log(user.name);
+    }`,
+    output: 'Request failed with status 404',
+    functions: ['fetch'],
+    difficulty: 'medium',
+    hint: {
+      text: "fetch only rejects when the request can't be made at all (like a network failure). A 404 or 500 still resolves normally — check res.ok (true for statuses 200–299) or res.status yourself.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/API/Response/ok'
+    }
+  },
+  {
+    id: 165,
+    title: 'Problem 165',
+    question: 'Fetch only userId\'s posts by passing a userId query parameter, and log their total number of likes.',
+    sampleData: `const API = "https://api.example.com";
+// GET /posts?userId=:id -> [{ id, userId, title, likes }, ...]
+const userId = 1;`,
+    solution: `const params = new URLSearchParams({ userId });
+    const res = await fetch(\`\${API}/posts?\${params}\`);
+    const posts = await res.json();
+    const totalLikes = posts.reduce((sum, post) => sum + post.likes, 0);
+    console.log(totalLikes);`,
+    output: 63,
+    functions: ['fetch'],
+    difficulty: 'medium',
+    hint: {
+      text: 'You can write the query string by hand (?userId=1), but URLSearchParams builds and escapes it for you — handy once there are several parameters.',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams'
+    }
+  },
+  {
+    id: 166,
+    title: 'Problem 166',
+    question: 'Create newPost by sending a POST request with it as a JSON body. Log "Created post <id>: <title>" using the server\'s response.',
+    sampleData: `const API = "https://api.example.com";
+// POST /posts with a JSON body { title, userId } -> 201 { id, title, userId }
+const newPost = { title: "My first post", userId: 2 };`,
+    solution: `const res = await fetch(\`\${API}/posts\`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newPost)
+    });
+    const created = await res.json();
+    console.log(\`Created post \${created.id}: \${created.title}\`);`,
+    output: 'Created post 101: My first post',
+    functions: ['fetch'],
+    difficulty: 'medium',
+    hint: {
+      text: "Pass an options object as fetch's second argument, with method, headers, and body. The body has to be a string (JSON.stringify your object), and the Content-Type header tells the server it's JSON — this API rejects the request with a 415 without it.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#setting_a_body'
+    }
+  },
+  {
+    id: 167,
+    title: 'Problem 167',
+    question: 'Fetch every user in ids in parallel and log their names as an array, in the same order as ids.',
+    sampleData: `const API = "https://api.example.com";
+// GET /users/:id -> { id, name, email }
+const ids = [1, 3, 4];`,
+    solution: `const users = await Promise.all(
+      ids.map(id => fetch(\`\${API}/users/\${id}\`).then(res => res.json()))
+    );
+    console.log(users.map(user => user.name));`,
+    output: ['Ana Kim', 'Luis Fernandez', 'Priya Shah'],
+    functions: ['fetch'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Each fetch call starts its request immediately, so mapping ids to fetch calls starts them all at once. Promise.all then waits for every one and keeps the results in order.',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all'
+    }
+  },
+  {
+    id: 168,
+    title: 'Problem 168',
+    question: 'Fetch all users and all posts in parallel, then log an object mapping each user\'s name to how many posts they\'ve written. Include users with no posts.',
+    sampleData: `const API = "https://api.example.com";
+// GET /users -> [{ id, name, email }, ...]
+// GET /posts -> [{ id, userId, title, likes }, ...]`,
+    solution: `const [users, posts] = await Promise.all([
+      fetch(\`\${API}/users\`).then(res => res.json()),
+      fetch(\`\${API}/posts\`).then(res => res.json())
+    ]);
+
+    const postCounts = users.reduce((acc, user) => {
+      acc[user.name] = posts.filter(post => post.userId === user.id).length;
+      return acc;
+    }, {});
+    console.log(postCounts);`,
+    output: { 'Ana Kim': 3, 'Sam Ortiz': 1, 'Luis Fernandez': 2, 'Priya Shah': 0 },
+    functions: ['fetch'],
+    difficulty: 'hard',
+    hint: {
+      text: 'APIs often return related data from separate endpoints, linked by an id (here, post.userId matches user.id). Build the result from users rather than posts, so users with zero posts still show up.'
+    }
+  },
+  {
+    id: 169,
+    title: 'Problem 169',
+    question: 'The /slow endpoint takes a full second. Give up after 200ms: abort the request, catch the error, and log "Request timed out".',
+    sampleData: `const API = "https://api.example.com";
+// GET /slow -> { message } after 1000ms`,
+    solution: `const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 200);
+
+    try {
+      const res = await fetch(\`\${API}/slow\`, { signal: controller.signal });
+      const data = await res.json();
+      console.log(data.message);
+    } catch (err) {
+      if (err.name !== "AbortError") throw err;
+      console.log("Request timed out");
+    } finally {
+      clearTimeout(timer);
+    }`,
+    output: 'Request timed out',
+    functions: ['fetch', 'setTimeout'],
+    difficulty: 'hard',
+    hint: {
+      text: "Pass controller.signal in fetch's options, then call controller.abort() from a setTimeout — fetch rejects with an AbortError. (AbortSignal.timeout(200) is a built-in shortcut; it rejects with a TimeoutError instead.)",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/API/AbortController'
+    }
+  },
+  {
+    id: 170,
+    title: 'Problem 170',
+    question: 'Products come back one page at a time. Starting at page 1, keep fetching pages until nextPage is null, then log the names of all the products as one array.',
+    sampleData: `const API = "https://api.example.com";
+// GET /products?page=:n -> { page, products: [{ name }, ...], nextPage }
+// nextPage is null on the last page`,
+    solution: `const names = [];
+    let page = 1;
+
+    while (page !== null) {
+      const res = await fetch(\`\${API}/products?page=\${page}\`);
+      const data = await res.json();
+      names.push(...data.products.map(product => product.name));
+      page = data.nextPage;
+    }
+    console.log(names);`,
+    output: ['Keyboard', 'Mouse', 'Monitor', 'Webcam', 'Headset', 'Microphone', 'Desk Lamp'],
+    functions: ['fetch'],
+    difficulty: 'hard',
+    hint: {
+      text: "You don't know how many pages there are up front, so a while loop fits better than a for loop: await each page, collect its items, and let nextPage decide whether to go around again."
+    }
   }
 ];
 
@@ -2106,7 +2773,7 @@ console.log(address);`,
 // pill — see the matchesFunctions check in getFilteredExercises.
 export const CORE_FUNCTIONS = [
   'map', 'filter', 'reduce', 'sort', 'spread', 'destructure', 'template-literal',
-  'some', 'every'
+  'some', 'every', 'setTimeout', 'async-await', 'fetch'
 ];
 export const SECONDARY_FUNCTIONS = ['find', 'findIndex', 'includes', 'flat', 'flatMap', 'Object'];
 export const KNOWN_FUNCTIONS = [...CORE_FUNCTIONS, ...SECONDARY_FUNCTIONS];
@@ -2128,7 +2795,8 @@ export const DOC_SITE_NAME = 'MDN';
 // Reference link for each known tag, shown on the profile's achievement
 // cards. Array methods link to their Array.prototype page;
 // spread/destructure/template-literal are language syntax, not methods,
-// so they link to MDN's syntax-reference pages instead.
+// so they link to MDN's syntax-reference pages instead. setTimeout and fetch
+// are Web APIs rather than language features, so they link under Web/API.
 export const KNOWN_FUNCTION_DOC_LINKS = {
   map: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map',
   filter: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter',
@@ -2144,5 +2812,8 @@ export const KNOWN_FUNCTION_DOC_LINKS = {
   includes: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes',
   flat: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat',
   flatMap: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap',
-  Object: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object'
+  Object: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object',
+  setTimeout: 'https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout',
+  'async-await': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function',
+  fetch: 'https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch'
 };

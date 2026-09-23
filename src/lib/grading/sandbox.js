@@ -5,10 +5,84 @@
 // component tree — do not move this into a component's template, since
 // Svelte's DOM diffing could interfere with the srcdoc-reassignment timing
 // this relies on for giving each run a fresh global scope.
+//
+// User code runs as an async function (so top-level await works), and a
+// run only counts as finished once its promise has settled AND no timers
+// or mock fetches are still pending — otherwise setTimeout/await/fetch
+// exercises would be graded before they'd logged anything. A hard cap
+// keeps a never-cleared setInterval from hanging the run forever.
+
+import { MOCK_API_BASE, MOCK_API_DATA, createMockFetch } from './mockApi.js';
+
+export const RUN_TIME_LIMIT_MS = 5000;
+
+// How long the sandbox must stay idle (no pending timers/fetches, no new
+// activity) before it reports done. Some promise work — e.g. reading a
+// Response body — resolves on a later task rather than a microtask, so
+// "nothing pending right now" isn't quite enough on its own.
+const IDLE_GRACE_MS = 50;
 
 const SANDBOX_HTML = `<!DOCTYPE html>
 <html><body><script>
   const send = (type, payload) => parent.postMessage({ source: 'code-editor-sandbox', type, payload }, '*');
+
+  const realSetTimeout = window.setTimeout.bind(window);
+  const realClearTimeout = window.clearTimeout.bind(window);
+  const realSetInterval = window.setInterval.bind(window);
+
+  // Timer ids (timeouts and intervals alike) that haven't fired/been
+  // cleared yet, plus mock fetches still in flight. The run isn't done
+  // while either is non-empty.
+  const activeTimers = new Set();
+  let fetchesInFlight = 0;
+  // Bumped on any event that could lead to more output, so the idle check
+  // can tell "quiet for the whole grace period" from "just went quiet".
+  let activity = 0;
+  let codeSettled = false;
+  let threw = false;
+  let finished = false;
+
+  window.setTimeout = (callback, delay, ...args) => {
+    const id = realSetTimeout(() => {
+      activeTimers.delete(id);
+      activity++;
+      try {
+        if (typeof callback === 'function') callback(...args);
+      } finally {
+        scheduleIdleCheck();
+      }
+    }, delay);
+    activeTimers.add(id);
+    return id;
+  };
+
+  window.setInterval = (callback, delay, ...args) => {
+    const id = realSetInterval(() => {
+      activity++;
+      if (typeof callback === 'function') callback(...args);
+    }, delay);
+    activeTimers.add(id);
+    return id;
+  };
+
+  // Browsers let clearTimeout and clearInterval cancel either kind of
+  // timer, so one implementation serves both.
+  window.clearTimeout = window.clearInterval = (id) => {
+    activeTimers.delete(id);
+    realClearTimeout(id);
+    activity++;
+    scheduleIdleCheck();
+  };
+
+  window.fetch = (${createMockFetch.toString()})(
+    ${JSON.stringify(MOCK_API_BASE)},
+    ${JSON.stringify(MOCK_API_DATA)},
+    {
+      start() { fetchesInFlight++; activity++; },
+      end() { fetchesInFlight--; activity++; scheduleIdleCheck(); },
+      setTimeout: realSetTimeout
+    }
+  );
 
   // Every console.log call this run makes, in order — not just the last.
   // Needed so exercises that log one line per loop iteration (rather than
@@ -18,6 +92,7 @@ const SANDBOX_HTML = `<!DOCTYPE html>
 
   ['log', 'warn', 'error', 'info'].forEach((level) => {
     console[level] = (...args) => {
+      activity++;
       if (level === 'log') logCalls.push(args.length === 1 ? args[0] : args);
       send('console', { level, args: args.map((a) => {
         try { return typeof a === 'string' ? a : JSON.stringify(a, null, 2); }
@@ -28,6 +103,14 @@ const SANDBOX_HTML = `<!DOCTYPE html>
 
   window.addEventListener('error', (event) => {
     send('console', { level: 'error', args: [event.message] });
+  });
+
+  // A promise that rejects with nothing awaiting it (e.g. an un-awaited
+  // async call that throws) would otherwise fail silently.
+  window.addEventListener('unhandledrejection', (event) => {
+    const reason = event.reason;
+    const message = reason && reason.message ? reason.message : String(reason);
+    send('console', { level: 'error', args: ['Uncaught (in promise): ' + message] });
   });
 
   // JSON.stringify(undefined) returns the value undefined (not a string),
@@ -43,32 +126,78 @@ const SANDBOX_HTML = `<!DOCTYPE html>
     }
   }
 
+  function isIdle() {
+    return codeSettled && activeTimers.size === 0 && fetchesInFlight === 0;
+  }
+
+  function scheduleIdleCheck() {
+    realSetTimeout(checkIdle, 0);
+  }
+
+  function checkIdle() {
+    if (finished || !isIdle()) return;
+    const activityAtCheck = activity;
+    realSetTimeout(() => {
+      if (finished || !isIdle()) return;
+      if (activity !== activityAtCheck) return checkIdle();
+      finish();
+    }, ${IDLE_GRACE_MS});
+  }
+
+  function finish() {
+    if (finished) return;
+    finished = true;
+
+    let hasLastLogValue = false;
+    let lastLogValue = null;
+    let allLogValues = [];
+
+    if (!threw && logCalls.length > 0) {
+      const lastResult = serializeLoggedValue(logCalls[logCalls.length - 1]);
+      hasLastLogValue = lastResult.ok;
+      lastLogValue = lastResult.value;
+
+      allLogValues = logCalls
+        .map(serializeLoggedValue)
+        .filter((r) => r.ok)
+        .map((r) => r.value);
+    }
+
+    send('done', { hasLastLogValue, lastLogValue, allLogValues });
+  }
+
+  const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+
   window.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'run') {
-      let threw = false;
+      realSetTimeout(() => {
+        if (finished) return;
+        send('console', {
+          level: 'error',
+          args: ['Stopped waiting after ${RUN_TIME_LIMIT_MS / 1000}s — a timer, interval, or request was still pending.']
+        });
+        finish();
+      }, ${RUN_TIME_LIMIT_MS});
+
+      let run;
       try {
-        new Function(event.data.code)();
+        run = new AsyncFunction(event.data.code)();
       } catch (err) {
-        threw = true;
-        send('console', { level: 'error', args: [err.message] });
+        // Syntax errors throw from the constructor, before anything runs.
+        run = Promise.reject(err);
       }
 
-      let hasLastLogValue = false;
-      let lastLogValue = null;
-      let allLogValues = [];
-
-      if (!threw && logCalls.length > 0) {
-        const lastResult = serializeLoggedValue(logCalls[logCalls.length - 1]);
-        hasLastLogValue = lastResult.ok;
-        lastLogValue = lastResult.value;
-
-        allLogValues = logCalls
-          .map(serializeLoggedValue)
-          .filter((r) => r.ok)
-          .map((r) => r.value);
-      }
-
-      send('done', { hasLastLogValue, lastLogValue, allLogValues });
+      run.then(
+        () => {
+          codeSettled = true;
+          scheduleIdleCheck();
+        },
+        (err) => {
+          threw = true;
+          send('console', { level: 'error', args: [err && err.message ? err.message : String(err)] });
+          finish();
+        }
+      );
     }
   });
 

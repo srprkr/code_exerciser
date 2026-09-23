@@ -1,4 +1,8 @@
 import { expect, test } from '@playwright/test';
+import { exercises } from '../../src/lib/data/javascript-exercises.js';
+
+// Derived from the data so adding problems doesn't break these counts.
+const TOTAL = exercises.length;
 
 // Exactly what the currently-deployed (pre-multi-language) site's "Copy my
 // progress" produces: exerciseProgress is the old flat { exerciseId: entry }
@@ -33,7 +37,7 @@ test('pasting an old pre-multi-language export restores JS progress under JavaSc
   await expect(page.getByLabel('Select programming language')).toHaveText(/JavaScript/);
 
   await page.getByLabel('View profile').click();
-  await expect(page.getByText(/2 \/ 140 problems completed/)).toBeVisible();
+  await expect(page.getByText(`2 / ${TOTAL} problems completed`, { exact: false })).toBeVisible();
   await expect(page.getByText("Sean's Profile")).toBeVisible();
 
   await page.getByRole('button', { name: 'Completed' }).click();
@@ -73,7 +77,7 @@ test('importing an old JS-only export does not wipe out this browser\'s Python p
   await page.getByRole('button', { name: 'Select programming language' }).click();
   await page.getByRole('option', { name: 'JavaScript' }).click();
   await page.getByLabel('View profile').click();
-  await expect(page.getByText(/2 \/ 140 problems completed/)).toBeVisible();
+  await expect(page.getByText(`2 / ${TOTAL} problems completed`, { exact: false })).toBeVisible();
 });
 
 test('a garbled paste is rejected with a clear message, without touching existing progress', async ({ page }) => {

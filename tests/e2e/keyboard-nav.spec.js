@@ -1,4 +1,8 @@
 import { expect, test } from '@playwright/test';
+import { exercises } from '../../src/lib/data/javascript-exercises.js';
+
+// Derived from the data so adding problems doesn't break these counts.
+const TOTAL = exercises.length;
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
@@ -17,7 +21,7 @@ test('ArrowRight/ArrowLeft cycle to the next/previous problem when focus is outs
 test('ArrowLeft from problem 1 wraps around to the last problem', async ({ page }) => {
   await expect(page.locator('.exercise-title')).toHaveText(/Problem 1$/);
   await page.keyboard.press('ArrowLeft');
-  await expect(page.locator('.carousel-counter')).toHaveText(/140 \/ 140/);
+  await expect(page.locator('.carousel-counter')).toHaveText(`${TOTAL} / ${TOTAL}`);
 });
 
 test('Shift+ArrowRight skips forward 10 problems', async ({ page }) => {
@@ -27,7 +31,7 @@ test('Shift+ArrowRight skips forward 10 problems', async ({ page }) => {
 
 test('Shift+ArrowLeft skips backward 10 problems, wrapping from the start', async ({ page }) => {
   await page.keyboard.press('Shift+ArrowLeft');
-  await expect(page.locator('.carousel-counter')).toHaveText(/131 \/ 140/);
+  await expect(page.locator('.carousel-counter')).toHaveText(`${TOTAL - 9} / ${TOTAL}`);
 });
 
 test('arrow keys do NOT navigate while the code editor has focus (cursor movement instead)', async ({ page }) => {
