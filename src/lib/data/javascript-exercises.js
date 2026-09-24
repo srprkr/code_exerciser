@@ -2302,7 +2302,7 @@ function simulateTyping(onInput) {
     functions: ['async-await'],
     difficulty: 'easy',
     hint: {
-      text: "await pauses until the promise settles and hands you its resolved value. This editor allows await at the top level (like an ES module does); in a regular script you'd put it inside an async function.",
+      text: "await pauses until the promise settles and hands you its resolved value. This editor allows await at the top level (like an ES module does); in a regular script you'd put it inside an async function (see Problem 153).",
       mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await'
     }
   },
@@ -2326,7 +2326,7 @@ function simulateTyping(onInput) {
   {
     id: 153,
     title: 'Problem 153',
-    question: 'Get user 1, then use their id to get their orders. Log "<name> has <count> orders".',
+    question: 'Get user 1, then use their id to get their orders, and log "<name> has <count> orders". Write it the way a classic script (or CommonJS file) must: put the logic in an async function main() and call it, with no top-level await.',
     sampleData: `const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 async function getUser(id) {
@@ -2338,20 +2338,24 @@ async function getOrders(userId) {
   await wait(50);
   return userId === 1 ? ["book", "lamp", "mug"] : [];
 }`,
-    solution: `const user = await getUser(1);
-    const orders = await getOrders(user.id);
-    console.log(\`\${user.name} has \${orders.length} orders\`);`,
+    solution: `async function main() {
+      const user = await getUser(1);
+      const orders = await getOrders(user.id);
+      console.log(\`\${user.name} has \${orders.length} orders\`);
+    }
+
+    main();`,
     output: 'Ana has 3 orders',
     functions: ['async-await'],
     difficulty: 'medium',
     hint: {
-      text: "When one call needs the result of another, await them one after the other — the second line doesn't start until the first one has its value."
+      text: "Outside a module, await is only allowed inside an async function — so the classic pattern is to wrap everything in an async main() and call it once at the bottom. Inside, when one call needs the result of another, await them one after the other."
     }
   },
   {
     id: 154,
     title: 'Problem 154',
-    question: 'chargeCard rejects any amount over 100. Try to charge 250, catch the error, and log its message.',
+    question: 'chargeCard rejects any amount over 100. Inside an async function main(), charge 250 and log the result. Don\'t use try/catch inside main; instead, handle the rejection where you call main() and log the error\'s message.',
     sampleData: `const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 async function chargeCard(amount) {
@@ -2361,18 +2365,18 @@ async function chargeCard(amount) {
   }
   return "Approved";
 }`,
-    solution: `try {
+    solution: `async function main() {
       const result = await chargeCard(250);
       console.log(result);
-    } catch (err) {
-      console.log(err.message);
-    }`,
+    }
+
+    main().catch(err => console.log(err.message));`,
     output: 'Card declined',
     functions: ['async-await'],
     difficulty: 'medium',
     hint: {
-      text: 'When an awaited promise rejects, the await line throws — so an ordinary try...catch around the await catches it.',
-      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch'
+      text: 'An error thrown inside an async function rejects the promise it returns. Calling main() without handling that rejection makes it an unhandled rejection, so in a classic script you attach .catch() to the call (the top-level equivalent of try...catch).',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch'
     }
   },
   {
@@ -2764,6 +2768,404 @@ const ids = [1, 3, 4];`,
     hint: {
       text: "You don't know how many pages there are up front, so a while loop fits better than a for loop: await each page, collect its items, and let nextPage decide whether to go around again."
     }
+  },
+  {
+    id: 171,
+    title: 'Problem 171',
+    question: 'Log how many unique visitors there were.',
+    sampleData: 'const visitorIds = [101, 205, 101, 330, 205, 101, 412];',
+    solution: `const uniqueVisitors = new Set(visitorIds);
+    console.log(uniqueVisitors.size);`,
+    output: 4,
+    functions: ['Set'],
+    difficulty: 'easy',
+    hint: {
+      text: 'Sets have a size property instead of length.',
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/size'
+    }
+  },
+  {
+    id: 172,
+    title: 'Problem 172',
+    question: 'Log whether the set of roles includes the required role.',
+    sampleData: `const roles = new Set(["editor", "viewer", "admin"]);
+const requiredRole = "admin";`,
+    solution: `console.log(roles.has(requiredRole));`,
+    output: true,
+    functions: ['Set'],
+    difficulty: 'easy',
+    hint: {
+      text: "has() checks membership without scanning — unlike array.includes(), it doesn't look at every element, which starts to matter for big collections.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/has'
+    }
+  },
+  {
+    id: 173,
+    title: 'Problem 173',
+    question: 'Count how many of the lookups appear in orderIds in two ways: once with orderIds.includes(), and once by putting orderIds in a Set and using has(). Time each approach with performance.now() and log both times, then log which one was faster ("Array" or "Set").',
+    sampleData: `// 10,000 order ids, and 10,000 ids to look up in them
+const orderIds = Array.from({ length: 10000 }, (_, i) => i * 2);
+const lookups = Array.from({ length: 10000 }, (_, i) => i * 3);`,
+    solution: `let start = performance.now();
+    const arrayMatches = lookups.filter(id => orderIds.includes(id)).length;
+    const arrayMs = performance.now() - start;
+
+    start = performance.now();
+    const orderIdSet = new Set(orderIds);
+    const setMatches = lookups.filter(id => orderIdSet.has(id)).length;
+    const setMs = performance.now() - start;
+
+    console.log(\`Array: \${arrayMatches} matches in \${arrayMs.toFixed(1)}ms\`);
+    console.log(\`Set: \${setMatches} matches in \${setMs.toFixed(1)}ms\`);
+    console.log(setMs < arrayMs ? "Set" : "Array");`,
+    output: 'Set',
+    functions: ['Set'],
+    difficulty: 'medium',
+    hint: {
+      text: "array.includes() checks elements one at a time, so each lookup is O(n), and m lookups cost O(n × m): here, up to 100 million comparisons. A Set hashes its values, so has() is O(1) on average. Building the set costs O(n) once, and the m lookups cost O(m), for O(n + m) overall. The gap grows with the data: double both arrays and the array version gets about 4× slower, while the Set version only gets about 2× slower.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/API/Performance/now'
+    }
+  },
+  {
+    id: 174,
+    title: 'Problem 174',
+    question: 'Start with an empty Set and add each incoming tag to it, one at a time, with add(). Log the set\'s contents as an array.',
+    sampleData: 'const incoming = ["js", "css", "js", "html", "css", "js"];',
+    solution: `const tags = new Set();
+    for (const tag of incoming) {
+      tags.add(tag);
+    }
+    console.log([...tags]);`,
+    output: ['js', 'css', 'html'],
+    functions: ['Set'],
+    difficulty: 'easy',
+    hint: {
+      text: "Adding a value that's already in the set does nothing — no error, no duplicate. Sets remember insertion order, so values come out in the order they were first added.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/add'
+    }
+  },
+  {
+    id: 175,
+    title: 'Problem 175',
+    question: 'Remove the banned username from the set of active users, then log the remaining usernames as an array.',
+    sampleData: `const activeUsers = new Set(["sam", "ana", "trollface", "luis"]);
+const banned = "trollface";`,
+    solution: `activeUsers.delete(banned);
+    console.log([...activeUsers]);`,
+    output: ['sam', 'ana', 'luis'],
+    functions: ['Set'],
+    difficulty: 'easy',
+    hint: {
+      text: "delete() removes a value and returns true if it was there (false if it wasn't). It doesn't return the set, so unlike add() it can't be chained.",
+      mdnUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/delete'
+    }
+  },
+  {
+    id: 176,
+    title: 'Problem 176',
+    question: 'Log the unique letters in the word as an array, in the order they first appear.',
+    sampleData: 'const word = "mississippi";',
+    solution: `const letters = [...new Set(word)];
+    console.log(letters);`,
+    output: ['m', 'i', 's', 'p'],
+    functions: ['Set'],
+    difficulty: 'easy',
+    hint: {
+      text: 'new Set() accepts any iterable, and a string is iterable — so new Set(word) receives it one character at a time.'
+    }
+  },
+  {
+    id: 177,
+    title: 'Problem 177',
+    question: 'Log true if the array contains any duplicate values, false otherwise.',
+    sampleData: 'const seatNumbers = [12, 7, 33, 7, 21];',
+    solution: `const hasDuplicate = new Set(seatNumbers).size !== seatNumbers.length;
+    console.log(hasDuplicate);`,
+    output: true,
+    functions: ['Set'],
+    difficulty: 'easy',
+    hint: {
+      text: 'If turning the array into a set made it smaller, something got dropped — and only duplicates get dropped.'
+    }
+  },
+  {
+    id: 178,
+    title: 'Problem 178',
+    question: 'Log the names that are on both teams, as an array in the order they appear in teamA.',
+    sampleData: `const teamA = ["Ana", "Sam", "Luis", "Priya"];
+const teamB = ["Priya", "Kim", "Ana", "Jo"];`,
+    solution: `const teamBSet = new Set(teamB);
+    const onBoth = teamA.filter(name => teamBSet.has(name));
+    console.log(onBoth);`,
+    output: ['Ana', 'Priya'],
+    functions: ['Set'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Turn one array into a set first, then filter the other with has(). teamB.includes() inside the filter works too, but it rescans all of teamB for every name.'
+    }
+  },
+  {
+    id: 179,
+    title: 'Problem 179',
+    question: 'Log the students who haven\'t submitted their homework yet, as an array in roster order.',
+    sampleData: `const roster = ["Ana", "Sam", "Luis", "Priya", "Kim"];
+const submitted = ["Luis", "Ana", "Kim"];`,
+    solution: `const submittedSet = new Set(submitted);
+    const notSubmitted = roster.filter(student => !submittedSet.has(student));
+    console.log(notSubmitted);`,
+    output: ['Sam', 'Priya'],
+    functions: ['Set'],
+    difficulty: 'medium',
+    hint: {
+      text: "This is a set difference: keep the values from the first list that the second set doesn't have."
+    }
+  },
+  {
+    id: 180,
+    title: 'Problem 180',
+    question: 'Merge the two playlists into one array with no duplicate songs, keeping each song where it first appears (morning songs first).',
+    sampleData: `const morning = ["Intro", "Sunrise", "Coffee"];
+const evening = ["Sunset", "Coffee", "Intro", "Nightcap"];`,
+    solution: `const allSongs = [...new Set([...morning, ...evening])];
+    console.log(allSongs);`,
+    output: ['Intro', 'Sunrise', 'Coffee', 'Sunset', 'Nightcap'],
+    functions: ['Set'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Combine the arrays first, then dedupe: the set keeps the first occurrence of each song and ignores the later ones.'
+    }
+  },
+  {
+    id: 181,
+    title: 'Problem 181',
+    question: 'Some ticket numbers between 1 and the highest ticket number are missing. Log the missing numbers as an array in ascending order.',
+    sampleData: 'const ticketNumbers = [7, 3, 9, 1, 4, 9];',
+    solution: `const max = Math.max(...ticketNumbers);
+    const seen = new Set(ticketNumbers);
+    const missing = [];
+
+    for (let i = 1; i <= max; i++) {
+      if (!seen.has(i)) missing.push(i);
+    }
+    console.log(missing);`,
+    output: [2, 5, 6, 8],
+    functions: ['Set'],
+    difficulty: 'medium',
+    hint: {
+      text: "Put the numbers in a set so each lookup is instant, then count from 1 up to Math.max(...ticketNumbers), keeping every number the set doesn't have. (In an interview, descending order would usually be fine too — here the grader expects ascending.)"
+    }
+  },
+  {
+    id: 182,
+    title: 'Problem 182',
+    question: 'Reading the clicks from left to right, log the first page that gets visited a second time.',
+    sampleData: 'const clicks = ["home", "about", "pricing", "about", "home"];',
+    solution: `const seen = new Set();
+    let firstRepeat = null;
+
+    for (const page of clicks) {
+      if (seen.has(page)) {
+        firstRepeat = page;
+        break;
+      }
+      seen.add(page);
+    }
+    console.log(firstRepeat);`,
+    output: 'about',
+    functions: ['Set'],
+    difficulty: 'medium',
+    hint: {
+      text: "Keep a set of what you've already seen. The first value that's already in the set when you reach it is the answer, so you can stop there."
+    }
+  },
+  {
+    id: 183,
+    title: 'Problem 183',
+    question: 'The emails were typed with inconsistent capitalization and stray spaces. Log how many unique email addresses there really are.',
+    sampleData: 'const signups = ["Ana@Example.com", "sam@example.com ", "ana@example.com", " SAM@example.com", "luis@example.com"];',
+    solution: `const uniqueEmails = new Set(signups.map(email => email.trim().toLowerCase()));
+    console.log(uniqueEmails.size);`,
+    output: 3,
+    functions: ['Set'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Sets compare strings exactly, so "Ana@Example.com" and "ana@example.com" are different values. Normalize each email (trim, lowercase) before it goes into the set.'
+    }
+  },
+  {
+    id: 184,
+    title: 'Problem 184',
+    question: 'Log every distinct tag used across all the posts, sorted alphabetically.',
+    sampleData: `const posts = [
+  { title: "Intro to JS", tags: ["js", "beginner"] },
+  { title: "Async deep dive", tags: ["js", "async", "advanced"] },
+  { title: "CSS grid", tags: ["css", "beginner"] }
+];`,
+    solution: `const allTags = [...new Set(posts.flatMap(post => post.tags))].sort();
+    console.log(allTags);`,
+    output: ['advanced', 'async', 'beginner', 'css', 'js'],
+    functions: ['Set'],
+    difficulty: 'medium',
+    hint: {
+      text: "flatMap gets every tag into one flat array, and the set drops the repeats. Sets can't be sorted directly, so spread back into an array before calling sort()."
+    }
+  },
+  {
+    id: 185,
+    title: 'Problem 185',
+    question: 'Each click toggles an item: select it if it isn\'t selected, deselect it if it is. After all the clicks, log the selected ids as an array, in the order the set holds them.',
+    sampleData: 'const clicks = [2, 5, 2, 7, 5, 5];',
+    solution: `const selected = new Set();
+
+    for (const id of clicks) {
+      if (selected.has(id)) {
+        selected.delete(id);
+      } else {
+        selected.add(id);
+      }
+    }
+    console.log([...selected]);`,
+    output: [7, 5],
+    functions: ['Set'],
+    difficulty: 'medium',
+    hint: {
+      text: "Sets keep insertion order — and a value that's deleted and then added again counts as newly inserted, so it moves to the end."
+    }
+  },
+  {
+    id: 186,
+    title: 'Problem 186',
+    question: 'Some products are listed more than once, but new Set(products) keeps every copy. Remove the duplicates by id (keeping the first of each) and log the product names as an array.',
+    sampleData: `const products = [
+  { id: 1, name: "Keyboard" },
+  { id: 2, name: "Mouse" },
+  { id: 1, name: "Keyboard" },
+  { id: 3, name: "Monitor" },
+  { id: 2, name: "Mouse" }
+];`,
+    solution: `const seenIds = new Set();
+    const uniqueProducts = products.filter(product => {
+      if (seenIds.has(product.id)) return false;
+      seenIds.add(product.id);
+      return true;
+    });
+    console.log(uniqueProducts.map(product => product.name));`,
+    output: ['Keyboard', 'Mouse', 'Monitor'],
+    functions: ['Set'],
+    difficulty: 'medium',
+    hint: {
+      text: 'Sets compare objects by reference, not by contents — two separately written { id: 1 } objects are different values. Track the ids (plain numbers) in a set instead.'
+    }
+  },
+  {
+    id: 187,
+    title: 'Problem 187',
+    question: 'In a single pass through the array, find the first pair of numbers that adds up to target. Log it as [earlier number, later number].',
+    sampleData: `const nums = [8, 3, 11, 5, 7];
+const target = 12;`,
+    solution: `const seen = new Set();
+    let pair = null;
+
+    for (const n of nums) {
+      const complement = target - n;
+      if (seen.has(complement)) {
+        pair = [complement, n];
+        break;
+      }
+      seen.add(n);
+    }
+    console.log(pair);`,
+    output: [5, 7],
+    functions: ['Set'],
+    difficulty: 'hard',
+    hint: {
+      text: "For each number, the partner it needs is target - n. If you've already seen that partner, you're done; otherwise remember n and move on. That's one loop instead of checking every possible pair."
+    }
+  },
+  {
+    id: 188,
+    title: 'Problem 188',
+    question: 'Log the length of the longest stretch of the text that has no repeated characters.',
+    sampleData: 'const text = "abacdecfgh";',
+    solution: `const inWindow = new Set();
+    let start = 0;
+    let longest = 0;
+
+    for (let end = 0; end < text.length; end++) {
+      while (inWindow.has(text[end])) {
+        inWindow.delete(text[start]);
+        start++;
+      }
+      inWindow.add(text[end]);
+      longest = Math.max(longest, end - start + 1);
+    }
+    console.log(longest);`,
+    output: 6,
+    functions: ['Set'],
+    difficulty: 'hard',
+    hint: {
+      text: "Keep a sliding window of characters with no repeats in a set. When the next character is already in it, shrink the window from the left (deleting as you go) until it isn't. Track the biggest window you see."
+    }
+  },
+  {
+    id: 189,
+    title: 'Problem 189',
+    question: 'Log the longest run of consecutive integers that can be made from these numbers (their order in the array doesn\'t matter), as an array in ascending order.',
+    sampleData: 'const nums = [15, 3, 16, 1, 17, 2, 18, 30];',
+    solution: `const numSet = new Set(nums);
+    let longestRun = [];
+
+    for (const n of numSet) {
+      if (numSet.has(n - 1)) continue; // not the start of a run
+
+      const run = [n];
+      while (numSet.has(run[run.length - 1] + 1)) {
+        run.push(run[run.length - 1] + 1);
+      }
+      if (run.length > longestRun.length) longestRun = run;
+    }
+    console.log(longestRun);`,
+    output: [15, 16, 17, 18],
+    functions: ['Set'],
+    difficulty: 'hard',
+    hint: {
+      text: "Only start counting from a number whose n - 1 isn't in the set — that's the beginning of a run. Then keep checking has() for the next number to extend it. No sorting needed."
+    }
+  },
+  {
+    id: 190,
+    title: 'Problem 190',
+    question: 'Log everyone reachable from "ana" through friendships (friends, friends of friends, and so on), not including ana, as an array in the order a breadth-first search finds them.',
+    sampleData: `const friends = {
+  ana: ["sam", "luis"],
+  sam: ["ana", "priya"],
+  luis: ["ana", "kim"],
+  priya: ["sam", "jo"],
+  kim: ["luis"],
+  jo: ["priya"],
+  max: ["lee"],
+  lee: ["max"]
+};`,
+    solution: `const visited = new Set(["ana"]);
+    const queue = ["ana"];
+
+    while (queue.length > 0) {
+      const person = queue.shift();
+      for (const friend of friends[person]) {
+        if (!visited.has(friend)) {
+          visited.add(friend);
+          queue.push(friend);
+        }
+      }
+    }
+    visited.delete("ana");
+    console.log([...visited]);`,
+    output: ['sam', 'luis', 'priya', 'kim', 'jo'],
+    functions: ['Set'],
+    difficulty: 'hard',
+    hint: {
+      text: 'Without a visited set, ana → sam → ana → sam… would loop forever. Mark each person as visited when you first queue them, and skip anyone already in the set.'
+    }
   }
 ];
 
@@ -2773,9 +3175,12 @@ const ids = [1, 3, 4];`,
 // pill — see the matchesFunctions check in getFilteredExercises.
 export const CORE_FUNCTIONS = [
   'map', 'filter', 'reduce', 'sort', 'spread', 'destructure', 'template-literal',
-  'some', 'every', 'setTimeout', 'async-await', 'fetch'
+  'some', 'every', 'Set'
 ];
-export const SECONDARY_FUNCTIONS = ['find', 'findIndex', 'includes', 'flat', 'flatMap', 'Object'];
+export const SECONDARY_FUNCTIONS = [
+  'find', 'findIndex', 'includes', 'flat', 'flatMap', 'Object',
+  'setTimeout', 'async-await', 'fetch'
+];
 export const KNOWN_FUNCTIONS = [...CORE_FUNCTIONS, ...SECONDARY_FUNCTIONS];
 export const DIFFICULTIES = ['easy', 'medium', 'hard'];
 
@@ -2815,5 +3220,6 @@ export const KNOWN_FUNCTION_DOC_LINKS = {
   Object: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object',
   setTimeout: 'https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout',
   'async-await': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function',
-  fetch: 'https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch'
+  fetch: 'https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch',
+  Set: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set'
 };

@@ -442,6 +442,35 @@ filtered — objects aren't directly iterable on their own.
 `Object.fromEntries()` does the reverse, building an object back from a list
 of key/value pairs.
 
+## Set
+
+```javascript
+const tags = new Set(["js", "css", "js"]);
+// Set(2) {"js", "css"}  — duplicates are dropped
+
+tags.add("html");      // returns the set, so add() calls can be chained
+tags.has("css");       // true
+tags.delete("js");     // true (false if it wasn't there)
+tags.size;             // 2  — size, not length
+
+[...new Set([3, 1, 3, 2, 1])];
+// [3, 1, 2]  — the classic one-line array dedupe
+
+for (const tag of tags) {
+  console.log(tag);
+}
+// css
+// html
+```
+
+A `Set` holds each value at most once and remembers insertion order. `has()`
+is a fast lookup — O(1) on average, where an array's `includes()` is O(n)
+because it checks elements one by one — so turning an array into a set
+first makes "is this in the other list?" checks cheap, e.g. `a.filter(x => bSet.has(x))` for the
+values two arrays share. Sets compare objects by reference, not contents:
+`new Set([{ id: 1 }, { id: 1 }])` has size 2, so dedupe objects by
+tracking a key like `id` instead.
+
 ## setTimeout()
 
 ```javascript

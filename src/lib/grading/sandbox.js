@@ -90,12 +90,27 @@ const SANDBOX_HTML = `<!DOCTYPE html>
   // for how "last value" vs "all values" candidates are both checked.
   let logCalls = [];
 
+  // JSON has no Set type — JSON.stringify(new Set([1, 2])) is "{}" — so
+  // Sets (at any depth) are converted to arrays of their values, both for
+  // display and for grading. A top-level Set is also labeled the way
+  // devtools shows it, e.g. Set(3) {1, 2, 3}.
+  const setsToArrays = (key, value) => (value instanceof Set ? [...value] : value);
+
+  function formatForConsole(value) {
+    if (typeof value === 'string') return value;
+    if (value instanceof Set) {
+      const items = [...value].map((item) => JSON.stringify(item, setsToArrays));
+      return 'Set(' + value.size + ') {' + items.join(', ') + '}';
+    }
+    return JSON.stringify(value, setsToArrays, 2);
+  }
+
   ['log', 'warn', 'error', 'info'].forEach((level) => {
     console[level] = (...args) => {
       activity++;
       if (level === 'log') logCalls.push(args.length === 1 ? args[0] : args);
       send('console', { level, args: args.map((a) => {
-        try { return typeof a === 'string' ? a : JSON.stringify(a, null, 2); }
+        try { return formatForConsole(a); }
         catch { return String(a); }
       }) });
     };
@@ -120,7 +135,7 @@ const SANDBOX_HTML = `<!DOCTYPE html>
   function serializeLoggedValue(value) {
     if (value === undefined) return { ok: true, value: undefined };
     try {
-      return { ok: true, value: JSON.parse(JSON.stringify(value)) };
+      return { ok: true, value: JSON.parse(JSON.stringify(value, setsToArrays)) };
     } catch {
       return { ok: false, value: null };
     }

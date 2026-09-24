@@ -198,24 +198,31 @@ describe('javascript exercise set', () => {
     expect(exercise.hint.text).toMatch(/Number\(\)/);
   });
 
-  it('appends the async tags after the original core tags without reordering them', () => {
+  it('keeps the original core tags in order, with Set as the only addition', () => {
     const js = getLanguageData('javascript');
-    expect(js.CORE_FUNCTIONS.slice(0, 9)).toEqual([
-      'map', 'filter', 'reduce', 'sort', 'spread', 'destructure', 'template-literal', 'some', 'every'
+    expect(js.CORE_FUNCTIONS).toEqual([
+      'map', 'filter', 'reduce', 'sort', 'spread', 'destructure', 'template-literal', 'some', 'every', 'Set'
     ]);
-    expect(js.CORE_FUNCTIONS.slice(9)).toEqual(['setTimeout', 'async-await', 'fetch']);
+  });
+
+  it('files the async tags under "Show more", after the original secondary tags', () => {
+    const js = getLanguageData('javascript');
+    expect(js.SECONDARY_FUNCTIONS).toEqual([
+      'find', 'findIndex', 'includes', 'flat', 'flatMap', 'Object', 'setTimeout', 'async-await', 'fetch'
+    ]);
   });
 
   it.each([
-    ['setTimeout', 141],
-    ['async-await', 151],
-    ['fetch', 161]
-  ])('%s has an MDN link and a block of ten problems starting at id %i', (tag, firstId) => {
+    ['setTimeout', 141, 10],
+    ['async-await', 151, 10],
+    ['fetch', 161, 10],
+    ['Set', 171, 20]
+  ])('%s has an MDN link and a block of problems starting at id %i', (tag, firstId, count) => {
     const js = getLanguageData('javascript');
     expect(js.KNOWN_FUNCTION_DOC_LINKS[tag]).toMatch(/^https:\/\/developer\.mozilla\.org\//);
 
-    const block = js.exercises.filter((ex) => ex.id >= firstId && ex.id < firstId + 10);
-    expect(block).toHaveLength(10);
+    const block = js.exercises.filter((ex) => ex.id >= firstId && ex.id < firstId + count);
+    expect(block).toHaveLength(count);
     block.forEach((ex) => {
       expect(ex.functions, `id ${ex.id}`).toContain(tag);
       // Every new problem has a hint, and so a docs link in its popover.

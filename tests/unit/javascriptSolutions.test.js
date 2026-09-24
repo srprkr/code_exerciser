@@ -35,7 +35,10 @@ async function runSolution(exercise) {
   await new AsyncFunction('console', 'fetch', code)(fakeConsole, fetch);
   if (SCHEDULES_WORK.test(code)) await new Promise((resolve) => setTimeout(resolve, SETTLE_MS));
 
-  const serialize = (value) => (value === undefined ? undefined : JSON.parse(JSON.stringify(value)));
+  // Mirrors the sandbox: Sets are graded as arrays of their values.
+  const setsToArrays = (_key, value) => (value instanceof Set ? [...value] : value);
+  const serialize = (value) =>
+    value === undefined ? undefined : JSON.parse(JSON.stringify(value, setsToArrays));
   return {
     hasLastLogValue: logCalls.length > 0,
     lastLogValue: serialize(logCalls[logCalls.length - 1]),
@@ -55,7 +58,7 @@ describe('javascript reference solutions', () => {
   );
 });
 
-// Each async/timer problem is written so the classic mistake it teaches
+// Each async/timer/Set problem is written so the classic mistake it teaches
 // about produces different output — these confirm the mistake really fails
 // rather than passing by accident.
 const COMMON_MISTAKES = [
@@ -69,13 +72,23 @@ const COMMON_MISTAKES = [
   [164, 'not checking res.ok', 'const user = await (await fetch(`${API}/users/${userId}`)).json();\nconsole.log(user.name);'],
   [165, 'forgetting the query parameter', 'const posts = await (await fetch(`${API}/posts`)).json();\nconsole.log(posts.reduce((sum, p) => sum + p.likes, 0));'],
   [166, 'no Content-Type header', 'const created = await (await fetch(`${API}/posts`, { method: "POST", body: JSON.stringify(newPost) })).json();\nconsole.log(`Created post ${created.id}: ${created.title}`);'],
-  [170, 'only fetching the first page', 'const data = await (await fetch(`${API}/products?page=1`)).json();\nconsole.log(data.products.map(p => p.name));']
+  [170, 'only fetching the first page', 'const data = await (await fetch(`${API}/products?page=1`)).json();\nconsole.log(data.products.map(p => p.name));'],
+  [185, 'only ever adding, never deleting', 'const selected = new Set();\nfor (const id of clicks) selected.add(id);\nconsole.log([...selected]);'],
+  [186, 'deduping objects with new Set()', 'console.log([...new Set(products)].map(p => p.name));']
 ];
 
-describe('javascript async problems reject their common mistakes', () => {
+describe('javascript problems reject their common mistakes', () => {
   it.concurrent.each(COMMON_MISTAKES)('problem %i: %s fails', async (id, _mistake, wrongSolution) => {
     const exercise = exercises.find((ex) => ex.id === id);
     const payload = await runSolution({ ...exercise, solution: wrongSolution });
     expect(gradeRun(payload, exercise.output)).toBe(false);
+  });
+});
+
+describe('logged Sets', () => {
+  it('grade as an array of their values, so logging the Set itself passes', async () => {
+    const exercise = exercises.find((ex) => ex.id === 176);
+    const payload = await runSolution({ ...exercise, solution: 'console.log(new Set(word));' });
+    expect(gradeRun(payload, exercise.output)).toBe(true);
   });
 });
