@@ -13,15 +13,17 @@ test('title shows a language dropdown defaulted to JavaScript', async ({ page })
   await expect(page.getByText('Exerciser')).toBeVisible();
 });
 
-test('both shipped languages are listed and selectable', async ({ page }) => {
+test('every shipped language is listed and selectable', async ({ page }) => {
   await trigger(page).click();
 
   const options = page.getByRole('option');
-  await expect(options).toHaveCount(2);
+  await expect(options).toHaveCount(3);
   await expect(options.nth(0)).toHaveText('JavaScript');
-  await expect(options.nth(1)).toHaveText('Python (Beta)');
-  await expect(options.nth(0)).toHaveAttribute('aria-disabled', 'false');
-  await expect(options.nth(1)).toHaveAttribute('aria-disabled', 'false');
+  await expect(options.nth(1)).toHaveText('TypeScript (Beta)');
+  await expect(options.nth(2)).toHaveText('Python (Beta)');
+  for (const index of [0, 1, 2]) {
+    await expect(options.nth(index)).toHaveAttribute('aria-disabled', 'false');
+  }
 
   // Rust and Ruby are planned but have no exercise module, so they must not
   // appear at all rather than appearing as dead entries.
@@ -104,14 +106,16 @@ test('the popup is themed from the app tokens in both light and dark', async ({ 
 
 test('the selected option is marked so the active language is identifiable', async ({ page }) => {
   await trigger(page).click();
-  await expect(page.getByRole('option').nth(0)).toHaveAttribute('aria-selected', 'true');
-  await expect(page.getByRole('option').nth(1)).toHaveAttribute('aria-selected', 'false');
+  const javascript = page.getByRole('option', { name: 'JavaScript' });
+  const python = page.getByRole('option', { name: 'Python' });
+  await expect(javascript).toHaveAttribute('aria-selected', 'true');
+  await expect(python).toHaveAttribute('aria-selected', 'false');
 
-  await page.getByRole('option', { name: 'Python' }).click();
+  await python.click();
   await trigger(page).click();
 
-  await expect(page.getByRole('option').nth(0)).toHaveAttribute('aria-selected', 'false');
-  await expect(page.getByRole('option').nth(1)).toHaveAttribute('aria-selected', 'true');
+  await expect(javascript).toHaveAttribute('aria-selected', 'false');
+  await expect(python).toHaveAttribute('aria-selected', 'true');
 });
 
 test('opens with the keyboard and closes on Escape, returning focus to the trigger', async ({ page }) => {
@@ -131,9 +135,9 @@ test('arrow keys move the active option without leaking to exercise navigation',
   await trigger(page).click();
   const listbox = page.getByRole('listbox');
 
-  // Down moves the active option onto Python...
+  // Down moves the active option onto the next language...
   await page.keyboard.press('ArrowDown');
-  await expect(listbox).toHaveAttribute('aria-activedescendant', 'language-option-python');
+  await expect(listbox).toHaveAttribute('aria-activedescendant', 'language-option-typescript');
   await page.keyboard.press('ArrowUp');
   await expect(listbox).toHaveAttribute('aria-activedescendant', 'language-option-javascript');
 

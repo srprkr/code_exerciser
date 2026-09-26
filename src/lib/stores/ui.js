@@ -25,6 +25,21 @@ export const KNOWN_FUNCTION_DOC_LINKS = derived(
   ($languageData) => $languageData.KNOWN_FUNCTION_DOC_LINKS
 );
 
+// The site name to show beside one specific doc link. TypeScript's links
+// are split between MDN and the TypeScript Handbook, so its module names
+// the site per URL; every other language uses its one DOC_SITE_NAME.
+export const docSiteNameFor = derived(
+  languageData,
+  ($languageData) => (url) => $languageData.docSiteNameFor?.(url) ?? $languageData.DOC_SITE_NAME
+);
+
+// "Problem 12", or "Intro Problem -3" for TypeScript's intro set — everywhere a
+// problem is named, so the intro problems read as intro problems rather
+// than as oddly-numbered regular ones.
+export function exerciseLabel(exercise) {
+  return exercise.intro ? `Intro Problem ${exercise.id}` : `Problem ${exercise.id}`;
+}
+
 export const filteredExercises = derived(
   [languageData, activeFunctionFilters, activeDifficultyFilter],
   ([$languageData, $activeFunctionFilters, $activeDifficultyFilter]) =>
@@ -126,8 +141,11 @@ export function applyDeepLinkFromUrl() {
   const requestedLanguage = params.get('lang');
   if (requestedLanguage) selectLanguage(requestedLanguage);
 
-  const requestedId = Number(params.get('exercise'));
-  if (!requestedId) return false;
+  // Not a truthiness check: TypeScript's intro problems run -9 through 0,
+  // so 0 and negative ids are real exercises.
+  const rawId = params.get('exercise');
+  const requestedId = rawId === null || rawId.trim() === '' ? NaN : Number(rawId);
+  if (!Number.isInteger(requestedId)) return false;
 
   const index = get(languageExercises).findIndex((exercise) => exercise.id === requestedId);
   if (index === -1) return false;

@@ -432,6 +432,86 @@ details[open] > summary .summary-chevron {
   background: var(--color-bg);
 }
 
+// TypeScript intro tutorials (TutorialPanel.svelte). Global rather than
+// component-scoped because the tutorial body and highlighted code are
+// injected with {@html}, which scoped styles don't reach.
+.tutorial-body {
+  line-height: 1.55;
+
+  p {
+    margin: 0.5rem 0;
+  }
+
+  :not(pre) > code {
+    font-size: 0.9em;
+    padding: 0.05rem 0.3rem;
+    border-radius: 4px;
+    background: var(--color-surface-alt);
+  }
+}
+
+.tutorial-code {
+  margin: 0.5rem 0;
+  padding: 0.75rem;
+  // Scroll sideways rather than inherit pre's pre-wrap: wrapped code on a
+  // phone breaks lines mid-expression and reads like different code.
+  white-space: pre;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  line-height: 1.45;
+}
+
+.tutorial-solution {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface-alt);
+}
+
+// Unselectable on purpose: the user is meant to type it into the editor,
+// not paste it.
+.tutorial-solution-code {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.tutorial-note {
+  margin-top: 0.75rem;
+  color: var(--color-text-muted);
+
+  a {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+
+// Token colours for highlightToHtml()'s tok-* classes, matching the editor:
+// CodeMirror's defaultHighlightStyle in light, One Dark in dark.
+[data-theme='light'] {
+  .tok-keyword { color: #708; }
+  .tok-string, .tok-string2 { color: #a11; }
+  .tok-number, .tok-bool, .tok-atom { color: #164; }
+  .tok-typeName, .tok-className { color: #085; }
+  .tok-variableName.tok-definition { color: #00f; }
+  .tok-comment { color: #940; }
+}
+
+[data-theme='dark'] {
+  .tok-keyword { color: #c678dd; }
+  .tok-string, .tok-string2 { color: #98c379; }
+  .tok-number, .tok-bool, .tok-atom { color: #d19a66; }
+  .tok-typeName, .tok-className { color: #e5c07b; }
+  .tok-variableName.tok-definition, .tok-propertyName.tok-definition { color: #61afef; }
+  .tok-propertyName { color: #e06c75; }
+  .tok-operator { color: #56b6c2; }
+  .tok-comment { color: #7d8799; font-style: italic; }
+}
+
 .your-turn-box {
   border: 1px solid var(--color-border);
   border-radius: 6px;

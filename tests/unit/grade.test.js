@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { gradeRun, decideCheckResult } from '../../src/lib/grading/grade.js';
 
+const TYPE_ERROR = { line: 2, message: "Type 'string' is not assignable to type 'number'." };
+
 describe('gradeRun', () => {
   it('fails when there is no logged value at all', () => {
     expect(gradeRun({ hasLastLogValue: false }, [1, 2, 3])).toBe(false);
@@ -64,5 +66,28 @@ describe('decideCheckResult', () => {
     const payload = { hasLastLogValue: true, lastLogValue: 'nope', allLogValues: ['nope'] };
     const result = decideCheckResult(payload, exercise, () => false);
     expect(result.passed).toBe(false);
+  });
+});
+
+describe('TypeScript type errors', () => {
+  const exercise = { id: -10, output: 59.97 };
+  const matching = { hasLastLogValue: true, lastLogValue: 59.97, allLogValues: [59.97] };
+
+  it('fail a run whose output is right', () => {
+    expect(gradeRun({ ...matching, typeErrors: [TYPE_ERROR] }, 59.97)).toBe(false);
+  });
+
+  it('pass once the type errors are gone', () => {
+    expect(gradeRun({ ...matching, typeErrors: [] }, 59.97)).toBe(true);
+  });
+
+  it('are flagged as the only blocker when the output already matches', () => {
+    const result = decideCheckResult({ ...matching, typeErrors: [TYPE_ERROR] }, exercise, () => false);
+    expect(result).toEqual({ passed: false, countsTowardCompletion: true, blockedByTypeErrors: true });
+  });
+
+  it('are not blamed when the output is wrong too', () => {
+    const wrong = { hasLastLogValue: true, lastLogValue: 1, allLogValues: [1], typeErrors: [TYPE_ERROR] };
+    expect(decideCheckResult(wrong, exercise, () => false).blockedByTypeErrors).toBe(false);
   });
 });

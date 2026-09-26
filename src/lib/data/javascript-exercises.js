@@ -7,6 +7,12 @@ export const exercises = [
     solution: `let doubleTheFive = oneToFive.map(n => n * 2);
     console.log(doubleTheFive);`,
     output: [2, 4, 6, 8, 10],
+    ts: {
+      hint: {
+        text: "Nothing to annotate here, and that's the idiomatic TypeScript. oneToFive is inferred as number[] from its values, and map already knows n is a number. Writing : number[] or (n: number) would just be noise (linters flag it as an inferrable type). Save annotations for what TypeScript can't work out on its own, like function parameters.",
+        mdnUrl: 'https://www.typescriptlang.org/docs/handbook/type-inference.html'
+      }
+    },
     functions: ['map'],
     difficulty: 'easy'
   },
@@ -18,6 +24,17 @@ export const exercises = [
     solution: `let upper = lower.map(l => l.toString().toUpperCase());
     console.log(upper);`,
     output: ['H', 'E', 'L', 'L', 'O'],
+    ts: {
+      question: 'Write upperAll(letters) that takes a string[] and returns every letter uppercased, then log upperAll(lower).',
+      solution: `function upperAll(letters: string[]) {
+  return letters.map(letter => letter.toUpperCase());
+}
+
+console.log(upperAll(lower));`,
+      hint: {
+        text: "Because letters is typed string[], TypeScript knows each letter is already a string, so there's no need for a defensive .toString() before .toUpperCase(). The return type, string[], is inferred from the map, so it doesn't need writing either."
+      }
+    },
     functions: ['map'],
     difficulty: 'easy'
   },
@@ -29,6 +46,14 @@ export const exercises = [
     solution: `let greetings = names.map(name => \`Hello, \${name}!\`);
     console.log(greetings);`,
     output: ['Hello, Sean!', 'Hello, Ralph!', 'Hello, Bill!', 'Hello, Tom!', 'Hello, Hank!'],
+    ts: {
+      question: 'Write greet(name) that takes one name and returns a greeting like "Hello, Sam!", then use it to greet every name in names.',
+      solution: `function greet(name: string) {
+  return \`Hello, \${name}!\`;
+}
+
+console.log(names.map(greet));`
+    },
     functions: ['map'],
     difficulty: 'easy'
   },
@@ -40,6 +65,18 @@ export const exercises = [
     solution: `let squareNums = fibonacci.map(num => num ** 2);
     console.log(squareNums);`,
     output: [1, 4, 16, 64, 256],
+    ts: {
+      question: "Write squares(nums) that returns the square of every number. It only reads the array it's given, so mark the parameter readonly. Log squares(fibonacci).",
+      solution: `function squares(nums: readonly number[]) {
+  return nums.map(num => num ** 2);
+}
+
+console.log(squares(fibonacci));`,
+      hint: {
+        text: "readonly number[] promises the function won't change the array: nums.push(1) or nums.sort() inside it is a type error. It's a good default for parameters you only read, and callers can still pass an ordinary number[].",
+        mdnUrl: 'https://www.typescriptlang.org/docs/handbook/2/objects.html#the-readonlyarray-type'
+      }
+    },
     functions: ['map'],
     difficulty: 'easy'
   },
@@ -56,6 +93,19 @@ export const exercises = [
     solution: `let firstNames = people.map(person => person.name);
     console.log(firstNames);`,
     output: ['Sean', 'Amy', 'Matt', 'Stacy'],
+    ts: {
+      sampleData: `interface Person {
+  name: string;
+  age: number;
+}
+
+let people: Person[] = [
+  {name: "Sean", age: 39},
+  {name: "Amy", age: 28},
+  {name: "Matt", age: 43},
+  {name: "Stacy", age: 33}
+];`
+    },
     functions: ['map'],
     difficulty: 'easy'
   },
@@ -67,6 +117,14 @@ export const exercises = [
     solution: `let taxPrices = prices.map(price => Number((price * 1.08).toFixed(2)));
     console.log(taxPrices);`,
     output: [1.94, 25.29, 7.02, 9.03, 15.96],
+    ts: {
+      question: 'Write withTax(price) that adds 8% tax to one price and rounds it to 2 decimal places, then use it to add tax to every price in prices.',
+      solution: `function withTax(price: number) {
+  return Number((price * 1.08).toFixed(2));
+}
+
+console.log(prices.map(withTax));`
+    },
     functions: ['map'],
     difficulty: 'medium'
   },
@@ -78,6 +136,14 @@ export const exercises = [
     solution: `let wordCount = words.map(word => word.length);
     console.log(wordCount);`,
     output: [4, 6, 15, 14, 3, 12],
+    ts: {
+      question: 'Write wordLengths(words) that takes a string[] and returns the length of each word, then log wordLengths(words).',
+      solution: `function wordLengths(words: string[]) {
+  return words.map(word => word.length);
+}
+
+console.log(wordLengths(words));`
+    },
     functions: ['map'],
     difficulty: 'easy'
   },
@@ -89,6 +155,14 @@ export const exercises = [
     solution: `let evens = upToSix.filter(num => num % 2 === 0)
     console.log(evens);`,
     output: [2, 4, 6],
+    ts: {
+      question: 'Write a predicate isEven(n) that says whether one number is even, then use it with filter to keep only the even numbers in upToSix.',
+      solution: `function isEven(n: number) {
+  return n % 2 === 0;
+}
+
+console.log(upToSix.filter(isEven));`
+    },
     functions: ['filter'],
     difficulty: 'easy'
   },
@@ -100,6 +174,14 @@ export const exercises = [
     solution: `let moreThanFourChars = moreWords.filter(word => word.length > 4);
     console.log(moreThanFourChars);`,
     output: ['chimichanga', 'zebra', 'chameleon', 'spring'],
+    ts: {
+      question: 'Write longerThan(words, min) that returns only the words longer than min characters, then log longerThan(moreWords, 4).',
+      solution: `function longerThan(words: string[], min: number) {
+  return words.filter(word => word.length > min);
+}
+
+console.log(longerThan(moreWords, 4));`
+    },
     functions: ['filter'],
     difficulty: 'medium'
   },
@@ -118,6 +200,19 @@ export const exercises = [
 }).map(person => person.name);
 console.log(olderThan18);`,
     output: ['Sean', 'Amy', 'Matt', 'Stacy'],
+    ts: {
+      sampleData: `interface Person {
+  name: string;
+  age: number;
+}
+
+let people: Person[] = [
+  {name: "Sean", age: 39},
+  {name: "Amy", age: 28},
+  {name: "Matt", age: 43},
+  {name: "Stacy", age: 33}
+];`
+    },
     functions: ['filter', 'map'],
     difficulty: 'easy'
   },
@@ -129,6 +224,14 @@ console.log(olderThan18);`,
     solution: `let positives = integers.filter(num => num >= 0);
     console.log(positives);`,
     output: [0, 1, 2, 3, 4, 5],
+    ts: {
+      question: 'Write a predicate isNonNegative(n), then use it with filter to remove all negative numbers from integers.',
+      solution: `function isNonNegative(n: number) {
+  return n >= 0;
+}
+
+console.log(integers.filter(isNonNegative));`
+    },
     functions: ['filter'],
     difficulty: 'easy'
   },
@@ -140,6 +243,14 @@ console.log(olderThan18);`,
     solution: `let cleanAnimals = animals.filter(word => word.length > 0);
     console.log(cleanAnimals);`,
     output: ['dog', 'whale', 'cat', 'monkey', 'octopus'],
+    ts: {
+      question: 'Write removeEmpty(items) that takes a string[] and returns it without any empty strings, then log removeEmpty(animals).',
+      solution: `function removeEmpty(items: string[]) {
+  return items.filter(item => item.length > 0);
+}
+
+console.log(removeEmpty(animals));`
+    },
     functions: ['filter'],
     difficulty: 'easy'
   },
@@ -158,6 +269,19 @@ console.log(olderThan18);`,
   .map(item => item.name);
 console.log(availableNames);`,
     output: ['squegee', 'rubber duck'],
+    ts: {
+      sampleData: `interface StockItem {
+  name: string;
+  inStock: boolean;
+}
+
+let stock: StockItem[] = [
+  {name: "squegee", inStock: true},
+  {name: "rubber duck", inStock: true},
+  {name: "soap", inStock: false},
+  {name: "LCD Monitor", inStock: false}
+];`
+    },
     functions: ['filter', 'map'],
     difficulty: 'medium'
   },
@@ -169,6 +293,14 @@ console.log(availableNames);`,
     solution: `let summedFive = oneToFive.reduce((acc, val) => acc + val, 0);
     console.log(summedFive);`,
     output: 15,
+    ts: {
+      question: 'Write sum(nums) that adds up a number[], then log sum(oneToFive).',
+      solution: `function sum(nums: number[]) {
+  return nums.reduce((acc, val) => acc + val, 0);
+}
+
+console.log(sum(oneToFive));`
+    },
     functions: ['reduce'],
     difficulty: 'medium'
   },
@@ -182,6 +314,18 @@ console.log(availableNames);`,
 }, oneToFive[0]);
 console.log(maxOfFive);`,
     output: 5,
+    ts: {
+      question: 'Write max(nums) that returns the largest number, or undefined for an empty array (it has no largest number). Write the return type out as number | undefined, then log max(oneToFive).',
+      solution: `function max(nums: number[]): number | undefined {
+  if (nums.length === 0) return undefined;
+  return nums.reduce((acc, val) => (acc < val ? val : acc));
+}
+
+console.log(max(oneToFive));`,
+      hint: {
+        text: "This is where a return type earns its place. reduce with no starting value throws on an empty array, so max has to handle that case, and number | undefined makes every caller handle it too: max(nums) + 1 is a type error until they check. TypeScript could infer it, but writing it out states the contract up front."
+      }
+    },
     functions: ['reduce'],
     difficulty: 'medium'
   },
@@ -193,6 +337,13 @@ console.log(maxOfFive);`,
     solution: `let evenOfFive = oneToFive.reduce((acc, val) => acc + (val % 2 === 0), 0);
     console.log(evenOfFive);`,
     output: 2,
+    ts: {
+      solution: `let evenOfFive = oneToFive.reduce((acc, val) => acc + (val % 2 === 0 ? 1 : 0), 0);
+    console.log(evenOfFive);`,
+      hint: {
+        text: "JavaScript quietly turns true into 1 when you add it to a number, but TypeScript won't: number + boolean is a type error. Say what you mean with a ternary, (val % 2 === 0 ? 1 : 0)."
+      }
+    },
     functions: ['reduce'],
     difficulty: 'medium'
   },
@@ -209,6 +360,24 @@ console.log(maxOfFive);`,
     solution: `let priceTotal = cart.reduce((acc, value) => acc + value.price, 0);
     console.log(priceTotal);`,
     output: 41.74,
+    ts: {
+      question: 'Write cartTotal(items) that takes a CartItem[] and returns the total price, then log cartTotal(cart).',
+      sampleData: `interface CartItem {
+  price: number;
+}
+
+const cart: CartItem[] = [
+  { price: 12.99 },
+  { price: 5.50 },
+  { price: 20.00 },
+  { price: 3.25 }
+];`,
+      solution: `function cartTotal(items: CartItem[]) {
+  return items.reduce((acc, item) => acc + item.price, 0);
+}
+
+console.log(cartTotal(cart));`
+    },
     functions: ['reduce'],
     difficulty: 'easy'
   },
@@ -220,6 +389,14 @@ console.log(maxOfFive);`,
     solution: `let sentence = sentenceWords.reduce((acc, word) => acc + " " + word) + '.';
     console.log(sentence);`,
     output: 'The quick brown fox jumps over the lazy dog.',
+    ts: {
+      question: 'Write toSentence(words) that joins a string[] into one sentence, separated by spaces and ending with a period, then log toSentence(sentenceWords).',
+      solution: `function toSentence(words: string[]) {
+  return words.reduce((acc, word) => acc + " " + word) + ".";
+}
+
+console.log(toSentence(sentenceWords));`
+    },
     functions: ['reduce'],
     difficulty: 'medium'
   },
@@ -238,6 +415,17 @@ console.log(maxOfFive);`,
     }, {});
     console.log(wordKeyCount);`,
     output: { dog: 3, elephant: 2, domino: 3, octopus: 2, sausage: 1, dagger: 1, cat: 1, skit: 1 },
+    ts: {
+      solution: `let wordKeyCount = wordsToCount.reduce<Record<string, number>>((acc, word) => {
+      acc[word] = (acc[word] ?? 0) + 1;
+      return acc;
+    }, {});
+    console.log(wordKeyCount);`,
+      hint: {
+        text: "A bare {} starting value is typed as an object with no keys, so acc[word] is an error. Tell reduce what the accumulator really is with a type argument, reduce<Record<string, number>>(...), and use ?? 0 for words that haven't been counted yet.",
+        mdnUrl: 'https://www.typescriptlang.org/docs/handbook/utility-types.html#recordkeys-type'
+      }
+    },
     functions: ['reduce'],
     difficulty: 'medium'
   },
@@ -259,6 +447,21 @@ console.log(maxOfFive);`,
     }, 0);
     console.log(Number(currentStockTotal.toFixed(2)));`,
     output: 150.5,
+    ts: {
+      sampleData: `interface Product {
+  name: string;
+  price: number;
+  inStock: boolean;
+}
+
+const bag: Product[] = [
+  { name: "Keyboard", price: 45.00, inStock: true },
+  { name: "Monitor", price: 199.99, inStock: false },
+  { name: "Mouse", price: 25.50, inStock: true },
+  { name: "Webcam", price: 60.00, inStock: false },
+  { name: "Headset", price: 80.00, inStock: true }
+];`
+    },
     functions: ['filter', 'reduce'],
     difficulty: 'hard',
     hint: {

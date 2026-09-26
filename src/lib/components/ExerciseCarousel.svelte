@@ -4,7 +4,8 @@
     filteredExercises,
     currentExerciseIndex,
     applyDeepLinkFromUrl,
-    stepExercise
+    stepExercise,
+    exerciseLabel
   } from '../stores/ui.js';
   import { progress as progressStore, Progress } from '../stores/progress.js';
   import { bindArrowKeyNav } from '../utils/keyboardNav.js';
@@ -13,6 +14,7 @@
   import ExerciseHint from './ExerciseHint.svelte';
   import SolutionToggle from './SolutionToggle.svelte';
   import SolutionDetails from './SolutionDetails.svelte';
+  import TutorialPanel from './TutorialPanel.svelte';
   import CodeEditor from './CodeEditor.svelte';
 
   const SKIP_AMOUNT = 10;
@@ -121,10 +123,13 @@
         <div class="exercise-title-group">
           <div class="exercise-title-heading">
             <DoneCheckmark {completed} />
-            <h2 class="exercise-title text-xl sm:text-2xl font-bold">Problem {exercise.id}</h2>
+            <h2 class="exercise-title text-xl sm:text-2xl font-bold">{exerciseLabel(exercise)}</h2>
           </div>
 
           <div class="block tags">
+            {#if exercise.intro}
+              <span class="badge badge-accent">intro</span>
+            {/if}
             {#each exercise.functions as fn (fn)}
               <span class="badge badge-info badge-outline">{fn}</span>
             {/each}
@@ -133,12 +138,18 @@
         </div>
 
         <div class="exercise-aids">
-          {#if !completed}
+          <!-- A tutorial problem shows its solution up front (TutorialPanel),
+               so there's nothing to toggle or peek at. -->
+          {#if !completed && !exercise.tutorial}
             <SolutionToggle {exercise} bind:solutionVisible />
           {/if}
           <ExerciseHint {exercise} />
         </div>
       </div>
+
+      {#if exercise.tutorial}
+        <TutorialPanel {exercise} />
+      {/if}
 
       <div class="block">
         <h3 class="font-bold mt-4 mb-1">Question:</h3>
@@ -150,7 +161,9 @@
         <CodeEditor {exercise} onCheckPassed={() => (solutionVisible = true)} skipAmount={SKIP_AMOUNT} />
       </div>
 
-      <SolutionDetails {exercise} {solutionVisible} />
+      {#if !exercise.tutorial}
+        <SolutionDetails {exercise} {solutionVisible} />
+      {/if}
     </section>
   {/if}
 </section>

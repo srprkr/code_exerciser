@@ -1,6 +1,6 @@
 <script>
   import { progress, Progress } from '../stores/progress.js';
-  import { KNOWN_FUNCTION_DOC_LINKS, DOC_SITE_NAME, languageData } from '../stores/ui.js';
+  import { KNOWN_FUNCTION_DOC_LINKS, DOC_SITE_NAME, docSiteNameFor, languageData } from '../stores/ui.js';
 
   const badges = $derived.by(() => {
     $progress; // subscribe so this re-derives on any progress change
@@ -19,7 +19,7 @@
         href={docUrl}
         target="_blank"
         rel="noopener noreferrer"
-        title={`View on ${$DOC_SITE_NAME}`}
+        title={`View on ${$docSiteNameFor(docUrl)}`}
         class="achievement-card"
         class:achievement-card-earned={achievement.earned}
       >

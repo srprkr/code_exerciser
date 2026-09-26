@@ -1,5 +1,5 @@
 <script>
-  import { languageExercises } from '../stores/ui.js';
+  import { languageExercises, exerciseLabel } from '../stores/ui.js';
   import { progress, Progress } from '../stores/progress.js';
 
   let { onSelectExercise } = $props();
@@ -61,7 +61,7 @@
           class="progress-list-link"
           onclick={() => onSelectExercise(exercise.id)}
         >
-          Problem {exercise.id}: {exercise.question}
+          {exerciseLabel(exercise)}: {exercise.question}
         </button>
       </li>
     {/each}

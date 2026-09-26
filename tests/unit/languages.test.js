@@ -15,8 +15,9 @@ const REQUIRED_EXPORTS = [
 ];
 
 describe('language registry', () => {
-  it('registers javascript and python', () => {
+  it('registers javascript, typescript and python', () => {
     expect(isKnownLanguage('javascript')).toBe(true);
+    expect(isKnownLanguage('typescript')).toBe(true);
     expect(isKnownLanguage('python')).toBe(true);
   });
 
@@ -32,19 +33,19 @@ describe('language registry', () => {
     expect(getLanguageData(undefined)).toBe(getLanguageData(DEFAULT_LANGUAGE));
   });
 
-  it.each(['javascript', 'python'])('%s exposes the full module shape', (language) => {
+  it.each(['javascript', 'typescript', 'python'])('%s exposes the full module shape', (language) => {
     const data = getLanguageData(language);
     REQUIRED_EXPORTS.forEach((name) => expect(data[name]).toBeDefined());
     expect(data.KNOWN_FUNCTIONS).toEqual([...data.CORE_FUNCTIONS, ...data.SECONDARY_FUNCTIONS]);
   });
 
-  it.each(['javascript', 'python'])('%s gives every known tag a docs link', (language) => {
+  it.each(['javascript', 'typescript', 'python'])('%s gives every known tag a docs link', (language) => {
     const { KNOWN_FUNCTIONS, KNOWN_FUNCTION_DOC_LINKS } = getLanguageData(language);
     const missing = KNOWN_FUNCTIONS.filter((fn) => !KNOWN_FUNCTION_DOC_LINKS[fn]);
     expect(missing).toEqual([]);
   });
 
-  it.each(['javascript', 'python'])('%s exercises all have unique ids', (language) => {
+  it.each(['javascript', 'typescript', 'python'])('%s exercises all have unique ids', (language) => {
     const ids = getLanguageData(language).exercises.map((e) => e.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
@@ -228,6 +229,69 @@ describe('javascript exercise set', () => {
       // Every new problem has a hint, and so a docs link in its popover.
       expect(ex.hint?.text, `id ${ex.id}`).toBeTruthy();
       if (ex.hint.mdnUrl) expect(ex.hint.mdnUrl).toMatch(/^https:\/\/developer\.mozilla\.org\//);
+    });
+  });
+});
+
+describe('typescript exercise set', () => {
+  const typescript = getLanguageData('typescript');
+  const js = getLanguageData('javascript');
+
+  it('leads its tags with types, then only the JavaScript tags its problems use', () => {
+    expect(typescript.CORE_FUNCTIONS[0]).toBe('types');
+    // Only map/filter/reduce problems are ported so far — no empty filter pills.
+    expect(typescript.CORE_FUNCTIONS).toEqual(['types', 'map', 'filter', 'reduce']);
+    typescript.KNOWN_FUNCTIONS.slice(1).forEach((tag) => {
+      expect(js.KNOWN_FUNCTIONS).toContain(tag);
+      expect(typescript.exercises.some((ex) => typescript.exerciseHasFunction(ex, tag)), tag).toBe(true);
+    });
+  });
+
+  it('links the types tag to the TypeScript Handbook and names each link\'s site by its URL', () => {
+    expect(typescript.KNOWN_FUNCTION_DOC_LINKS.types).toMatch(/^https:\/\/www\.typescriptlang\.org\/docs\/handbook\//);
+    expect(typescript.docSiteNameFor(typescript.KNOWN_FUNCTION_DOC_LINKS.types)).toBe('TypeScript Handbook');
+    expect(typescript.docSiteNameFor(typescript.KNOWN_FUNCTION_DOC_LINKS.map)).toBe('MDN');
+  });
+
+  it('makes intro problems -9 through -1 tutorials, with a Handbook link and no hint', () => {
+    const tutorials = typescript.exercises.filter((ex) => ex.intro && ex.id < 0);
+    expect(tutorials).toHaveLength(9);
+    tutorials.forEach((ex) => {
+      expect(ex.tutorial, `id ${ex.id}`).toBeTruthy();
+      expect(ex.docUrl, `id ${ex.id}`).toMatch(/^https:\/\/www\.typescriptlang\.org\/docs\/handbook\//);
+      // The tutorial replaces the hint (and the solution toggle).
+      expect(ex.hint, `id ${ex.id}`).toBeUndefined();
+    });
+  });
+
+  it('keeps problem 0 as the final challenge: no tutorial, a normal hint', () => {
+    const challenge = typescript.exercises.find((ex) => ex.id === 0);
+    expect(challenge.tutorial).toBeUndefined();
+    expect(challenge.hint.text).toBeTruthy();
+    expect(challenge.hint.mdnUrl).toMatch(/^https:\/\/www\.typescriptlang\.org\//);
+  });
+
+  it('opens with the numbers-as-strings bug that types prevent', () => {
+    const opener = typescript.exercises[0];
+    expect(opener.id).toBe(-9);
+    expect(opener.tutorial).toContain('"405", not 45');
+    expect(opener.output).toBe(45);
+  });
+
+  it('only uses js/ts code fences in tutorials, so every snippet is highlighted', () => {
+    typescript.exercises
+      .filter((ex) => ex.tutorial)
+      .forEach((ex) => {
+        const fences = [...ex.tutorial.matchAll(/^~~~(\w*)$/gm)].map((m) => m[1]).filter(Boolean);
+        expect(fences.length, `id ${ex.id}`).toBeGreaterThan(0);
+        fences.forEach((lang) => expect(['js', 'ts'], `id ${ex.id}`).toContain(lang));
+      });
+  });
+
+  it('asks for a single answer per problem', () => {
+    typescript.exercises.forEach((ex) => {
+      const logCount = (ex.solution.match(/console\.log\(/g) || []).length;
+      expect(logCount, `Problem ${ex.id} should log exactly one result`).toBe(1);
     });
   });
 });

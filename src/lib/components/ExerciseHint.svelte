@@ -1,5 +1,5 @@
 <script>
-  import { KNOWN_FUNCTION_DOC_LINKS, DOC_SITE_NAME } from '../stores/ui.js';
+  import { KNOWN_FUNCTION_DOC_LINKS, docSiteNameFor } from '../stores/ui.js';
 
   let { exercise } = $props();
 
@@ -62,7 +62,7 @@
     </button>
     <p>{exercise.hint.text}</p>
     {#if docUrl}
-      <a href={docUrl} target="_blank" rel="noopener noreferrer">View on {$DOC_SITE_NAME}</a>
+      <a href={docUrl} target="_blank" rel="noopener noreferrer">View on {$docSiteNameFor(docUrl)}</a>
     {/if}
   </div>
 {/if}

@@ -12,6 +12,7 @@
   import { Progress } from '../stores/progress.js';
   import { runCode as sandboxRunCode, teardownSandbox } from '../grading/sandbox.js';
   import { runCode as pythonRunCode, teardownSandbox as teardownPythonSandbox } from '../grading/pythonSandbox.js';
+  import { runCode as typescriptRunCode, teardownSandbox as teardownTypescriptSandbox } from '../grading/typescriptSandbox.js';
   import { decideCheckResult } from '../grading/grade.js';
   import { hasPeekedThisSession, stepExercise } from '../stores/ui.js';
   import { currentLanguage } from '../stores/language.js';
@@ -50,24 +51,32 @@
   let checkResultText = $state('');
   let checkResultPassed = $state(false);
 
-  // 'idle' | 'loading' | 'loaded' | 'error'. Only ever set by pythonSandbox's
-  // onRuntimeStatus callback (sandboxRunCode's JS path never calls it), and
-  // deliberately not reset when switching away from Python — the runtime
-  // stays loaded in the worker for the rest of the page session, so the
-  // status shown on returning to a Python problem should still say so.
-  let pythonRuntimeStatus = $state('idle');
+  // Per-language 'idle' | 'loading' | 'loaded' | 'error'. Only ever set by
+  // the Python and TypeScript runners' onRuntimeStatus callback
+  // (sandboxRunCode's JS path never calls it), and deliberately not reset
+  // when switching languages — each runtime stays loaded in its worker for
+  // the rest of the page session, so the status shown on returning to that
+  // language should still say so.
+  let runtimeStatus = $state({});
 
-  const PYTHON_RUNTIME_STATUS_TEXT = {
-    loading: 'Loading the Python runtime…',
-    loaded: 'Python runtime loaded successfully',
-    error: 'Python runtime failed to load'
+  const RUNTIME_STATUS_TEXT = {
+    python: {
+      loading: 'Loading the Python runtime…',
+      loaded: 'Python runtime loaded successfully',
+      error: 'Python runtime failed to load'
+    },
+    typescript: {
+      loading: 'Loading the TypeScript compiler…',
+      loaded: 'TypeScript compiler loaded successfully',
+      error: 'TypeScript compiler failed to load'
+    }
   };
 
-  // Only shown while Python is the active language — the status genuinely
+  // Only shown for the language that owns the runtime — Python's status
   // doesn't apply to a JavaScript problem, even if Python was loaded earlier
   // this session.
-  const pythonRuntimeStatusText = $derived(
-    $currentLanguage === 'python' ? (PYTHON_RUNTIME_STATUS_TEXT[pythonRuntimeStatus] ?? null) : null
+  const runtimeStatusText = $derived(
+    RUNTIME_STATUS_TEXT[$currentLanguage]?.[runtimeStatus[$currentLanguage]] ?? null
   );
 
   // Matches bindRunCheckShortcuts' own platform check, so the hint always
@@ -166,7 +175,11 @@
 
   // CodeMirror language mode per language id. Falls back to JavaScript so an
   // unrecognised id still gets a usable editor rather than no highlighting.
-  const LANGUAGE_MODES = { javascript, python };
+  const LANGUAGE_MODES = {
+    javascript,
+    python,
+    typescript: () => javascript({ typescript: true })
+  };
 
   function languageMode() {
     return (LANGUAGE_MODES[$currentLanguage] ?? javascript)();
@@ -318,7 +331,11 @@
     consoleOutputEl.appendChild(line);
   }
 
-  const PRINT_CALL_BY_LANGUAGE = { javascript: 'console.log(...)', python: 'print(...)' };
+  const PRINT_CALL_BY_LANGUAGE = {
+    javascript: 'console.log(...)',
+    typescript: 'console.log(...)',
+    python: 'print(...)'
+  };
 
   function markAttemptedIfOutput(payload) {
     if (!exercise) return;
@@ -330,15 +347,26 @@
     }
   }
 
-  // pythonSandbox.js's runCode()/teardownSandbox() deliberately mirror
+  // pythonSandbox.js's and typescriptSandbox.js's runCode()/teardownSandbox() deliberately mirror
   // sandbox.js's shape exactly, so picking between them is the only thing
   // that needs to know two runtimes exist — everything downstream
   // (onConsoleLine, onDone, grading) is identical either way.
-  const RUN_CODE_BY_LANGUAGE = { javascript: sandboxRunCode, python: pythonRunCode };
+  const RUN_CODE_BY_LANGUAGE = {
+    javascript: sandboxRunCode,
+    python: pythonRunCode,
+    typescript: typescriptRunCode
+  };
 
+  // Captured at run start so a status that arrives after the user switches
+  // languages is still filed under the runtime that sent it.
   function runCodeForCurrentLanguage(code, callbacks) {
-    const run = RUN_CODE_BY_LANGUAGE[$currentLanguage] ?? sandboxRunCode;
-    run(code, callbacks);
+    const language = $currentLanguage;
+    const run = RUN_CODE_BY_LANGUAGE[language] ?? sandboxRunCode;
+    run(code, { ...callbacks, onRuntimeStatus: (status) => setRuntimeStatus(language, status) });
+  }
+
+  function setRuntimeStatus(language, status) {
+    runtimeStatus = { ...runtimeStatus, [language]: status };
   }
 
   function handleRun() {
@@ -349,7 +377,6 @@
 
     runCodeForCurrentLanguage(view.state.doc.toString(), {
       onConsoleLine: appendConsoleLine,
-      onRuntimeStatus: (status) => { pythonRuntimeStatus = status; },
       onDone: (payload) => {
         markAttemptedIfOutput(payload);
       }
@@ -364,11 +391,10 @@
 
     runCodeForCurrentLanguage(view.state.doc.toString(), {
       onConsoleLine: appendConsoleLine,
-      onRuntimeStatus: (status) => { pythonRuntimeStatus = status; },
       onDone: (payload) => {
         markAttemptedIfOutput(payload);
 
-        const { passed, countsTowardCompletion } = decideCheckResult(
+        const { passed, countsTowardCompletion, blockedByTypeErrors } = decideCheckResult(
           payload,
           exercise,
           hasPeekedThisSession
@@ -385,6 +411,8 @@
             "Correct! Since you looked at the solution, this won't count toward your badge — come back later and solve it without peeking.";
         } else if (passed) {
           checkResultText = 'Correct! That matches the expected output.';
+        } else if (blockedByTypeErrors) {
+          checkResultText = 'The output is right, but there are type errors to fix first — see the console.';
         } else {
           checkResultText = "Not quite — that doesn't match the expected output yet.";
         }
@@ -400,6 +428,7 @@
     if (view) view.destroy();
     teardownSandbox();
     teardownPythonSandbox();
+    teardownTypescriptSandbox();
   });
 </script>
 
@@ -409,8 +438,8 @@
   <div class="console-output" hidden={!consoleVisible}>
     <div class="console-header">
       <strong class="console-label">Console</strong>
-      {#if pythonRuntimeStatusText}
-        <span class="console-label">{pythonRuntimeStatusText}</span>
+      {#if runtimeStatusText}
+        <span class="console-label">{runtimeStatusText}</span>
       {/if}
     </div>
     <pre class="console-log" bind:this={consoleOutputEl}></pre>

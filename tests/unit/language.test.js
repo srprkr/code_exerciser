@@ -8,10 +8,11 @@ beforeEach(() => {
 });
 
 describe('language store', () => {
-  it('lists javascript and python, both available', () => {
+  it('lists javascript, typescript and python, all available', () => {
     const byId = Object.fromEntries(LANGUAGES.map((lang) => [lang.id, lang]));
-    expect(Object.keys(byId)).toEqual(['javascript', 'python']);
+    expect(Object.keys(byId)).toEqual(['javascript', 'typescript', 'python']);
     expect(byId.javascript.available).toBe(true);
+    expect(byId.typescript.available).toBe(true);
     expect(byId.python.available).toBe(true);
   });
 
@@ -22,6 +23,11 @@ describe('language store', () => {
   it('selectLanguage switches to python', () => {
     selectLanguage('python');
     expect(get(currentLanguage)).toBe('python');
+  });
+
+  it('selectLanguage switches to typescript', () => {
+    selectLanguage('typescript');
+    expect(get(currentLanguage)).toBe('typescript');
   });
 
   it('selectLanguage ignores unknown language ids', () => {
